@@ -5,13 +5,14 @@ import NextAuth, { NextAuthOptions } from 'next-auth'
 import { prisma } from '@/libs/prisma'
 import { Adapter } from 'next-auth/adapters'
 import { CustomPrismaAdapter } from '@/libs/next-auth/prisma-adapter'
+import { env } from '@/env'
 
 export const handler: NextAuthOptions = NextAuth({
   adapter: CustomPrismaAdapter(prisma) as Adapter,
   providers: [
     GitHubProvider({
-      clientId: process.env.GITHUB_ID ?? '',
-      clientSecret: process.env.GITHUB_SECRET ?? '',
+      clientId: env.GITHUB_ID,
+      clientSecret: env.GITHUB_SECRET,
       profile(profile: GithubProfile) {
         return {
           id: profile.id.toString(),
@@ -30,8 +31,8 @@ export const handler: NextAuthOptions = NextAuth({
         uid: token.sub,
       }
 
-      const encodedToken = jwt.sign(payload, process.env.JWT_SECRET!, {
-        algorithm: process.env.JWT_ALGORITHM as jwt.Algorithm,
+      const encodedToken = jwt.sign(payload, env.JWT_SECRET, {
+        algorithm: env.JWT_ALGORITHM as jwt.Algorithm,
         expiresIn: '24h',
       })
 
@@ -48,7 +49,7 @@ export const handler: NextAuthOptions = NextAuth({
     strategy: 'jwt',
     maxAge: 60 * 60 * 24, // 24 hours
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/auth/sign-in',
     error: '/auth/error',
