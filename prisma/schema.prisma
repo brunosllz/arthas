@@ -1,0 +1,173 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Answer {
+  id            String          @id
+  content       String
+  authorId      String
+  projectId     String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime?
+  User          User            @relation(fields: [authorId], references: [id])
+  Project       Project         @relation(fields: [projectId], references: [id])
+  AnswerComment AnswerComment[]
+}
+
+model AnswerComment {
+  id        String    @id
+  content   String
+  authorId  String
+  answerId  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  Answer    Answer    @relation(fields: [answerId], references: [id])
+  User      User      @relation(fields: [authorId], references: [id])
+}
+
+model Notification {
+  id                String    @id
+  content           String
+  authorId          String
+  recipientId       String
+  createdAt         DateTime  @default(now())
+  readAt            DateTime?
+  title             String
+  authorIdToUser    User      @relation("NotificationAuthorIdToUser", fields: [authorId], references: [id])
+  recipientIdToUser User      @relation("NotificationRecipientIdToUser", fields: [recipientId], references: [id])
+}
+
+model Project {
+  id                        String          @id
+  authorId                  String
+  title                     String
+  content                   String
+  slug                      String
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime?
+  requirementTimeAmount     Int
+  requirementContent        String?
+  requirementTimeIdentifier TIME_IDENTIFIER
+  Answer                    Answer[]
+  User                      User            @relation(fields: [authorId], references: [id])
+  ProjectRole               ProjectRole[]
+  TeamMember                TeamMember[]
+  Technology                Technology[]
+
+  @@unique([authorId, slug])
+}
+
+model ProjectRole {
+  id        String  @id
+  projectId String
+  roleId    String
+  amount    Int
+  Project   Project @relation(fields: [projectId], references: [id])
+  Role      Role    @relation(fields: [roleId], references: [id])
+  User      User[]
+
+  @@unique([projectId, roleId])
+}
+
+model Role {
+  id          String        @id
+  name        String        @unique
+  ProjectRole ProjectRole[]
+}
+
+model TeamMember {
+  id             String                 @id
+  recipientId    String
+  permissionType MEMBER_PERMISSION_TYPE
+  status         MEMBER_STATUS
+  projectId      String
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime
+  Project        Project                @relation(fields: [projectId], references: [id])
+  User           User                   @relation(fields: [recipientId], references: [id])
+}
+
+model Technology {
+  id      String    @id
+  slug    String    @unique
+  Project Project[]
+  User    User[]
+}
+
+model User {
+  id                        String          @id @default(uuid())
+  name                      String
+  email                     String          @unique
+  bio                       String?
+  occupation                String?
+  avatarUrl                 String
+  city                      String?
+  state                     String?
+  country                   String?
+  linkedinLink              String?
+  githubLink                String?
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime?
+  userName                  String?         @unique
+  Answer                    Answer[]
+  AnswerComment             AnswerComment[]
+  authorIdToNotifcation     Notification[]  @relation("NotificationAuthorIdToUser")
+  recipientIdToNotification Notification[]  @relation("NotificationRecipientIdToUser")
+  project                   Project[]
+  teamMember                TeamMember[]
+  projectRole               ProjectRole[]
+  technology                Technology[]
+  account                   Account[]
+  session                   Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refreshToken      String? @db.Text
+  accessToken       String? @db.Text
+  expiresAt         Int?
+  tokenType         String?
+  scope             String?
+  idToken           String? @db.Text
+  sessionState      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum MEMBER_PERMISSION_TYPE {
+  member
+  owner
+}
+
+enum MEMBER_STATUS {
+  pending
+  rejected
+  approved
+}
+
+enum TIME_IDENTIFIER {
+  day
+  week
+  month
+}
