@@ -1,5 +1,5 @@
 'use client'
 
 export default function Home() {
-  return <main className="flex h-screen items-center justify-center">Home</main>
+  return <main className="flex items-center justify-center">Home</main>
 }

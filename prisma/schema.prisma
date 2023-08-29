@@ -8,26 +8,26 @@ datasource db {
 }
 
 model Answer {
-  id            String          @id
+  id            String          @id @default(uuid())
   content       String
   authorId      String
   projectId     String
   createdAt     DateTime        @default(now())
-  updatedAt     DateTime?
+  updatedAt     DateTime?       @updatedAt
   User          User            @relation(fields: [authorId], references: [id])
-  Project       Project         @relation(fields: [projectId], references: [id])
-  AnswerComment AnswerComment[]
+  project       Project         @relation(fields: [projectId], references: [id])
+  answerComment AnswerComment[]
 }
 
 model AnswerComment {
-  id        String    @id
+  id        String    @id @default(uuid())
   content   String
   authorId  String
   answerId  String
   createdAt DateTime  @default(now())
-  updatedAt DateTime?
-  Answer    Answer    @relation(fields: [answerId], references: [id])
-  User      User      @relation(fields: [authorId], references: [id])
+  updatedAt DateTime? @updatedAt
+  answer    Answer    @relation(fields: [answerId], references: [id])
+  user      User      @relation(fields: [authorId], references: [id])
 }
 
 model Notification {
@@ -43,60 +43,60 @@ model Notification {
 }
 
 model Project {
-  id                        String          @id
-  authorId                  String
-  title                     String
-  content                   String
-  slug                      String
-  createdAt                 DateTime        @default(now())
-  updatedAt                 DateTime?
-  requirementTimeAmount     Int
-  requirementContent        String?
-  requirementTimeIdentifier TIME_IDENTIFIER
-  Answer                    Answer[]
-  User                      User            @relation(fields: [authorId], references: [id])
-  ProjectRole               ProjectRole[]
-  TeamMember                TeamMember[]
-  Technology                Technology[]
+  id                          String            @id @default(uuid())
+  authorId                    String
+  title                       String
+  content                     String
+  slug                        String
+  createdAt                   DateTime          @default(now())
+  updatedAt                   DateTime?         @updatedAt
+  requirementPeriodAmount     Int
+  requirementContent          String?
+  requirementPeriodIdentifier PERIOD_IDENTIFIER
+  answers                     Answer[]
+  users                       User              @relation(fields: [authorId], references: [id])
+  projectRoles                ProjectRole[]
+  teamMembers                 TeamMember[]
+  technologies                Technology[]
 
   @@unique([authorId, slug])
 }
 
 model ProjectRole {
-  id        String  @id
-  projectId String
-  roleId    String
-  amount    Int
-  Project   Project @relation(fields: [projectId], references: [id])
-  Role      Role    @relation(fields: [roleId], references: [id])
-  User      User[]
+  id            String  @id @default(uuid())
+  projectId     String
+  roleId        String
+  membersAmount Int
+  project       Project @relation(fields: [projectId], references: [id])
+  role          Role    @relation(fields: [roleId], references: [id])
+  users         User[]
 
   @@unique([projectId, roleId])
 }
 
 model Role {
-  id          String        @id
-  name        String        @unique
-  ProjectRole ProjectRole[]
+  id           String        @id @default(uuid())
+  name         String        @unique
+  projectRoles ProjectRole[]
 }
 
 model TeamMember {
-  id             String                 @id
+  id             String                 @id @default(uuid())
   recipientId    String
   permissionType MEMBER_PERMISSION_TYPE
   status         MEMBER_STATUS
   projectId      String
   createdAt      DateTime               @default(now())
-  updatedAt      DateTime
-  Project        Project                @relation(fields: [projectId], references: [id])
-  User           User                   @relation(fields: [recipientId], references: [id])
+  updatedAt      DateTime?              @updatedAt
+  project        Project                @relation(fields: [projectId], references: [id])
+  user           User                   @relation(fields: [recipientId], references: [id])
 }
 
 model Technology {
-  id      String    @id
-  slug    String    @unique
-  Project Project[]
-  User    User[]
+  id       String    @id @default(uuid())
+  slug     String    @unique
+  projects Project[]
+  users    User[]
 }
 
 model User {
@@ -112,16 +112,16 @@ model User {
   linkedinLink              String?
   githubLink                String?
   createdAt                 DateTime        @default(now())
-  updatedAt                 DateTime?
+  updatedAt                 DateTime?       @updatedAt
   userName                  String?         @unique
   Answer                    Answer[]
   AnswerComment             AnswerComment[]
   authorIdToNotifcation     Notification[]  @relation("NotificationAuthorIdToUser")
   recipientIdToNotification Notification[]  @relation("NotificationRecipientIdToUser")
-  project                   Project[]
+  projects                  Project[]
   teamMember                TeamMember[]
   projectRole               ProjectRole[]
-  technology                Technology[]
+  technologies              Technology[]
   account                   Account[]
   session                   Session[]
 }
@@ -146,7 +146,7 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
@@ -166,7 +166,7 @@ enum MEMBER_STATUS {
   approved
 }
 
-enum TIME_IDENTIFIER {
+enum PERIOD_IDENTIFIER {
   day
   week
   month
