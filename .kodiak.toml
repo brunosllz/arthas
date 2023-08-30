@@ -1,0 +1,7 @@
+# .kodiak.toml
+version = 1
+
+[update]
+always = true
+
+merge.delete_branch_on_merge = true
