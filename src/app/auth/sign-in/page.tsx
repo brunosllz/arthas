@@ -17,10 +17,12 @@ export const metadata: Metadata = {
 export default function AuthenticationPage() {
   return (
     <main className="flex h-screen w-full flex-col justify-center">
-      <Card className="mx-auto w-full max-w-[456px]">
+      <Card className="mx-auto w-full max-w-[400px]">
         <CardHeader>
-          <CardTitle>Sign In</CardTitle>
-          <CardDescription>to continue to Dev Xperience</CardDescription>
+          <CardTitle className="text-xl">Sign In</CardTitle>
+          <CardDescription className="text-base">
+            to continue to Dev Xperience
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <SignInGithubButton />

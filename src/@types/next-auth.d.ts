@@ -12,9 +12,18 @@ declare module 'next-auth' {
 
   interface Session {
     accessToken: string
+    user: {
+      name: string
+      email: string
+      avatarUrl: string
+    }
   }
+}
 
-  interface DefaultJWT {
-    uid: string
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    accessToken: string   
+    avatarUrl: string
   }
 }

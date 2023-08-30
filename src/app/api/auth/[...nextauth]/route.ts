@@ -26,7 +26,7 @@ export const handler: NextAuthOptions = NextAuth({
     }),
   ],
   callbacks: {
-    jwt({ token }) {
+    jwt({ token, user }) {
       const payload = {
         uid: token.sub,
       }
@@ -37,11 +37,16 @@ export const handler: NextAuthOptions = NextAuth({
       })
 
       token.accessToken = encodedToken
+      if (user) {
+        token.avatarUrl = user.avatarUrl
+      }
 
       return token
     },
     session({ session, token }) {
-      session.accessToken = token.accessToken as string
+      session.accessToken = token.accessToken
+      session.user = { ...session.user, avatarUrl: token.avatarUrl }
+
       return session
     },
   },

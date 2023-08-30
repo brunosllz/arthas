@@ -13,8 +13,8 @@ export function Logo(props: ComponentProps<'svg'>) {
       <rect width="79" height="79" rx="26" fill="url(#paint0_linear_246_4)" />
       <g filter="url(#filter0_d_246_4)">
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M62.5963 19.6646H62.5918L44.3831 45.0626L55.1069 62L51.1651 62L42.1823 48.1325L41.2074 49.4923L49.0816 62L44.5205 62L38.617 52.8113L32.5263 62H28.0777L36.3605 49.7058L35.4068 48.269L28.3593 58.3354L25.6563 62H14.1689L16.6466 58.3354L29.5981 39.3382L16.4214 19.6646L14 16L25.9379 16L28.3029 19.6646H28.3026L35.3953 30.867L43.2531 19.6246L43.2555 19.6247L46.0013 16L65.4118 16L62.5963 19.6646ZM33.0331 34.3211L23.7418 19.6646L21.4893 19.6646L32.0546 35.6467L33.0331 34.3211ZM35.6207 38.0029L36.5743 39.4751L35.5421 40.9224L34.5853 39.4751L35.6207 38.0029ZM38.8369 36.3028L37.8797 34.791L48.5183 19.6646L57.2984 19.6646L42.1048 41.4641L41.1418 39.7328L54.4312 21.1299H49.5884L38.8369 36.3028ZM38.972 43.1766L37.9743 44.6016L38.9205 46.0329L39.9061 44.6187L38.972 43.1766ZM32.0051 43.1438L21.3206 58.3354L23.2913 58.3354L32.9463 44.5618L32.0051 43.1438Z"
           fill="white"
         />
@@ -27,9 +27,9 @@ export function Logo(props: ComponentProps<'svg'>) {
           width="59.4121"
           height="54"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -63,7 +63,7 @@ export function Logo(props: ComponentProps<'svg'>) {
           y2="80.9006"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#212121" stop-opacity="0.19" />
+          <stop stopColor="#212121" stopOpacity="0.19" />
           <stop offset="1" />
         </linearGradient>
       </defs>

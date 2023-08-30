@@ -10,6 +10,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           name: user.name,
           email: user.email,
           avatarUrl: user.avatarUrl,
+          userName: user.userName,
           githubLink: user.githubLink,
         },
       })
