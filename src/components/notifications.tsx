@@ -1,5 +1,5 @@
 import { BellIcon, GearIcon } from '@radix-ui/react-icons'
-import { Button, buttonVariants } from './ui/button'
+import { Button } from './ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 import Link from 'next/link'
 import { Separator } from './ui/separator'
@@ -76,15 +76,9 @@ export async function Notifications() {
             </div>
           </div>
 
-          <Link
-            href="/notifications"
-            className={buttonVariants({
-              variant: 'outline',
-              className: 'w-full',
-            })}
-          >
-            See all
-          </Link>
+          <Button asChild variant="outline" className="w-full">
+            <Link href="/events/new">See all</Link>
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

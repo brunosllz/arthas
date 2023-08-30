@@ -43,7 +43,10 @@ export function UserNav() {
 
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/me">Command menu</Link>
+            <Link href="/me">
+              Command menu
+              <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/me">Theme</Link>
