@@ -20,7 +20,8 @@ export function Header() {
 
         <nav className="flex items-center space-x-6">
           <NavLink href="/projects">Projects</NavLink>
-          <NavLink href="/forum">Forum</NavLink>
+          <NavLink href="/discussions">Discussions</NavLink>
+          <NavLink href="/messages">Messages</NavLink>
         </nav>
       </div>
 

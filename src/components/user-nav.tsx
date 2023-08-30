@@ -34,7 +34,22 @@ export function UserNav() {
           <DropdownMenuItem asChild>
             <Link href="/me">Profile</Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/me/projects">My projects</Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <Link href="/me">Command menu</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/me">Theme</Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+
         <DropdownMenuSeparator />
 
         <DropdownMenuItem>

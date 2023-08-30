@@ -1,10 +1,9 @@
 import { BellIcon, GearIcon } from '@radix-ui/react-icons'
-import { Button } from './ui/button'
+import { Button, buttonVariants } from './ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 import Link from 'next/link'
-import { Merge, Rocket, Split } from 'lucide-react'
-import { Tabs, TabsList, TabsTrigger } from './ui/tabs'
 import { Separator } from './ui/separator'
+import { UserAvatar } from './user-avatar'
 
 export async function Notifications() {
   return (
@@ -16,7 +15,7 @@ export async function Notifications() {
           size="sm"
         >
           <BellIcon className="h-3 w-3" />
-          <span>12</span>
+          <span>03</span>
         </Button>
       </PopoverTrigger>
 
@@ -25,35 +24,22 @@ export async function Notifications() {
           <span className="text-sm font-medium">Notifications</span>
           <Link
             className="text-muted-foreground hover:text-primary"
-            href="/settings"
+            href="/settings/notifications"
           >
             <GearIcon className="h-4 w-4" />
           </Link>
         </div>
 
-        <Tabs defaultValue="new" className="mt-2">
-          <TabsList className="space-x-1">
-            <TabsTrigger size="sm" value="new">
-              New (3)
-            </TabsTrigger>
-            <TabsTrigger size="sm" value="archived">
-              Archived
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-
         <Separator className="my-4" />
 
         <div className="space-y-4">
           <div className="flex items-start gap-4">
-            <div className="rounded-full border border-primary/10 bg-primary/5 p-2">
-              <Split className="h-4 w-4 text-violet-400" />
+            <div className="overflow-hidden rounded-full">
+              <UserAvatar className="h-10 w-10" />
             </div>
             <div className="space-y-1">
               <p className="text-xs leading-relaxed">
-                New event <strong>pluto.subscription-created</strong> was
-                created under <strong>pluto</strong> service by{' '}
-                <strong>Diego Fernandes</strong>.
+                New message of <strong>Bruno Luiz</strong>.
               </p>
               <time className="text-xs text-muted-foreground">
                 15 minutes ago
@@ -62,35 +48,43 @@ export async function Notifications() {
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="rounded-full border border-primary/10 bg-primary/5 p-2">
-              <Merge className="h-4 w-4 text-sky-400" />
+            <div className="overflow-hidden rounded-full">
+              <UserAvatar className="h-10 w-10" />
             </div>
             <div className="space-y-1">
               <p className="text-xs leading-relaxed">
-                New subscription on <strong>pluto.subscription-created</strong>{' '}
-                was created under <strong>skylab</strong> service by{' '}
-                <strong>Gabriel Buzzi</strong>.
+                New answer in <strong>Dev Xperince</strong> of{' '}
+                <strong>Bruno Luiz</strong>.
               </p>
-              <time className="text-xs text-muted-foreground">4 hours ago</time>
+              <time className="text-xs text-muted-foreground">
+                15 minutes ago
+              </time>
             </div>
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="rounded-full border border-primary/10 bg-primary/5 p-2">
-              <Rocket className="h-4 w-4 text-amber-400" />
+            <div className="overflow-hidden rounded-full">
+              <UserAvatar className="h-10 w-10" />
             </div>
             <div className="space-y-1">
               <p className="text-xs leading-relaxed">
-                New version <strong>v1.0.1</strong> released on{' '}
-                <strong>pluto.subscription-created</strong> event.
+                <strong>Bruno Luiz</strong> comment in your answer.
               </p>
-              <time className="text-xs text-muted-foreground">6 hours ago</time>
+              <time className="text-xs text-muted-foreground">
+                15 minutes ago
+              </time>
             </div>
           </div>
 
-          <Button variant="outline" className="w-full">
-            Archive all
-          </Button>
+          <Link
+            href="/notifications"
+            className={buttonVariants({
+              variant: 'outline',
+              className: 'w-full',
+            })}
+          >
+            See all
+          </Link>
         </div>
       </PopoverContent>
     </Popover>
