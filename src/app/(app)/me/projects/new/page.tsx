@@ -31,7 +31,7 @@ export default function NewProject() {
         </div>
       </div>
 
-      <Separator className="mt-8" />
+      <Separator className="mt-4" />
 
       <form className="grid grid-cols-[1fr_15rem] divide-x">
         <div className="flex w-full flex-col gap-5 divide-y divide-border pt-8">
