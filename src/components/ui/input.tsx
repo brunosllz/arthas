@@ -20,4 +20,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 )
 Input.displayName = 'Input'
 
-export { Input }
+export type InputMessageErrorProps = React.InputHTMLAttributes<HTMLSpanElement>
+
+const InputMessageError = React.forwardRef<
+  HTMLSpanElement,
+  React.HTMLAttributes<HTMLSpanElement>
+>((props, ref) => {
+  return <span ref={ref} className="text-xs text-destructive" {...props} />
+})
+
+InputMessageError.displayName = 'InputMessageError'
+
+export { Input, InputMessageError }

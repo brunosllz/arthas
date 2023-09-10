@@ -45,19 +45,21 @@ model Notification {
 model Project {
   id                          String            @id @default(uuid())
   authorId                    String
-  title                       String
-  content                     String
   slug                        String
   createdAt                   DateTime          @default(now())
   updatedAt                   DateTime?         @updatedAt
-  requirementPeriodAmount     Int
   requirementContent          String?
+  requirementPeriodAmount     Int
   requirementPeriodIdentifier PERIOD_IDENTIFIER
+  description                 String
+  imageUrl                    String
+  name                        String
+  status                      PROJECT_STATUS
   answers                     Answer[]
   users                       User              @relation(fields: [authorId], references: [id])
   projectRoles                ProjectRole[]
   teamMembers                 TeamMember[]
-  technologies                Technology[]
+  technologies                Technology[]      @relation("ProjectToTechnology")
 
   @@unique([authorId, slug])
 }
@@ -69,7 +71,7 @@ model ProjectRole {
   membersAmount Int
   project       Project @relation(fields: [projectId], references: [id])
   role          Role    @relation(fields: [roleId], references: [id])
-  users         User[]
+  users         User[]  @relation("ProjectRoleToUser")
 
   @@unique([projectId, roleId])
 }
@@ -95,8 +97,8 @@ model TeamMember {
 model Technology {
   id       String    @id @default(uuid())
   slug     String    @unique
-  projects Project[]
-  users    User[]
+  projects Project[] @relation("ProjectToTechnology")
+  users    User[]    @relation("TechnologyToUser")
 }
 
 model User {
@@ -114,16 +116,16 @@ model User {
   createdAt                 DateTime        @default(now())
   updatedAt                 DateTime?       @updatedAt
   userName                  String?         @unique
+  account                   Account[]
   Answer                    Answer[]
   AnswerComment             AnswerComment[]
   authorIdToNotifcation     Notification[]  @relation("NotificationAuthorIdToUser")
   recipientIdToNotification Notification[]  @relation("NotificationRecipientIdToUser")
   projects                  Project[]
-  teamMember                TeamMember[]
-  projectRole               ProjectRole[]
-  technologies              Technology[]
-  account                   Account[]
   session                   Session[]
+  teamMember                TeamMember[]
+  projectRole               ProjectRole[]   @relation("ProjectRoleToUser")
+  technologies              Technology[]    @relation("TechnologyToUser")
 }
 
 model Account {
@@ -132,15 +134,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refreshToken      String? @db.Text
-  accessToken       String? @db.Text
+  refreshToken      String?
+  accessToken       String?
   expiresAt         Int?
   tokenType         String?
   scope             String?
-  idToken           String? @db.Text
+  idToken           String?
   sessionState      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -170,4 +171,10 @@ enum PERIOD_IDENTIFIER {
   day
   week
   month
+}
+
+enum PROJECT_STATUS {
+  draft
+  recruiting
+  closed
 }

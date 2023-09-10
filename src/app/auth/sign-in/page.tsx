@@ -11,7 +11,6 @@ import { SignInGithubButton } from './components/sign-in-github-button'
 
 export const metadata: Metadata = {
   title: 'Sign In',
-  description: 'Authentication forms built using the components.',
 }
 
 export default function AuthenticationPage() {

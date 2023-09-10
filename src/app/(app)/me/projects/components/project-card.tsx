@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { ProjectStatusPin } from './project-status-pin'
-import { User } from 'lucide-react'
+import { MessagesSquare, User } from 'lucide-react'
 
 interface ProjectCardProps {
   status: 'recruiting' | 'draft' | 'closed'
@@ -41,8 +41,15 @@ export function ProjectCard({
         <p>{description}</p>
       </CardContent>
 
-      <CardFooter className="space-x-1">
-        <User size={14} /> <span className="text-sm">02</span>
+      <CardFooter className="space-x-3">
+        <div className="flex items-center gap-1">
+          <User size={16} className="text-cyan-400" />{' '}
+          <span className="text-xs">02</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <MessagesSquare size={16} className="text-green-400" />{' '}
+          <span className="text-xs">02</span>
+        </div>
       </CardFooter>
     </Card>
   )

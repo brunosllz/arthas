@@ -16,6 +16,13 @@ function requiredOnEnv(env: z.infer<typeof nodeEnv>) {
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().min(1).url(),
+    CLOUDFLARE_ACCOUNT_ID: z.string().min(1),
+    CLOUDFLARE_ACCESS_KEY: z.string().min(1),
+    CLOUDFLARE_SECRET_KEY: z.string().min(1),
+    CLOUDFLARE_PUBLIC_BUCKET_URL: z.string().min(1),
+    CLOUDFLARE_UPLOAD_BUCKET_ID: z.string().min(1),
+    CLOUDFLARE_UPLOAD_BUCKET_NAME: z.string().min(1),
+    CLOUDFLARE_STORAGE_BUCKET_NAME: z.string().min(1),
     JWT_ALGORITHM: z.string().refine(requiredOnEnv('production')),
     JWT_SECRET: z.string().refine(requiredOnEnv('production')),
     NEXTAUTH_URL: z.string().optional().refine(requiredOnEnv('production')),
