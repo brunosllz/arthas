@@ -13,13 +13,13 @@ import { CreateNewProjectSchema } from './new-project-form'
 import { InputMessageError } from '@/components/ui/input'
 
 export const WEEK_DAYS = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-  'Sunday',
+  'monday',
+  'tuesday',
+  'wednesday',
+  'thursday',
+  'friday',
+  'saturday',
+  'sunday',
 ] as const
 
 export const HOURS = [
@@ -58,6 +58,7 @@ export const HOURS = [
   '22:00',
   '22:30',
   '23:00',
+  '23:30',
 ] as const
 
 export const MEETING_TYPES = ['daily', 'weekly', 'monthly'] as const

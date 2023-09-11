@@ -6,7 +6,6 @@ import { prisma } from '@/libs/prisma'
 import { Adapter } from 'next-auth/adapters'
 import { CustomPrismaAdapter } from '@/libs/next-auth/prisma-adapter'
 import { env } from '@/env'
-import { externalApi } from '@/libs/axios'
 
 export const handler: NextAuthOptions = NextAuth({
   adapter: CustomPrismaAdapter(prisma) as Adapter,
@@ -46,9 +45,11 @@ export const handler: NextAuthOptions = NextAuth({
     },
     session({ session, token }) {
       session.accessToken = token.accessToken
-      session.user = { ...session.user, avatarUrl: token.avatarUrl }
-
-      externalApi.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`
+      session.user = {
+        ...session.user,
+        avatarUrl: token.avatarUrl,
+        uId: token.sub ?? '',
+      }
 
       return session
     },

@@ -5,63 +5,64 @@ import { EditorContent, BubbleMenu, useEditor } from '@tiptap/react'
 import { Bold, Italic, Strikethrough as StrikethroughIcon } from 'lucide-react'
 
 import { BubbleButton } from './bubble-button'
-import { z } from 'zod'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import Strikethrough from '@tiptap/extension-strike'
+import { Markdown } from 'tiptap-markdown'
 
-export const textAreaEditorSchema = z.object(
-  {
-    type: z.enum(['doc'], {
-      errorMap: (issue) => {
-        switch (issue.code) {
-          case 'invalid_enum_value':
-            return {
-              message: 'Invalid doc type',
-            }
-          default:
-            return {
-              message: 'Invalid doc type',
-            }
-        }
-      },
-    }),
-    content: z.array(
-      z
-        .object(
-          {
-            type: z.enum(['paragraph']),
-            content: z.array(
-              z.object({
-                type: z.enum(['text'], {
-                  errorMap: (issue) => {
-                    switch (issue.code) {
-                      case 'invalid_enum_value':
-                        return {
-                          message: 'Invalid content type',
-                        }
-                      default:
-                        return {
-                          message: 'Invalid content type',
-                        }
-                    }
-                  },
-                }),
-                text: z.string({ required_error: 'Add content' }).min(5, {
-                  message: 'The content should be grant than 5 characters',
-                }),
-              }),
-            ),
-          },
-          { required_error: 'Add content' },
-        )
-        .strict({ message: 'Invalid content' }),
-    ),
-  },
-  { required_error: 'Add content' },
-)
+// JSON SCHEMA FOR VALIDATE IN ZOD RESOLVER - NOT IMPLEMENTED
+// export const textAreaEditorSchema = z.object(
+//   {
+//     type: z.enum(['doc'], {
+//       errorMap: (issue) => {
+//         switch (issue.code) {
+//           case 'invalid_enum_value':
+//             return {
+//               message: 'Invalid doc type',
+//             }
+//           default:
+//             return {
+//               message: 'Invalid doc type',
+//             }
+//         }
+//       },
+//     }),
+//     content: z.array(
+//       z
+//         .object(
+//           {
+//             type: z.enum(['paragraph']),
+//             content: z.array(
+//               z.object({
+//                 type: z.enum(['text'], {
+//                   errorMap: (issue) => {
+//                     switch (issue.code) {
+//                       case 'invalid_enum_value':
+//                         return {
+//                           message: 'Invalid content type',
+//                         }
+//                       default:
+//                         return {
+//                           message: 'Invalid content type',
+//                         }
+//                     }
+//                   },
+//                 }),
+//                 text: z.string({ required_error: 'Add content' }).min(5, {
+//                   message: 'The content should be grant than 5 characters',
+//                 }),
+//               }),
+//             ),
+//           },
+//           { required_error: 'Add content' },
+//         )
+//         .strict({ message: 'Invalid content' }),
+//     ),
+//   },
+//   { required_error: 'Add content' },
+// )
 
-type TextAreaEditorSchema = z.infer<typeof textAreaEditorSchema>
+// type TextAreaEditorSchema = z.infer<typeof textAreaEditorSchema>
 
 const CustomStrikethrough = Strikethrough.extend({
   addKeyboardShortcuts() {
@@ -74,7 +75,7 @@ const CustomStrikethrough = Strikethrough.extend({
 interface TextAreaEditorProps {
   id: string
   placeholder: string
-  onChange: (value: TextAreaEditorSchema) => void
+  onChange: (value: string) => void
 }
 
 export function TextAreaEditor({
@@ -84,6 +85,7 @@ export function TextAreaEditor({
 }: TextAreaEditorProps) {
   const editor = useEditor({
     extensions: [
+      Markdown,
       CustomStrikethrough,
       StarterKit.configure({
         code: false,
@@ -106,7 +108,7 @@ export function TextAreaEditor({
       },
     },
     onBlur(props) {
-      onChange(props.editor.state.doc.toJSON())
+      onChange(props.editor.storage.markdown.getMarkdown())
     },
   })
 

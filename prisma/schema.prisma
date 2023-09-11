@@ -43,23 +43,24 @@ model Notification {
 }
 
 model Project {
-  id                          String            @id @default(uuid())
-  authorId                    String
-  slug                        String
-  createdAt                   DateTime          @default(now())
-  updatedAt                   DateTime?         @updatedAt
-  requirementContent          String?
-  requirementPeriodAmount     Int
-  requirementPeriodIdentifier PERIOD_IDENTIFIER
-  description                 String
-  imageUrl                    String
-  name                        String
-  status                      PROJECT_STATUS
-  answers                     Answer[]
-  users                       User              @relation(fields: [authorId], references: [id])
-  projectRoles                ProjectRole[]
-  teamMembers                 TeamMember[]
-  technologies                Technology[]      @relation("ProjectToTechnology")
+  id                  String         @id @default(uuid())
+  authorId            String
+  slug                String
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime?      @updatedAt
+  imageUrl            String
+  name                String
+  status              PROJECT_STATUS
+  meetingDate         String?
+  meetingType         MEETING_TYPE
+  requirements        String
+  description         String
+  meetingOccurredTime String
+  answers             Answer[]
+  users               User           @relation(fields: [authorId], references: [id])
+  projectRoles        ProjectRole[]
+  teamMembers         TeamMember[]
+  technologies        Technology[]   @relation("ProjectToTechnology")
 
   @@unique([authorId, slug])
 }
@@ -167,14 +168,14 @@ enum MEMBER_STATUS {
   approved
 }
 
-enum PERIOD_IDENTIFIER {
-  day
-  week
-  month
-}
-
 enum PROJECT_STATUS {
   draft
   recruiting
   closed
+}
+
+enum MEETING_TYPE {
+  daily
+  weekly
+  mothly
 }

@@ -24,7 +24,6 @@ import { TechnologiesInput } from './technologies-input'
 import { RolesInput } from './roles-input'
 import { Label, LabelDescription } from '@/components/ui/label'
 import { DescriptionTextArea } from './description-text-area'
-import { textAreaEditorSchema } from '@/components/text-area-editor'
 import { RequirementsTextArea } from './requirements-text-area'
 
 import { useUploadStore } from '@/store'
@@ -33,12 +32,16 @@ import {
   MeetingSelectInput,
   WEEK_DAYS,
 } from './meeting-select-input'
+import { externalApi } from '@/libs/axios'
+import { useSession } from 'next-auth/react'
 
 const createNewProjectSchema = z
   .object({
     name: z.string().min(1, { message: 'Add a name to your project' }),
-    image: z.string().url({ message: 'should be a valid url' }).optional(),
-    description: textAreaEditorSchema,
+    image: z.string().url({ message: 'Should be a valid url' }).optional(),
+    description: z
+      .string({ required_error: 'Add a description' })
+      .min(5, { message: 'Must have at least 5 characters' }),
     meetingType: z.enum(MEETING_TYPES, {
       required_error: 'Select a meeting type',
     }),
@@ -73,7 +76,9 @@ const createNewProjectSchema = z
       )
       .length(1, { message: 'Add at least one role' }),
 
-    requirements: textAreaEditorSchema,
+    requirements: z
+      .string({ required_error: 'Add requirements' })
+      .min(5, { message: 'Must have at least 5 characters' }),
   })
   .superRefine((value, ctx) => {
     if (value.meetingType === 'daily' && !value.meetingHour) {
@@ -142,6 +147,9 @@ export function NewProjectForm() {
 
   const [inputFileMessageError, setInputFileMessageError] = useState('')
   const { uploadFile, publicUrl, addFile } = useUploadStore()
+  const { data } = useSession()
+  const userId = data?.user.uId
+  const accessToken = data?.accessToken
 
   const { getInputProps, getRootProps, fileRejections, isDragActive } =
     useDropzone({
@@ -178,10 +186,49 @@ export function NewProjectForm() {
     })
 
   async function handleCreateNewProject(data: CreateNewProjectSchema) {
-    console.log(data)
+    const {
+      description,
+      meetingType,
+      name,
+      requirements,
+      roles,
+      status,
+      technologies,
+      meetingHour,
+      meetingMonthDay,
+      meetingWeekDay,
+    } = data
 
-    // console.log(publicUrl)
-    // uploadFile()
+    await externalApi.post(
+      '/projects',
+      {
+        authorId: userId,
+        description,
+        name,
+        imageUrl: publicUrl,
+        status,
+        requirements,
+        meeting: {
+          type: meetingType,
+          occurredTime: meetingHour,
+          date: meetingWeekDay ?? meetingMonthDay,
+        },
+        roles: roles.map((role) => ({
+          name: role.name,
+          membersAmount: role.amount,
+        })),
+        technologies: technologies.map((technology) => ({
+          slug: technology,
+        })),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    )
+
+    uploadFile()
   }
 
   return (
