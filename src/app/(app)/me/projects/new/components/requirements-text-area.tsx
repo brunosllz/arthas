@@ -3,7 +3,11 @@ import { useController, useFormContext } from 'react-hook-form'
 import { CreateNewProjectSchema } from './new-project-form'
 import { InputMessageError } from '@/components/ui/input'
 
-export function RequirementsTextArea() {
+interface RequirementsTextAreaProps {
+  disabled?: boolean
+}
+
+export function RequirementsTextArea({ disabled }: RequirementsTextAreaProps) {
   const { control } = useFormContext<CreateNewProjectSchema>()
 
   const {
@@ -19,6 +23,7 @@ export function RequirementsTextArea() {
       <TextAreaEditor
         id="requirements"
         onChange={onChange}
+        disabled={disabled}
         placeholder="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis maxime porro animi provident sapiente voluptatibus a commodi quas eaque vitae ipsam incidunt, nisi eligendi voluptates repudiandae aut tenetur sed. Inventore!"
       />
       {errors.requirements && (

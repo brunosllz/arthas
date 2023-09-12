@@ -63,7 +63,11 @@ export const HOURS = [
 
 export const MEETING_TYPES = ['daily', 'weekly', 'monthly'] as const
 
-export function MeetingSelectInput() {
+interface MeetingSelectInputProps {
+  disabled?: boolean
+}
+
+export function MeetingSelectInput({ disabled }: MeetingSelectInputProps) {
   const { control } = useFormContext<CreateNewProjectSchema>()
 
   const {
@@ -71,6 +75,7 @@ export function MeetingSelectInput() {
     field: { value: meetingTypeValue, onChange: setMeetingType },
   } = useController({
     control,
+    disabled,
     name: 'meetingType',
   })
 

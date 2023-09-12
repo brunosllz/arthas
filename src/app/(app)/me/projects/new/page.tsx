@@ -11,6 +11,12 @@ export const metadata: Metadata = {
 }
 
 export default function NewProject() {
+  let isSubmitting = false
+
+  function handleIsSubmitting(value: boolean) {
+    isSubmitting = value
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -20,17 +26,17 @@ export default function NewProject() {
         </div>
 
         <div className="space-x-3">
-          <Button asChild variant="outline">
+          <Button asChild variant="outline" disabled={isSubmitting}>
             <Link href="/me/projects">Cancel</Link>
           </Button>
-          <Button type="submit" form="new-project">
+          <Button type="submit" form="new-project" disabled={isSubmitting}>
             Save
           </Button>
         </div>
       </div>
 
       <Separator className="mt-4" />
-      <NewProjectForm />
+      <NewProjectForm isSubmitting={handleIsSubmitting} />
     </div>
   )
 }

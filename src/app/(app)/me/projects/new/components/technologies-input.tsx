@@ -21,7 +21,11 @@ import { InputMessageError } from '@/components/ui/input'
 
 type DataItem = string
 
-export function TechnologiesInput() {
+interface TechnologiesInputProps {
+  disabled?: boolean
+}
+
+export function TechnologiesInput({ disabled }: TechnologiesInputProps) {
   const { control } = useFormContext<CreateNewProjectSchema>()
 
   const {
@@ -30,6 +34,7 @@ export function TechnologiesInput() {
   } = useController({
     name: 'technologies',
     control,
+    disabled,
     defaultValue: [],
   })
 

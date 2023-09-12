@@ -75,12 +75,14 @@ const CustomStrikethrough = Strikethrough.extend({
 interface TextAreaEditorProps {
   id: string
   placeholder: string
+  disabled?: boolean
   onChange: (value: string) => void
 }
 
 export function TextAreaEditor({
   id,
   onChange,
+  disabled = false,
   placeholder,
 }: TextAreaEditorProps) {
   const editor = useEditor({
@@ -116,6 +118,7 @@ export function TextAreaEditor({
     <>
       <EditorContent
         id={id}
+        disabled={disabled}
         editor={editor}
         className="prose prose-sm prose-invert h-[129.6px] overflow-y-auto rounded-md border border-input px-3 py-1 text-foreground scrollbar scrollbar-track-transparent scrollbar-thumb-secondary scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-w-1 focus-within:outline-none focus-within:ring-1 focus-within:ring-ring prose-p:m-0 "
       />

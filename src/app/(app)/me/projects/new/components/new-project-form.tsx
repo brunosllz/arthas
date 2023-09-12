@@ -34,6 +34,9 @@ import {
 } from './meeting-select-input'
 import { externalApi } from '@/libs/axios'
 import { useSession } from 'next-auth/react'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from '@/components/ui/use-toast'
+import { useRouter } from 'next/navigation'
 
 const createNewProjectSchema = z
   .object({
@@ -133,7 +136,11 @@ const defaultValues: Partial<CreateNewProjectSchema> = {
   roles: [{ name: '', amount: null }],
 }
 
-export function NewProjectForm() {
+interface NewProjectFormProps {
+  isSubmitting: (value: boolean) => void
+}
+
+export function NewProjectForm({ isSubmitting }: NewProjectFormProps) {
   const newProjectForm = useForm<CreateNewProjectSchema>({
     defaultValues,
     resolver: zodResolver(createNewProjectSchema),
@@ -147,6 +154,7 @@ export function NewProjectForm() {
 
   const [inputFileMessageError, setInputFileMessageError] = useState('')
   const { uploadFile, publicUrl, addFile } = useUploadStore()
+  const router = useRouter()
   const { data } = useSession()
   const userId = data?.user.uId
   const accessToken = data?.accessToken
@@ -185,50 +193,71 @@ export function NewProjectForm() {
       maxSize: 51_200, // 50kb
     })
 
-  async function handleCreateNewProject(data: CreateNewProjectSchema) {
-    const {
-      description,
+  const {
+    mutateAsync: createNewProject,
+    isLoading: isLoadingCreateNewProject,
+  } = useMutation(
+    async ({
       meetingType,
-      name,
-      requirements,
       roles,
-      status,
       technologies,
       meetingHour,
       meetingMonthDay,
       meetingWeekDay,
-    } = data
-
-    await externalApi.post(
-      '/projects',
-      {
-        authorId: userId,
-        description,
-        name,
-        imageUrl: publicUrl,
-        status,
-        requirements,
-        meeting: {
-          type: meetingType,
-          occurredTime: meetingHour,
-          date: meetingWeekDay ?? meetingMonthDay,
+      ...props
+    }: CreateNewProjectSchema) => {
+      await externalApi.post(
+        '/projects',
+        {
+          ...props,
+          authorId: userId,
+          imageUrl: publicUrl,
+          meeting: {
+            type: meetingType,
+            occurredTime: meetingHour,
+            date: meetingWeekDay ?? meetingMonthDay,
+          },
+          roles: roles.map((role) => ({
+            name: role.name,
+            membersAmount: role.amount,
+          })),
+          technologies: technologies.map((technology) => ({
+            slug: technology,
+          })),
         },
-        roles: roles.map((role) => ({
-          name: role.name,
-          membersAmount: role.amount,
-        })),
-        technologies: technologies.map((technology) => ({
-          slug: technology,
-        })),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
+      )
+    },
+    {
+      onSuccess() {
+        toast({
+          title: 'Project created successfully.',
+          description: `You can see it in your projects page.`,
+          variant: 'default',
+        })
       },
-    )
+      onMutate() {
+        isSubmitting(true)
+      },
+    },
+  )
 
-    uploadFile()
+  async function handleCreateNewProject(data: CreateNewProjectSchema) {
+    try {
+      await createNewProject(data)
+      uploadFile()
+      router.push('/me/projects')
+    } catch {
+      toast({
+        title: 'Uh oh! Something went wrong.',
+        description: `An error ocurred while create a project.`,
+        variant: 'destructive',
+      })
+    }
   }
 
   return (
@@ -249,6 +278,7 @@ export function NewProjectForm() {
                 id="name"
                 type="text"
                 placeholder="Dev Xperience"
+                disabled={isLoadingCreateNewProject}
                 {...register('name')}
               />
               {errors.name && (
@@ -283,6 +313,7 @@ export function NewProjectForm() {
                 uploadPrefix="projects"
                 accept="image/*"
                 {...getInputProps()}
+                disabled={isLoadingCreateNewProject}
               />
             </FileInputRoot>
           </div>
@@ -293,7 +324,7 @@ export function NewProjectForm() {
               <LabelDescription>Write a short introduction.</LabelDescription>
             </Label>
 
-            <DescriptionTextArea />
+            <DescriptionTextArea disabled={isLoadingCreateNewProject} />
           </div>
 
           <div className="grid grid-cols-[minmax(16rem,17rem)_minmax(17rem,32.5rem)]  pt-5">
@@ -304,7 +335,7 @@ export function NewProjectForm() {
               </LabelDescription>
             </Label>
 
-            <RolesInput />
+            <RolesInput disabled={isLoadingCreateNewProject} />
           </div>
 
           <div className="grid grid-cols-[minmax(16rem,17rem)_minmax(17rem,32.5rem)] pt-5">
@@ -312,7 +343,7 @@ export function NewProjectForm() {
               Technologies
             </Label>
 
-            <TechnologiesInput />
+            <TechnologiesInput disabled={isLoadingCreateNewProject} />
           </div>
 
           <div className="grid grid-cols-[minmax(16rem,17rem)_minmax(17rem,32.5rem)] pt-5">
@@ -323,7 +354,7 @@ export function NewProjectForm() {
               </LabelDescription>
             </Label>
 
-            <MeetingSelectInput />
+            <MeetingSelectInput disabled={isLoadingCreateNewProject} />
           </div>
 
           <div className="grid grid-cols-[minmax(16rem,17rem)_minmax(17rem,32.5rem)] pt-5">
@@ -334,7 +365,7 @@ export function NewProjectForm() {
               </LabelDescription>
             </Label>
 
-            <RequirementsTextArea />
+            <RequirementsTextArea disabled={isLoadingCreateNewProject} />
           </div>
         </div>
 
@@ -349,7 +380,11 @@ export function NewProjectForm() {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <div className="space-y-1">
-                  <Select value={value} onValueChange={onChange}>
+                  <Select
+                    value={value}
+                    onValueChange={onChange}
+                    disabled={isLoadingCreateNewProject}
+                  >
                     <SelectTrigger id="status">
                       <SelectValue
                         placeholder="Select status of project"

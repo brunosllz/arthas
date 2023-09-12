@@ -5,7 +5,11 @@ import { Button } from '@/components/ui/button'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { Plus, X } from 'lucide-react'
 
-export function RolesInput() {
+interface RolesInputProps {
+  disabled?: boolean
+}
+
+export function RolesInput({ disabled }: RolesInputProps) {
   const {
     control,
     register,
@@ -53,6 +57,7 @@ export function RolesInput() {
                     id="roles"
                     type="number"
                     placeholder="0"
+                    disabled={disabled}
                     {...register(`roles.${index}.amount`)}
                   />
                   <span className="text-sm text-muted-foreground">x</span>
@@ -61,6 +66,7 @@ export function RolesInput() {
                 <Input
                   id="roles"
                   placeholder="Front-end"
+                  disabled={disabled}
                   {...register(`roles.${index}.name`)}
                 />
 
