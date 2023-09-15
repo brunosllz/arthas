@@ -9,6 +9,7 @@ import {
   InputHTMLAttributes,
   forwardRef,
   ReactNode,
+  LabelHTMLAttributes,
 } from 'react'
 import { twMerge } from 'tailwind-merge'
 
@@ -48,31 +49,34 @@ interface FileInputControlProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const FileInputControl = forwardRef<HTMLInputElement, FileInputControlProps>(
-  ({ uploadPrefix = 'projects', ...props }: FileInputControlProps, ref) => {
-    const { addFile } = useUploadStore()
-    const { id } = useFileInput()
+  ({ uploadPrefix = 'projects', ...props }, ref) => {
+    /**
+     * we using dropzone for control this input
+     */
 
-    async function handleFilesSelected(event: ChangeEvent<HTMLInputElement>) {
-      if (!event.target.files?.length) {
-        return
-      }
-      const file = event.target.files[0]
+    // const { addFile } = useUploadStore()
 
-      await addFile({
-        file,
-        uploadPrefix,
-      })
+    // async function handleFilesSelected(event: ChangeEvent<HTMLInputElement>) {
+    //   if (!event.target.files?.length) {
+    //     return
+    //   }
 
-      props.onValueChange?.(event)
-    }
+    //   const file = event.target.files[0]
+
+    //   await addFile({
+    //     file,
+    //     uploadPrefix,
+    //   })
+
+    //   props.onValueChange?.(event)
+    // }
 
     return (
       <input
-        id={id}
         type="file"
         ref={ref}
         className="sr-only"
-        onChange={handleFilesSelected}
+        // onChange={handleFilesSelected}
         multiple={false}
         {...props}
       />
@@ -102,19 +106,16 @@ function FileInputImagePreview() {
   }
 }
 
-type FileInputTriggerProps = HTMLAttributes<HTMLLabelElement> & {
+type FileInputTriggerProps = LabelHTMLAttributes<HTMLLabelElement> & {
   children?: ReactNode
 }
 
 const FileInputTrigger = forwardRef<HTMLLabelElement, FileInputTriggerProps>(
   ({ children, ...props }, ref) => {
-    const { id } = useFileInput()
-
     return (
       <div className="flex-1 space-y-1">
         <label
           ref={ref}
-          htmlFor={id}
           className="group flex w-full flex-1 cursor-pointer flex-col items-center gap-3 rounded-md border border-input px-6 py-4 text-center text-muted-foreground group-focus-within:border-input group-focus-within:ring-1 group-focus-within:ring-ring data-[drag-active=true]:bg-muted data-[drag-active=true]:text-foreground hover:bg-muted hover:text-foreground "
           {...props}
         >

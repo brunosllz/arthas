@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { useForm, FormProvider, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -37,11 +37,11 @@ import { useSession } from 'next-auth/react'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
+import { AxiosError } from 'axios'
 
 const createNewProjectSchema = z
   .object({
     name: z.string().min(1, { message: 'Add a name to your project' }),
-    image: z.string().url({ message: 'Should be a valid url' }).optional(),
     description: z
       .string({ required_error: 'Add a description' })
       .min(5, { message: 'Must have at least 5 characters' }),
@@ -77,7 +77,7 @@ const createNewProjectSchema = z
             path: ['amount'],
           }),
       )
-      .length(1, { message: 'Add at least one role' }),
+      .min(1, { message: 'Add at least one role' }),
 
     requirements: z
       .string({ required_error: 'Add requirements' })
@@ -136,11 +136,7 @@ const defaultValues: Partial<CreateNewProjectSchema> = {
   roles: [{ name: '', amount: null }],
 }
 
-interface NewProjectFormProps {
-  isSubmitting: (value: boolean) => void
-}
-
-export function NewProjectForm({ isSubmitting }: NewProjectFormProps) {
+export function NewProjectForm() {
   const newProjectForm = useForm<CreateNewProjectSchema>({
     defaultValues,
     resolver: zodResolver(createNewProjectSchema),
@@ -153,11 +149,61 @@ export function NewProjectForm({ isSubmitting }: NewProjectFormProps) {
   } = newProjectForm
 
   const [inputFileMessageError, setInputFileMessageError] = useState('')
-  const { uploadFile, publicUrl, addFile } = useUploadStore()
+  const { uploadFile, publicUrl, addFile, clearFile, setUploadStatus } =
+    useUploadStore()
   const router = useRouter()
   const { data } = useSession()
-  const userId = data?.user.uId
-  const accessToken = data?.accessToken
+  const user = data?.user
+
+  const {
+    mutateAsync: createNewProject,
+    isLoading: isLoadingCreateNewProject,
+  } = useMutation(
+    async ({
+      meetingType,
+      roles,
+      technologies,
+      meetingHour,
+      meetingMonthDay,
+      meetingWeekDay,
+      ...props
+    }: CreateNewProjectSchema) => {
+      await externalApi.post(
+        '/projects',
+        {
+          ...props,
+          authorId: user?.uId,
+          imageUrl: publicUrl,
+          meeting: {
+            type: meetingType,
+            occurredTime: meetingHour,
+            date: meetingWeekDay ?? meetingMonthDay,
+          },
+          roles: roles.map((role) => ({
+            name: role.name,
+            membersAmount: role.amount,
+          })),
+          technologies: technologies.map((technology) => ({
+            slug: technology,
+          })),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user?.accessToken}`,
+          },
+        },
+      )
+    },
+    {
+      onSuccess() {
+        toast({
+          title: 'Project created successfully.',
+          description: `You can see it in your projects page.`,
+          variant: 'default',
+        })
+      },
+    },
+  )
 
   const { getInputProps, getRootProps, fileRejections, isDragActive } =
     useDropzone({
@@ -190,68 +236,31 @@ export function NewProjectForm({ isSubmitting }: NewProjectFormProps) {
         })
         setInputFileMessageError('')
       },
+      disabled: isLoadingCreateNewProject,
       maxSize: 51_200, // 50kb
     })
 
-  const {
-    mutateAsync: createNewProject,
-    isLoading: isLoadingCreateNewProject,
-  } = useMutation(
-    async ({
-      meetingType,
-      roles,
-      technologies,
-      meetingHour,
-      meetingMonthDay,
-      meetingWeekDay,
-      ...props
-    }: CreateNewProjectSchema) => {
-      await externalApi.post(
-        '/projects',
-        {
-          ...props,
-          authorId: userId,
-          imageUrl: publicUrl,
-          meeting: {
-            type: meetingType,
-            occurredTime: meetingHour,
-            date: meetingWeekDay ?? meetingMonthDay,
-          },
-          roles: roles.map((role) => ({
-            name: role.name,
-            membersAmount: role.amount,
-          })),
-          technologies: technologies.map((technology) => ({
-            slug: technology,
-          })),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      )
-    },
-    {
-      onSuccess() {
-        toast({
-          title: 'Project created successfully.',
-          description: `You can see it in your projects page.`,
-          variant: 'default',
-        })
-      },
-      onMutate() {
-        isSubmitting(true)
-      },
-    },
-  )
-
   async function handleCreateNewProject(data: CreateNewProjectSchema) {
     try {
+      setUploadStatus('submitting')
       await createNewProject(data)
       uploadFile()
       router.push('/me/projects')
-    } catch {
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        setUploadStatus('error')
+        if (
+          error.status === 409 &&
+          error.response?.data.message === 'Project already exists'
+        ) {
+          return toast({
+            title: 'Project already exists.',
+            description: `You have a project with this name`,
+            variant: 'destructive',
+          })
+        }
+      }
+
       toast({
         title: 'Uh oh! Something went wrong.',
         description: `An error ocurred while create a project.`,
@@ -259,6 +268,10 @@ export function NewProjectForm({ isSubmitting }: NewProjectFormProps) {
       })
     }
   }
+
+  useEffect(() => {
+    clearFile()
+  }, [clearFile])
 
   return (
     <FormProvider {...newProjectForm}>
@@ -288,7 +301,7 @@ export function NewProjectForm({ isSubmitting }: NewProjectFormProps) {
           </div>
 
           <div className="grid grid-cols-[minmax(16rem,17rem)_minmax(17rem,32.5rem)] pt-5">
-            <Label htmlFor="requirements" className="pr-4">
+            <Label htmlFor="image" className="pr-4">
               Your brand photo
               <LabelDescription>
                 This will be displayed on your project banner.
@@ -310,10 +323,8 @@ export function NewProjectForm({ isSubmitting }: NewProjectFormProps) {
               </FileInputTrigger>
 
               <FileInputControl
-                uploadPrefix="projects"
                 accept="image/*"
-                {...getInputProps()}
-                disabled={isLoadingCreateNewProject}
+                {...getInputProps({ id: 'image' })}
               />
             </FileInputRoot>
           </div>

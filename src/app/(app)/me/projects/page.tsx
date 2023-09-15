@@ -1,39 +1,16 @@
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import Link from 'next/link'
-import { EmptyProjects } from './components/empty-projects'
+
 import { ProjectList } from './components/project-list'
-import { useSession } from 'next-auth/react'
 import { Metadata } from 'next'
-import axios from 'axios'
-import { externalApi } from '@/libs/axios'
 
 export const metadata: Metadata = {
   title: 'My Projects',
 }
 
-type Project = {
-  id: string
-  authorId: string
-  name: string
-  description: string
-  excerpt: string
-  status: string
-  imageUrl: string
-  slug: string
-  createdAt: string
-  updatedAt: string
-  technologies: Array<string>
-  _count: {
-    teamMembers: number
-    answers: number
-  }
-}
-
 export default async function MyProjects() {
-  const { data: projects } = await externalApi.get<Project[]>('/projects/me')
-
-  const hasProjects = projects.length > 0
+  // const hasProjects = projects.length > 0
 
   return (
     <div>
@@ -46,8 +23,8 @@ export default async function MyProjects() {
         </div>
 
         <div
-          data-hasProjects={hasProjects}
-          className="data-[hasProjects=false]:hidden"
+          // data-has-projects={hasProjects}
+          className="data-[has-projects=false]:hidden"
         >
           <Button asChild>
             <Link href="/me/projects/new">Add project</Link>
@@ -56,8 +33,7 @@ export default async function MyProjects() {
       </div>
 
       <Separator className="mb-8 mt-4" />
-
-      <div>{hasProjects ? <ProjectList /> : <EmptyProjects />}</div>
+      <ProjectList />
     </div>
   )
 }

@@ -44,11 +44,11 @@ export const handler: NextAuthOptions = NextAuth({
       return token
     },
     session({ session, token }) {
-      session.accessToken = token.accessToken
       session.user = {
         ...session.user,
         avatarUrl: token.avatarUrl,
         uId: token.sub ?? '',
+        accessToken: token.accessToken,
       }
 
       return session

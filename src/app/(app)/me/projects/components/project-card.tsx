@@ -1,28 +1,41 @@
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { ProjectStatusPin } from './project-status-pin'
 import { MessagesSquare, User } from 'lucide-react'
+import Markdown from 'react-markdown'
 
 interface ProjectCardProps {
   status: 'recruiting' | 'draft' | 'closed'
   name: string
+  imageUrl: string
   technologies: string[]
   description: string
+  countAnswers: number
+  countTeamMembers: number
 }
 
 export function ProjectCard({
   description,
   name,
   status,
+  imageUrl,
   technologies,
+  countAnswers,
+  countTeamMembers,
 }: ProjectCardProps) {
   return (
     <Card className="cursor-pointer transition-colors hover:border-card-foreground hover:ring-4 hover:ring-card-foreground/5">
       <CardHeader className="flex flex-row items-center gap-4">
-        <div className="relative h-20 w-20 rounded-full bg-zinc-700">
+        <div className="relative">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-zinc-700">
+            {imageUrl && (
+              <img src={imageUrl} className="h-full w-full bg-cover" />
+            )}
+          </div>
+
           {status !== 'draft' && <ProjectStatusPin status={status} />}
         </div>
-        <div className="flex-1 space-y-2">
-          <h2 className="text-xl font-medium">{name}</h2>
+        <div className="flex-1 space-y-2 overflow-hidden">
+          <h2 className="truncate text-xl font-medium">{name}</h2>
 
           <ul className="flex flex-wrap gap-2">
             {technologies.map((technology) => (
@@ -38,17 +51,19 @@ export function ProjectCard({
       </CardHeader>
 
       <CardContent>
-        <p>{description}</p>
+        <Markdown className="max-h-24 overflow-hidden text-sm leading-relaxed">
+          {description}
+        </Markdown>
       </CardContent>
 
       <CardFooter className="space-x-3">
         <div className="flex items-center gap-1">
           <User size={16} className="text-cyan-400" />{' '}
-          <span className="text-xs">02</span>
+          <span className="text-xs">{countTeamMembers}</span>
         </div>
         <div className="flex items-center gap-1">
           <MessagesSquare size={16} className="text-green-400" />{' '}
-          <span className="text-xs">02</span>
+          <span className="text-xs">{countAnswers}</span>
         </div>
       </CardFooter>
     </Card>

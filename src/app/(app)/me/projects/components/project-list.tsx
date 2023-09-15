@@ -1,52 +1,77 @@
-import { ProjectCard } from './project-card'
+'use client'
 
-const projects = [
-  {
-    id: '1',
-    name: 'Dev Xperience',
-    status: 'recruiting',
-    technologies: ['react', 'nest-js', 'next-js', 'react-native'],
-    description:
-      'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quibusdam ab accusantium e, quo voluptas, fugiat aut, velit sequi aliquid facilis laceata...',
-  },
-  {
-    id: '2',
-    name: 'Dev Xperience',
-    status: 'recruiting',
-    technologies: ['react', 'java', 'next-js', 'react-native'],
-    description:
-      'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quibusdam ab accusantium e, quo voluptas, fugiat aut, velit sequi aliquid facilis laceata...',
-  },
-  {
-    id: '3',
-    name: 'Dev Xperience',
-    status: 'closed',
-    technologies: ['react', 'nest-js', 'next-js', 'git'],
-    description:
-      'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quibusdam ab accusantium e, quo voluptas, fugiat aut, velit sequi aliquid facilis laceata...',
-  },
-  {
-    id: '4',
-    name: 'Dev Xperience',
-    status: 'draft',
-    technologies: ['react', 'github', 'next-js', 'python'],
-    description:
-      'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quibusdam ab accusantium e, quo voluptas, fugiat aut, velit sequi aliquid facilis laceata...',
-  },
-]
+import { useQuery } from '@tanstack/react-query'
+import { ProjectCard } from './project-card'
+import { externalApi } from '@/libs/axios'
+import { ProjectListCardSkeleton } from './project-card-skeleton'
+import { EmptyProjects } from './empty-projects'
+
+type Project = {
+  id: string
+  authorId: string
+  name: string
+  description: string
+  excerpt: string
+  status: string
+  imageUrl: string
+  slug: string
+  createdAt: string
+  updatedAt: string
+  technologies: Array<string>
+  _count: {
+    teamMembers: number
+    answers: number
+  }
+}
 
 export function ProjectList() {
+  const { data: projects, isLoading: projectsIsLoading } = useQuery<Project[]>({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const { data: response } = await externalApi.get('projects/me')
+      return response.projects
+    },
+    refetchOnWindowFocus: false,
+    retry: false,
+  })
+
+  const hasProjects = projects?.length
+
   return (
-    <ul className="grid grid-cols-3 gap-6">
-      {projects.map((project) => (
-        <ProjectCard
-          key={project.id}
-          name={project.name}
-          description={project.description}
-          status={project.status as 'recruiting' | 'draft' | 'closed'}
-          technologies={project.technologies}
-        />
-      ))}
+    <ul
+      data-has-projects={!hasProjects && !projectsIsLoading}
+      className="grid grid-cols-3 gap-6 data-[has-projects=true]:flex data-[has-projects=true]:flex-col"
+    >
+      {projectsIsLoading ? (
+        <ProjectListCardSkeleton />
+      ) : hasProjects ? (
+        <>
+          {projects?.map((project) => (
+            <ProjectCard
+              imageUrl={project.imageUrl}
+              key={project.id}
+              name={project.name}
+              description={project.excerpt}
+              countAnswers={project._count.answers}
+              countTeamMembers={project._count.teamMembers}
+              status={project.status as 'recruiting' | 'draft' | 'closed'}
+              technologies={project.technologies}
+            />
+          ))}
+        </>
+      ) : (
+        <EmptyProjects />
+      )}
     </ul>
   )
 }
+
+// {projects.map((project) => (
+//        <ProjectCard
+//          key={project.id}
+//          name={project.name}
+//          description={project.description}
+//          status={project.status as 'recruiting' | 'draft' | 'closed'}
+//          technologies={project.technologies}
+//        />
+//      ))}

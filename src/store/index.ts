@@ -1,11 +1,14 @@
 import axios from 'axios'
 import { create } from 'zustand'
 
+type UploadStatus = 'waiting' | 'loaded' | 'submitting' | 'success' | 'error'
+
 type Upload = {
   file: File | null
   previewUrl: string | null
   signedUrl: string
   publicUrl: string
+  uploadStatus: UploadStatus
 
   addFile: ({
     file,
@@ -15,6 +18,8 @@ type Upload = {
     uploadPrefix: 'avatar' | 'projects'
   }) => Promise<{ fileId: string }>
   uploadFile: () => Promise<void>
+  clearFile: () => void
+  setUploadStatus: (status: UploadStatus) => void
 }
 
 export const useUploadStore = create<Upload>((set, get) => {
@@ -23,6 +28,7 @@ export const useUploadStore = create<Upload>((set, get) => {
     previewUrl: null,
     signedUrl: '',
     publicUrl: '',
+    uploadStatus: 'waiting',
 
     addFile: async ({
       file,
@@ -50,19 +56,38 @@ export const useUploadStore = create<Upload>((set, get) => {
       set({
         signedUrl,
         publicUrl,
+        uploadStatus: 'loaded',
       })
 
       return { fileId }
+    },
+
+    clearFile: () => {
+      set({
+        file: null,
+        previewUrl: null,
+        signedUrl: '',
+        publicUrl: '',
+        uploadStatus: 'waiting',
+      })
     },
 
     uploadFile: async () => {
       const { signedUrl, file } = get()
 
       if (!file) {
+        set({
+          uploadStatus: 'error',
+        })
+
         throw new Error('No file to upload')
       }
 
       try {
+        set({
+          uploadStatus: 'submitting',
+        })
+
         await axios.put(signedUrl, file, {
           headers: {
             'Content-Type': file.type,
@@ -71,6 +96,12 @@ export const useUploadStore = create<Upload>((set, get) => {
       } catch (error) {
         console.log(error)
       }
+    },
+
+    setUploadStatus: (status: UploadStatus) => {
+      set({
+        uploadStatus: status,
+      })
     },
   }
 })
