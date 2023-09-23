@@ -52,6 +52,7 @@ export function ProjectList() {
               key={project.id}
               name={project.name}
               description={project.excerpt}
+              slug={project.slug}
               countAnswers={project._count.answers}
               countTeamMembers={project._count.teamMembers}
               status={project.status as 'recruiting' | 'draft' | 'closed'}
@@ -65,13 +66,3 @@ export function ProjectList() {
     </ul>
   )
 }
-
-// {projects.map((project) => (
-//        <ProjectCard
-//          key={project.id}
-//          name={project.name}
-//          description={project.description}
-//          status={project.status as 'recruiting' | 'draft' | 'closed'}
-//          technologies={project.technologies}
-//        />
-//      ))}
