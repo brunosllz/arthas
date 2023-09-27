@@ -6,7 +6,7 @@ const api = axios.create({
 })
 
 const externalApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_EXTERNAL_URL,
+  baseURL: process.env.NEXT_PUBLIC_EXTERNAL_API_URL,
 })
 
 externalApi.interceptors.request.use(async (response) => {

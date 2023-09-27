@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { UserAvatar } from '@/components/user-avatar'
+import { NotificationList } from './components/notification-list'
 
 export default function Notifications() {
   return (
@@ -14,7 +15,9 @@ export default function Notifications() {
 
       <Separator className="mb-8 mt-4" />
 
-      <Card>
+      <NotificationList />
+
+      {/* <Card>
         <Tabs defaultValue="all" className="mt-2">
           <CardHeader>
             <TabsList className="mr-auto">
@@ -124,7 +127,7 @@ export default function Notifications() {
             </TabsContent>
           </CardContent>
         </Tabs>
-      </Card>
+      </Card> */}
     </div>
   )
 }

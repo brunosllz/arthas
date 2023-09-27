@@ -3,10 +3,8 @@ import { Logo } from './logo'
 import { Separator } from './ui/separator'
 import { Button } from './ui/button'
 import { UserNav } from './user-nav'
-import { Suspense } from 'react'
-import { Skeleton } from './ui/skeleton'
 import { NavLink } from './nav-link'
-import { Notifications } from './notifications'
+import { NotificationPanel } from './notification-panel'
 
 export function Header() {
   return (
@@ -32,11 +30,9 @@ export function Header() {
 
         <Separator orientation="vertical" className="h-5" />
 
-        <Notifications />
+        <NotificationPanel />
 
-        <Suspense fallback={<Skeleton className="h-8 w-8 rounded-full" />}>
-          <UserNav />
-        </Suspense>
+        <UserNav />
       </div>
     </div>
   )

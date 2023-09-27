@@ -32,7 +32,7 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_VERCEL_URL: z.string().min(1).url(),
-    NEXT_PUBLIC_EXTERNAL_URL: z.string().min(1).url(),
+    NEXT_PUBLIC_EXTERNAL_API_URL: z.string().min(1).url(),
   },
   shared: {
     NODE_ENV: nodeEnv,
@@ -41,7 +41,7 @@ export const env = createEnv({
       .default('development'),
   },
   experimental__runtimeEnv: {
-    NEXT_PUBLIC_EXTERNAL_URL: process.env.NEXT_PUBLIC_EXTERNAL_URL,
+    NEXT_PUBLIC_EXTERNAL_API_URL: process.env.NEXT_PUBLIC_EXTERNAL_API_URL,
     NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
     NODE_ENV: process.env.NODE_ENV,
     VERCEL_ENV: process.env.VERCEL_ENV,
