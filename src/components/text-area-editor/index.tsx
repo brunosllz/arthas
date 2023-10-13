@@ -9,6 +9,8 @@ import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import Strikethrough from '@tiptap/extension-strike'
 import { Markdown } from 'tiptap-markdown'
+import { Tooltip, TooltipProvider } from '../ui/tooltip'
+import { TooltipContent } from '@radix-ui/react-tooltip'
 
 // JSON SCHEMA FOR VALIDATE IN ZOD RESOLVER - NOT IMPLEMENTED
 // export const textAreaEditorSchema = z.object(
@@ -130,26 +132,59 @@ export function TextAreaEditor({
             tippyOptions={{ duration: 100 }}
             className="overflow-hidden rounded-md border border-zinc-600 bg-secondary p-0.5 shadow-xl shadow-black/30"
           >
-            <BubbleButton
-              onClick={() => editor.chain().focus().toggleBold().run()}
-              data-active={editor.isActive('bold')}
-            >
-              <Bold size={14} />
-            </BubbleButton>
+            <TooltipProvider>
+              <Tooltip>
+                <BubbleButton
+                  onClick={() => editor.chain().focus().toggleBold().run()}
+                  data-active={editor.isActive('bold')}
+                >
+                  <Bold size={14} />
+                </BubbleButton>
 
-            <BubbleButton
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-              data-active={editor.isActive('italic')}
-            >
-              <Italic size={14} />
-            </BubbleButton>
+                <TooltipContent
+                  sideOffset={4.5}
+                  className="pointer-events-none overflow-hidden rounded-md border border-zinc-600 bg-secondary p-0.5 shadow-xl shadow-black/30"
+                >
+                  <span className="text-xs font-light tracking-widest">⌘B</span>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-            <BubbleButton
-              data-active={editor.isActive('strike')}
-              onClick={() => editor.chain().focus().toggleStrike().run()}
-            >
-              <StrikethroughIcon size={14} />
-            </BubbleButton>
+            <TooltipProvider>
+              <Tooltip>
+                <BubbleButton
+                  onClick={() => editor.chain().focus().toggleItalic().run()}
+                  data-active={editor.isActive('italic')}
+                >
+                  <Italic size={14} />
+                </BubbleButton>
+
+                <TooltipContent
+                  sideOffset={4.5}
+                  className="pointer-events-none overflow-hidden rounded-md border border-zinc-600 bg-secondary p-0.5 shadow-xl shadow-black/30"
+                >
+                  <span className="text-xs font-light tracking-widest">⌘I</span>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <BubbleButton
+                  data-active={editor.isActive('strike')}
+                  onClick={() => editor.chain().focus().toggleStrike().run()}
+                >
+                  <StrikethroughIcon size={14} />
+                </BubbleButton>
+
+                <TooltipContent
+                  sideOffset={4.5}
+                  className="pointer-events-none overflow-hidden rounded-md border border-zinc-600 bg-secondary p-0.5 shadow-xl shadow-black/30"
+                >
+                  <span className="text-xs font-light tracking-widest">⌘S</span>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </BubbleMenu>
         </>
       )}
