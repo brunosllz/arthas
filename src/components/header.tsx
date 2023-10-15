@@ -1,39 +1,69 @@
+/* eslint-disable jsx-a11y/alt-text */
 import Link from 'next/link'
-import { Logo } from './logo'
 import { Separator } from './ui/separator'
 import { Button } from './ui/button'
 import { UserNav } from './user-nav'
 import { NavLink } from './nav-link'
 import { NotificationPanel } from './notification-panel'
+import { MessageCircle } from 'lucide-react'
+
+const navLinkItems = [
+  {
+    title: 'Home',
+    href: '/',
+  },
+  {
+    title: 'Projetos',
+    href: '/projects',
+  },
+  {
+    title: 'Discussões',
+    href: '/discussions',
+  },
+]
 
 export function Header() {
   return (
-    <div className="flex h-16 items-center justify-between border-b px-6">
-      <div className="flex items-center gap-4">
-        <Link href="/">
-          <Logo className="h-8 w-8" />
-        </Link>
+    <header className="flex border-b py-6">
+      <div className="mx-auto flex w-full max-w-[1248px] items-center justify-between">
+        <div className="flex items-center gap-20">
+          <Link href="/">
+            <img src="/logo.svg" />
+          </Link>
 
-        <Separator orientation="vertical" className="h-5" />
+          <nav className="flex items-center space-x-8">
+            {navLinkItems.map((navItems) => (
+              <NavLink key={navItems.title} href={navItems.href}>
+                {navItems.title}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
 
-        <nav className="flex items-center space-x-6">
-          <NavLink href="/projects">Projects</NavLink>
-          <NavLink href="/discussions">Discussions</NavLink>
-          <NavLink href="/messages">Messages</NavLink>
-        </nav>
+        <input
+          type="text"
+          placeholder="Realizar busca"
+          className="h-12 w-[413px] max-w-full rounded-md border border-input bg-transparent px-4 py-4 text-sm placeholder:text-border"
+        />
+
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
+              size="sm"
+            >
+              <MessageCircle size={18} />
+            </Button>
+
+            <NotificationPanel />
+          </div>
+
+          <Separator orientation="vertical" className="h-9" />
+
+          <UserNav />
+        </div>
       </div>
-
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm">
-          Feedback
-        </Button>
-
-        <Separator orientation="vertical" className="h-5" />
-
-        <NotificationPanel />
-
-        <UserNav />
-      </div>
-    </div>
+    </header>
   )
 }

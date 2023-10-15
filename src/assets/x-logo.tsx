@@ -1,6 +1,8 @@
 import { ComponentProps } from 'react'
 
-export function Logo(props: ComponentProps<'svg'>) {
+type XLogoProps = ComponentProps<'svg'>
+
+export function XLogo(props: XLogoProps) {
   return (
     <svg
       width="79"

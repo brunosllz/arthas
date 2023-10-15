@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { Avatar, AvatarImage } from './ui/avatar'
-import { AvatarFallback, AvatarProps } from '@radix-ui/react-avatar'
+import { AvatarProps } from '@radix-ui/react-avatar'
 import { twMerge } from 'tailwind-merge'
 import { Skeleton } from './ui/skeleton'
 
@@ -14,7 +14,7 @@ export function UserAvatar(props: UserAvatarProps) {
   const user = data?.user
 
   return (
-    <Avatar className={twMerge('h-8 w-8')} {...props}>
+    <Avatar className={twMerge('h-12 w-12')} {...props}>
       {user?.avatarUrl ? (
         <AvatarImage src={user.avatarUrl} alt="" />
       ) : (

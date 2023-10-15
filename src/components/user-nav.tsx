@@ -20,11 +20,12 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative h-8 w-8 select-none rounded-full bg-primary/10"
+          className="relative h-12 w-12 select-none rounded-full bg-primary/10"
         >
           <UserAvatar />
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <UserInfoLabel />
