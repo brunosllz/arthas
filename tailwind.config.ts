@@ -9,6 +9,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      maxWidth: {
+        wrapper: '78rem',
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
