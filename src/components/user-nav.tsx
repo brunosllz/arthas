@@ -33,10 +33,10 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/me">Profile</Link>
+            <Link href="/me">Meu perfil</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/me/projects">My projects</Link>
+            <Link href="/me/projects">Meus projetos</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
 

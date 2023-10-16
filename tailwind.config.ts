@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+import plugin from 'tailwindcss/plugin'
+
 module.exports = {
   darkMode: ['class'],
   content: [
@@ -9,9 +12,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      maxWidth: {
-        wrapper: '78rem',
-      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -76,5 +76,15 @@ module.exports = {
     require('@tailwindcss/typography'),
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('tailwind-scrollbar')({ nocompatible: true }),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        '.wrapper': {
+          width: '100%',
+          'max-width': '81rem',
+          padding: '0 1.5rem',
+          margin: '0 auto',
+        },
+      })
+    }),
   ],
 }

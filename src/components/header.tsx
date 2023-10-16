@@ -25,7 +25,7 @@ const navLinkItems = [
 export function Header() {
   return (
     <header className="flex border-b border-border py-6">
-      <div className="max-w-wrapper mx-auto flex w-full items-center justify-between">
+      <div className="wrapper flex items-center justify-between">
         <div className="flex items-center gap-20">
           <Link href="/">
             <img src="/logo.svg" />

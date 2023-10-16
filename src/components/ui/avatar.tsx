@@ -3,17 +3,41 @@
 import * as React from 'react'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 import { twMerge } from 'tailwind-merge'
+import { VariantProps, tv } from 'tailwind-variants'
+
+const avatarVariants = tv({
+  base: 'relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full',
+  variants: {
+    variant: {
+      default: '',
+      square: 'rounded-md',
+    },
+    size: {
+      default: '',
+      xs: 'h-[2.625rem] w-[2.625rem]',
+      sm: 'h-12 w-12',
+      md: 'h-[3.625rem] w-[3.625rem]',
+      lg: 'h-20 w-20',
+      xl: 'h-[5.5rem] w-[5.5rem]',
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  },
+})
+
+interface AvatarProps
+  extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>,
+    VariantProps<typeof avatarVariants> {}
 
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
->(({ className, ...props }, ref) => (
+  AvatarProps
+>(({ className, size, variant, ...props }, ref) => (
   <AvatarPrimitive.Root
     ref={ref}
-    className={twMerge(
-      'relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full',
-      className,
-    )}
+    className={avatarVariants({ className, size, variant })}
     {...props}
   />
 ))
@@ -38,7 +62,7 @@ const AvatarFallback = React.forwardRef<
   <AvatarPrimitive.Fallback
     ref={ref}
     className={twMerge(
-      'flex h-full w-full items-center justify-center rounded-full bg-muted',
+      'flex h-full w-full items-center justify-center rounded-md border bg-secondary',
       className,
     )}
     {...props}
