@@ -15,7 +15,7 @@ model Answer {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime?       @updatedAt
   User          User            @relation(fields: [authorId], references: [id])
-  project       Project         @relation(fields: [projectId], references: [id])
+  project       Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
   answerComment AnswerComment[]
 }
 
@@ -26,28 +26,30 @@ model AnswerComment {
   answerId  String
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
-  answer    Answer    @relation(fields: [answerId], references: [id])
+  answer    Answer    @relation(fields: [answerId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [authorId], references: [id])
 }
 
 model Notification {
-  id                String    @id
-  content           String
+  id                String            @id
   authorId          String
   recipientId       String
-  createdAt         DateTime  @default(now())
+  createdAt         DateTime          @default(now())
   readAt            DateTime?
   title             String
-  authorIdToUser    User      @relation("NotificationAuthorIdToUser", fields: [authorId], references: [id])
-  recipientIdToUser User      @relation("NotificationRecipientIdToUser", fields: [recipientId], references: [id])
+  type              NOTIFICATION_TYPE
+  ctaTitle          String[]
+  linkTo            String
+  authorIdToUser    User              @relation("NotificationAuthorIdToUser", fields: [authorId], references: [id])
+  recipientIdToUser User              @relation("NotificationRecipientIdToUser", fields: [recipientId], references: [id])
 }
 
 model Project {
-  id                  String         @id @default(uuid())
+  id                  String                @id @default(uuid())
   authorId            String
   slug                String
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime?      @updatedAt
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime?             @updatedAt
   imageUrl            String
   name                String
   status              PROJECT_STATUS
@@ -57,10 +59,11 @@ model Project {
   description         String
   meetingOccurredTime String
   answers             Answer[]
-  users               User           @relation(fields: [authorId], references: [id])
+  InterestedInProject InterestedInProject[]
+  users               User                  @relation(fields: [authorId], references: [id])
   projectRoles        ProjectRole[]
   teamMembers         TeamMember[]
-  technologies        Technology[]   @relation("ProjectToTechnology")
+  technologies        Technology[]          @relation("ProjectToTechnology")
 
   @@unique([authorId, slug])
 }
@@ -70,7 +73,7 @@ model ProjectRole {
   projectId     String
   roleId        String
   membersAmount Int
-  project       Project @relation(fields: [projectId], references: [id])
+  project       Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   role          Role    @relation(fields: [roleId], references: [id])
   users         User[]  @relation("ProjectRoleToUser")
 
@@ -91,7 +94,7 @@ model TeamMember {
   projectId      String
   createdAt      DateTime               @default(now())
   updatedAt      DateTime?              @updatedAt
-  project        Project                @relation(fields: [projectId], references: [id])
+  project        Project                @relation(fields: [projectId], references: [id], onDelete: Cascade)
   user           User                   @relation(fields: [recipientId], references: [id])
 }
 
@@ -103,30 +106,35 @@ model Technology {
 }
 
 model User {
-  id                        String          @id @default(uuid())
+  id                        String                @id @default(uuid())
   name                      String
-  email                     String          @unique
-  bio                       String?
-  occupation                String?
+  email                     String                @unique
   avatarUrl                 String
   city                      String?
   state                     String?
   country                   String?
   linkedinLink              String?
   githubLink                String?
-  createdAt                 DateTime        @default(now())
-  updatedAt                 DateTime?       @updatedAt
-  userName                  String?         @unique
+  createdAt                 DateTime              @default(now())
+  updatedAt                 DateTime?             @updatedAt
+  aboutMe                   String?
+  overallRate               Decimal               @default(0.0) @db.Decimal(5, 2)
+  profileUrl                String?               @unique
+  role                      String?
+  seniority                 String?
+  slugProfile               String                @unique
+  title                     String?
   account                   Account[]
   Answer                    Answer[]
   AnswerComment             AnswerComment[]
-  authorIdToNotifcation     Notification[]  @relation("NotificationAuthorIdToUser")
-  recipientIdToNotification Notification[]  @relation("NotificationRecipientIdToUser")
+  InterestedInProject       InterestedInProject[]
+  authorIdToNotifcation     Notification[]        @relation("NotificationAuthorIdToUser")
+  recipientIdToNotification Notification[]        @relation("NotificationRecipientIdToUser")
   projects                  Project[]
   session                   Session[]
   teamMember                TeamMember[]
-  projectRole               ProjectRole[]   @relation("ProjectRoleToUser")
-  technologies              Technology[]    @relation("TechnologyToUser")
+  projectRole               ProjectRole[]         @relation("ProjectRoleToUser")
+  technologies              Technology[]          @relation("TechnologyToUser")
 }
 
 model Account {
@@ -157,6 +165,15 @@ model Session {
   @@index([userId])
 }
 
+model InterestedInProject {
+  id         String   @id
+  userId     String
+  projectId  String
+  occurredAt DateTime @default(now())
+  Project    Project  @relation(fields: [projectId], references: [id])
+  User       User     @relation(fields: [userId], references: [id])
+}
+
 enum MEMBER_PERMISSION_TYPE {
   member
   owner
@@ -177,5 +194,12 @@ enum PROJECT_STATUS {
 enum MEETING_TYPE {
   daily
   weekly
-  mothly
+  monthly
+}
+
+enum NOTIFICATION_TYPE {
+  message
+  action
+  interaction
+  info
 }

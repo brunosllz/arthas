@@ -1,16 +1,27 @@
 import { Adapter } from 'next-auth/adapters'
 
 import { PrismaClient } from '@prisma/client'
+import { env } from '@/env'
 
 export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
   return {
     async createUser(user) {
+      const userNameSplit = user.name.split(' ')
+
+      const name = userNameSplit[0].toLowerCase()
+      const lastName = userNameSplit[userNameSplit.length - 1].toLowerCase()
+
+      const countUsers = await prisma.user.count()
+
+      const slugProfile = `${name}-${lastName}-${countUsers}`
+
       const prismaUser = await prisma.user.create({
         data: {
           name: user.name,
+          slugProfile,
           email: user.email,
           avatarUrl: user.avatarUrl,
-          userName: user.userName,
+          profileUrl: `${env.NEXT_PUBLIC_VERCEL_URL}/me/${slugProfile}`,
           githubLink: user.githubLink,
         },
       })
@@ -19,7 +30,6 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         id: prismaUser.id,
         name: prismaUser.name,
         email: prismaUser.email,
-        userName: prismaUser.userName!,
         avatarUrl: prismaUser.avatarUrl,
         githubLink: prismaUser.githubLink!,
         emailVerified: null,
@@ -43,7 +53,6 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         email: user.email,
         avatarUrl: user.avatarUrl,
         githubLink: user.githubLink!,
-        userName: user.userName!,
         emailVerified: null,
       }
     },
@@ -63,10 +72,8 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         id: user.id,
         name: user.name,
         email: user.email,
-        username: user.userName,
         avatarUrl: user.avatarUrl,
         githubLink: user.githubLink!,
-        userName: user.userName!,
         emailVerified: null,
       }
     },
@@ -94,10 +101,8 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         id: user.id,
         name: user.name,
         email: user.email,
-        username: user.userName,
         avatarUrl: user.avatarUrl,
         githubLink: user.githubLink!,
-        userName: user.userName!,
         emailVerified: null,
       }
     },
@@ -118,10 +123,8 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         id: prismaUser.id,
         name: prismaUser.name,
         email: prismaUser.email,
-        username: prismaUser.userName,
         avatarUrl: prismaUser.avatarUrl,
         githubLink: prismaUser.githubLink!,
-        userName: prismaUser.userName!,
         emailVerified: null,
       }
     },
@@ -181,10 +184,8 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           id: user.id,
           name: user.name,
           email: user.email,
-          username: user.userName,
           avatarUrl: user.avatarUrl,
           githubLink: user.githubLink!,
-          userName: user.userName!,
           emailVerified: null,
         },
         session: {

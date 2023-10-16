@@ -5,7 +5,6 @@ declare module 'next-auth' {
     id: string
     name: string
     email: string
-    userName: string
     avatarUrl: string
     githubLink: string
   }
