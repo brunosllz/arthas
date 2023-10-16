@@ -1,3 +1,3 @@
 export default function Discussions() {
-  return <main className="flex items-center justify-center">Discussions</main>
+  return <main className="flex py-12">Discussions</main>
 }

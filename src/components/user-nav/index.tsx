@@ -1,4 +1,4 @@
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,11 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+} from '../ui/dropdown-menu'
 import Link from 'next/link'
-import { SignOutButton } from './sign-out-button'
+import { SignOutButton } from '../sign-out-button'
 import { UserInfoLabel } from './user-info-label'
-import { UserAvatar } from './user-avatar'
+import { UserAvatar } from '../user-avatar'
+import { ProfileLink } from './profile-link'
 
 export function UserNav() {
   return (
@@ -32,9 +33,8 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild>
-            <Link href="/me">Meu perfil</Link>
-          </DropdownMenuItem>
+          <ProfileLink />
+
           <DropdownMenuItem asChild>
             <Link href="/me/projects">Meus projetos</Link>
           </DropdownMenuItem>

@@ -32,6 +32,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         email: prismaUser.email,
         avatarUrl: prismaUser.avatarUrl,
         githubLink: prismaUser.githubLink!,
+        profileUrl: prismaUser.profileUrl!,
         emailVerified: null,
       }
     },
@@ -53,6 +54,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         email: user.email,
         avatarUrl: user.avatarUrl,
         githubLink: user.githubLink!,
+        profileUrl: user.profileUrl!,
         emailVerified: null,
       }
     },
@@ -74,6 +76,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         email: user.email,
         avatarUrl: user.avatarUrl,
         githubLink: user.githubLink!,
+        profileUrl: user.profileUrl!,
         emailVerified: null,
       }
     },
@@ -103,6 +106,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         email: user.email,
         avatarUrl: user.avatarUrl,
         githubLink: user.githubLink!,
+        profileUrl: user.profileUrl!,
         emailVerified: null,
       }
     },
@@ -125,6 +129,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         email: prismaUser.email,
         avatarUrl: prismaUser.avatarUrl,
         githubLink: prismaUser.githubLink!,
+        profileUrl: prismaUser.profileUrl!,
         emailVerified: null,
       }
     },
@@ -186,6 +191,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           email: user.email,
           avatarUrl: user.avatarUrl,
           githubLink: user.githubLink!,
+          profileUrl: user.profileUrl!,
           emailVerified: null,
         },
         session: {

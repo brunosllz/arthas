@@ -30,7 +30,7 @@ export default function Me() {
                   <span className="mt-1.5 block text-lg text-muted-foreground">
                     Ceo e Founder da Dev Xperience
                   </span>
-                  <span className="mt-4 inline-flex items-center font-light text-zinc-500">
+                  <span className="mt-4 inline-flex items-center gap-1.5 font-light text-zinc-500">
                     <MapPin size={16} />
                     Juiz de Fora, Minas Gerais, Brasil
                   </span>
@@ -45,6 +45,7 @@ export default function Me() {
                       Linkedin
                     </a>
                   </Button>
+
                   <Button asChild variant="outline">
                     <a href="https://www.github.com/brunosllz" target="_blank">
                       GitHub
@@ -80,14 +81,14 @@ export default function Me() {
 
         <Card className="mt-[1.375rem]">
           <CardHeader className="pb-4">
-            <h3 className="text-xl font-medium">Bio</h3>
+            <h3 className="text-xl font-medium">Sobre</h3>
           </CardHeader>
 
           <CardContent className="space-y-12">
             <p className="leading-relaxed text-muted-foreground">
               Desenvolvedor de Software apaixonado por criar soluções inovadoras
               e eficientes. Com experiência em desenvolvimento web, mobile,
-              linguagens de programação], busco desafios que me permitam
+              linguagens de programação, busco desafios que me permitam
               aprimorar minhas habilidades e contribuir para projetos de
               sucesso.
             </p>
@@ -238,11 +239,12 @@ export default function Me() {
             </Avatar>
           </CardHeader>
 
-          <CardContent className="px-5">
-            <p className="text-lg font-medium">
+          <CardContent className="space-y-2 px-5">
+            <p className="text-lg font-medium leading-tight ">
               Projetos sem equipe? Vamos ajudar você a montar a sua!
             </p>
-            <p className="leading-relaxed text-muted-foreground">
+
+            <p className="leading-tight text-muted-foreground">
               Monte uma equipe para concretizar seus projetos. A colaboração
               leva ao sucesso.
             </p>

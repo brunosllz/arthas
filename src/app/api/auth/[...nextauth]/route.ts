@@ -19,7 +19,6 @@ export const handler: NextAuthOptions = NextAuth({
           email: profile.email!,
           name: profile.name!,
           avatarUrl: profile.avatar_url,
-          userName: profile.login,
           githubLink: profile.html_url,
         }
       },
@@ -39,6 +38,7 @@ export const handler: NextAuthOptions = NextAuth({
       token.accessToken = encodedToken
       if (user) {
         token.avatarUrl = user.avatarUrl
+        token.profileUrl = user.profileUrl!
       }
 
       return token
@@ -49,6 +49,7 @@ export const handler: NextAuthOptions = NextAuth({
         avatarUrl: token.avatarUrl,
         uId: token.sub ?? '',
         accessToken: token.accessToken,
+        profileUrl: token.profileUrl,
       }
 
       return session

@@ -1,3 +1,3 @@
 export default function Projects() {
-  return <main className="flex items-center justify-center">Projects</main>
+  return <main className="flex py-12">Projects</main>
 }

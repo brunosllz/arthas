@@ -13,7 +13,7 @@ export default async function MyProjects() {
   // const hasProjects = projects.length > 0
 
   return (
-    <div>
+    <div className="py-12">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl font-semibold">My projects</h1>
