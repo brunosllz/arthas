@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { MapPin, MoreHorizontal, Star } from 'lucide-react'
+import { Github, Linkedin, MapPin, MoreHorizontal, Star } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Me() {
@@ -22,52 +22,64 @@ export default function Me() {
 
           <CardContent className="mt-[68px] space-y-8">
             <div className="flex items-start justify-between">
-              <div className="space-y-8">
-                <div>
+              <div className="space-y-6">
+                <div className="space-y-2">
                   <strong className="text-3xl font-semibold">
                     Bruno Silveira Luiz
                   </strong>
-                  <span className="mt-1.5 block text-lg text-muted-foreground">
-                    Ceo e Founder da Dev Xperience
+
+                  <span className="block text-lg text-muted-foreground">
+                    Ceo e Founder da{' '}
+                    <span className="font-medium text-zinc-50">
+                      Dev Xperience
+                    </span>
                   </span>
-                  <span className="mt-4 inline-flex items-center gap-1.5 font-light text-zinc-500">
-                    <MapPin size={16} />
-                    Juiz de Fora, Minas Gerais, Brasil
-                  </span>
+
+                  <div className="space-x-3 pt-2">
+                    <Badge variant="static" size="lg">
+                      Dev Front-end
+                    </Badge>
+                    <Badge variant="static" size="lg">
+                      Pleno
+                    </Badge>
+                  </div>
                 </div>
 
-                <div className="space-x-4">
-                  <Button asChild variant="outline">
-                    <a
-                      href="https://www.linkedin.com/in/bruno-silveira-luiz/"
-                      target="_blank"
-                    >
-                      Linkedin
-                    </a>
-                  </Button>
-
-                  <Button asChild variant="outline">
-                    <a href="https://www.github.com/brunosllz" target="_blank">
-                      GitHub
-                    </a>
-                  </Button>
-                </div>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-light text-zinc-500">
+                  <MapPin size={14} />
+                  Bento Gonçalves, RS, Brasil
+                </span>
               </div>
 
               <div className="space-x-3">
-                <Badge variant="static" size="lg">
-                  Dev Front-end
-                </Badge>
-                <Badge variant="static" size="lg">
-                  Pleno
-                </Badge>
+                <Button
+                  variant="outline"
+                  className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
+                  size="sm"
+                  asChild
+                >
+                  <a href="https://github.com" target="_blank">
+                    <Linkedin size={18} />
+                  </a>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
+                  size="sm"
+                  asChild
+                >
+                  <a href="https://github.com" target="_blank">
+                    <Github size={18} />
+                  </a>
+                </Button>
               </div>
             </div>
 
             <Separator className="bg-zinc-900" />
 
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-zinc-200">
                 Atuou em 12 projetos
               </span>
 
@@ -179,6 +191,42 @@ export default function Me() {
                 </div>
               </div>
             </div>
+
+            <div className="flex items-start gap-4">
+              <Avatar size="sm" variant="square">
+                <AvatarImage src="https://www.github.com/diego3g.png" />
+                <AvatarFallback />
+              </Avatar>
+
+              <div className="space-y-2">
+                <div className="flex items-start justify-between">
+                  <strong className="text-lg font-medium">
+                    Website E-commerce
+                  </strong>
+                  <Badge variant="outline">Dev Front-end</Badge>
+                </div>
+
+                <p className="font-light leading-relaxed text-muted-foreground">
+                  Em um projeto de e-commerce, fui o desenvolvedor front-end,
+                  traduzindo designs em código e tornando o site atrativo e
+                  funcional. Colaborei com a equipe de back-end para integração,
+                  otimização e melhorias na responsividade da experiência do
+                  usuário.
+                </p>
+
+                <div className="flex pt-1">
+                  <div></div>
+                  <span className="inline-flex items-center gap-1.5 text-sm">
+                    <Star
+                      size={16}
+                      className="fill-yellow-500"
+                      strokeWidth={0}
+                    />
+                    5.0
+                  </span>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -191,6 +239,26 @@ export default function Me() {
           </CardHeader>
 
           <CardContent className="space-y-6">
+            <div className="flex gap-3">
+              <Avatar size="xs" variant="square">
+                <AvatarImage src="https://www.github.com/diego3g.png" />
+                <AvatarFallback />
+              </Avatar>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <strong className="font-semibold">Website E-commerce</strong>
+                  <Badge size="sm">Em andamento</Badge>
+                </div>
+
+                <span className="block text-sm text-muted-foreground">
+                  Bruno Silveira, João Lucas, José Luiz, Pedro Henrique.
+                </span>
+              </div>
+            </div>
+
+            <Separator />
+
             <div className="flex gap-3">
               <Avatar size="xs" variant="square">
                 <AvatarImage src="https://www.github.com/diego3g.png" />

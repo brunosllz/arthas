@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
 import { externalApi } from '@/libs/axios'
 import { useRouter } from 'next/navigation'
@@ -13,7 +14,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { NotificationCardSkeleton } from './notification-card-skeleton'
-import { useEffect } from 'react'
+
 import { Loader2 } from 'lucide-react'
 
 dayjs.extend(relativeTime)
@@ -75,6 +76,7 @@ export function NotificationList() {
     await readNotification(notification.id)
     router.push(`${notification.linkTo}`)
   }
+
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage()

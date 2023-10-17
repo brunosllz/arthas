@@ -27,7 +27,7 @@ export default async function MyProjects() {
           className="data-[has-projects=false]:hidden"
         >
           <Button asChild>
-            <Link href="/me/projects/new">Add project</Link>
+            <Link href="/me/project/new">Add project</Link>
           </Button>
         </div>
       </div>

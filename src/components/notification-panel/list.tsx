@@ -9,6 +9,7 @@ import { Separator } from '@radix-ui/react-separator'
 import { GearIcon } from '@radix-ui/react-icons'
 import { PopoverContent } from '../ui/popover'
 import { useSession } from 'next-auth/react'
+import { BadgeAlert } from 'lucide-react'
 
 export type Notification = {
   id: string
@@ -93,6 +94,8 @@ export function List() {
     }
   }, [session, notifications])
 
+  const hasNotifications = notifications?.length > 0
+
   return (
     <PopoverContent align="end" alignOffset={-16} className="w-80 p-4">
       <div className="flex items-center justify-between">
@@ -108,13 +111,22 @@ export function List() {
       <Separator className="my-4" />
 
       <div className="space-y-4">
-        {notifications.map((notification) => (
-          <Card key={notification.id} notification={notification} />
-        ))}
+        {hasNotifications ? (
+          notifications.map((notification) => (
+            <Card key={notification.id} notification={notification} />
+          ))
+        ) : (
+          <div className="flex flex-col items-center gap-1.5">
+            <BadgeAlert size={20} />
+            <span className="text-sm">Você ainda não possui notificações.</span>
+          </div>
+        )}
 
-        <Button asChild variant="outline" className="w-full">
-          <Link href="/notifications">See all</Link>
-        </Button>
+        {hasNotifications && (
+          <Button asChild variant="outline" className="w-full">
+            <Link href="/notifications">See all</Link>
+          </Button>
+        )}
       </div>
     </PopoverContent>
   )

@@ -26,7 +26,7 @@ export function ProjectCard({
 }: ProjectCardProps) {
   return (
     <Card className="cursor-pointer transition-colors hover:border-card-foreground hover:ring-4 hover:ring-card-foreground/5">
-      <a href={`/me/projects/${slug}`}>
+      <a href={`/me/project/${slug}`}>
         <CardHeader className="flex flex-row items-center gap-4">
           <div className="relative">
             <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-zinc-700">
