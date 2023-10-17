@@ -5,6 +5,8 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Github, Linkedin, MapPin, MoreHorizontal, Star } from 'lucide-react'
 import Link from 'next/link'
+import { AvatarGroupAnimated } from './components/avatar-group-animated'
+import { AvatarGroup } from '@/components/avatar-group'
 
 export default function Me() {
   return (
@@ -142,8 +144,8 @@ export default function Me() {
                   usuário.
                 </p>
 
-                <div className="flex pt-1">
-                  <div></div>
+                <div className="flex items-end justify-between pt-1">
+                  <AvatarGroupAnimated />
                   <span className="inline-flex items-center gap-1.5 text-sm">
                     <Star
                       size={16}
@@ -301,10 +303,7 @@ export default function Me() {
 
         <Card className="sticky top-6">
           <CardHeader className="p-5">
-            <Avatar size="xs">
-              <AvatarImage src="https://www.github.com/diego3g.png" />
-              <AvatarFallback />
-            </Avatar>
+            <AvatarGroup />
           </CardHeader>
 
           <CardContent className="space-y-2 px-5">
