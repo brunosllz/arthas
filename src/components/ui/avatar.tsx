@@ -14,6 +14,7 @@ const avatarVariants = tv({
     },
     size: {
       default: '',
+      xxs: 'h-9 w-9',
       xs: 'h-[2.625rem] w-[2.625rem]',
       sm: 'h-12 w-12',
       md: 'h-[3.625rem] w-[3.625rem]',
