@@ -9,7 +9,7 @@ import {
 export function AvatarGroupAnimated() {
   return (
     <div className="flex -space-x-4">
-      <TooltipProvider>
+      <TooltipProvider delayDuration={250}>
         {Array.from({ length: 3 }).map((_, i) => (
           <Tooltip key={i}>
             <TooltipTrigger>
@@ -19,9 +19,11 @@ export function AvatarGroupAnimated() {
               </Avatar>
             </TooltipTrigger>
 
-            <TooltipContent sideOffset={15}>
-              <span className="block text-center text-sm">Bruno Luiz</span>
-              <span className="text-sm text-muted-foreground">
+            <TooltipContent sideOffset={15} className="dark:bg-primary">
+              <span className="block text-center text-sm font-medium text-zinc-900">
+                Bruno Luiz
+              </span>
+              <span className="text-sm font-medium text-zinc-600">
                 Dev Front-end
               </span>
             </TooltipContent>

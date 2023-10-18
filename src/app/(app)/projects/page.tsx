@@ -1,3 +1,3 @@
 export default function Projects() {
-  return <main className="flex py-12">Projects</main>
+  return <div className="flex py-12 page-container">Projects</div>
 }

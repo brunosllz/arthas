@@ -84,6 +84,9 @@ module.exports = {
           padding: '0 1.5rem',
           margin: '0 auto',
         },
+        '.page-container': {
+          padding: '9rem 0 6rem 0',
+        },
       })
     }),
   ],

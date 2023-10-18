@@ -43,7 +43,7 @@ export function Trigger() {
     <PopoverTrigger asChild>
       <Button
         variant="outline"
-        className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
+        className="relative h-[42px] w-[42px] rounded-full bg-background px-3 text-secondary-foreground"
         size="sm"
       >
         <BellIcon size={18} />

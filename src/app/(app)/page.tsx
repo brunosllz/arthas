@@ -1,3 +1,3 @@
 export default function Home() {
-  return <main className="flex py-12">Home</main>
+  return <div className="flex py-12 page-container">Home</div>
 }
