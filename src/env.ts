@@ -31,6 +31,9 @@ export const env = createEnv({
     GITHUB_ID: z.string().min(1),
     GITHUB_SECRET: z.string().min(1),
     FEATURE_SEARCH_BAR: z.coerce.number(),
+    ROOT_PAGE_HREF: z.string().default('/'),
+    FEATURE_HOME_PAGE: z.coerce.number(),
+    FEATURE_DISCUSSIONS_PAGE: z.coerce.number(),
   },
   client: {
     NEXT_PUBLIC_VERCEL_URL: z.string().min(1).url(),

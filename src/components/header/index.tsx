@@ -13,14 +13,17 @@ const navLinkItems = [
   {
     title: 'Home',
     href: '/',
+    disabled: env.FEATURE_HOME_PAGE === 0,
   },
   {
     title: 'Projetos',
     href: '/projects',
+    disabled: false,
   },
   {
     title: 'Discussões',
     href: '/discussions',
+    disabled: env.FEATURE_DISCUSSIONS_PAGE === 0,
   },
 ]
 
@@ -30,13 +33,17 @@ export function Header() {
       <div className="wrapper">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-20">
-            <Link href="/">
+            <Link href={env.ROOT_PAGE_HREF}>
               <img src="/logo.svg" />
             </Link>
 
             <nav className="flex items-center space-x-8">
               {navLinkItems.map((navItems) => (
-                <NavLink key={navItems.title} href={navItems.href}>
+                <NavLink
+                  key={navItems.title}
+                  href={navItems.href}
+                  disabled={navItems.disabled}
+                >
                   {navItems.title}
                 </NavLink>
               ))}
