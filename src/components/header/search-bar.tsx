@@ -38,7 +38,7 @@ export function SearchBar() {
     <>
       <Button
         variant="outline"
-        className="mx-[4.5rem] flex h-12 flex-1 justify-between hover:bg-transparent"
+        className="mx-[4.5rem] flex h-12 flex-1 cursor-text justify-between bg-background hover:bg-background"
         onClick={handleOpenSearchCommand}
       >
         <div className="flex items-center gap-3">
@@ -46,8 +46,8 @@ export function SearchBar() {
           <span className="text-muted">Realizar busca</span>
         </div>
 
-        <kbd className="pointer-events-none inline-flex select-none items-center gap-1 font-mono text-sm text-muted-foreground">
-          <span className="text-[10px]">⌘</span> K
+        <kbd className="pointer-events-none inline-flex select-none items-center gap-1 rounded-sm bg-zinc-900 px-1  font-mono text-sm text-muted-foreground">
+          <span className="text-[0.625rem]">⌘</span> K
         </kbd>
       </Button>
 
