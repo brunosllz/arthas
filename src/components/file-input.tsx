@@ -3,9 +3,9 @@
 import {
   HTMLAttributes,
   createContext,
-  useContext,
+  // useContext,
   useId,
-  ChangeEvent,
+  // ChangeEvent,
   InputHTMLAttributes,
   forwardRef,
   ReactNode,
@@ -27,7 +27,7 @@ interface FileInputContextType {
 
 const FileInputContext = createContext({} as FileInputContextType)
 
-const useFileInput = () => useContext(FileInputContext)
+// const useFileInput = () => useContext(FileInputContext)
 
 function FileInputRoot({ id, ...props }: RootProps) {
   const customId = useId()
@@ -44,12 +44,18 @@ function FileInputRoot({ id, ...props }: RootProps) {
 }
 
 interface FileInputControlProps extends InputHTMLAttributes<HTMLInputElement> {
-  uploadPrefix?: 'projects' | 'avatar'
+  // uploadPrefix?: 'projects' | 'avatar'
   onValueChange?: ChangeHandler
 }
 
 const FileInputControl = forwardRef<HTMLInputElement, FileInputControlProps>(
-  ({ uploadPrefix = 'projects', ...props }, ref) => {
+  (
+    {
+      //  uploadPrefix = 'projects',
+      ...props
+    },
+    ref,
+  ) => {
     /**
      * we using dropzone for control this input
      */
@@ -91,17 +97,15 @@ function FileInputImagePreview() {
 
   if (previewUrl === null) {
     return (
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
+      <div className="flex h-16 w-16 items-center justify-center rounded-md bg-secondary">
         <User className="h-8 w-8 text-foreground " />
       </div>
     )
   } else {
     return (
-      <img
-        className="h-16 w-16 rounded-full bg-violet-50 object-cover dark:bg-zinc-800"
-        src={previewUrl}
-        alt=""
-      />
+      <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-md">
+        <img className="h-gull w-full object-cover" src={previewUrl} alt="" />
+      </div>
     )
   }
 }

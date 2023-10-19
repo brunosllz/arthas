@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function NewProject() {
   return (
-    <div>
+    <div className="page-container">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl font-semibold">New project</h1>

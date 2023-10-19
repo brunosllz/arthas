@@ -4,6 +4,7 @@ import { z } from 'zod'
 const nodeEnv = z.enum(['development', 'production', 'test'])
 
 function requiredOnEnv(env: z.infer<typeof nodeEnv>) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (value: any) => {
     if (env === process.env.NODE_ENV && !value) {
       return false

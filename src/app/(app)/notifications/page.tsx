@@ -1,11 +1,28 @@
 import { Separator } from '@/components/ui/separator'
 import { NotificationList } from './components/notification-list'
-import { api } from '@/libs/axios'
 import { redirect } from 'next/navigation'
+import { prisma } from '@/libs/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+
+async function verifyIfHasAvailableNotifications() {
+  const session = await getServerSession(authOptions)
+
+  if (session) {
+    const countNotificationsFromUser = await prisma.notification.count({
+      where: {
+        authorId: session.user.uId,
+      },
+    })
+
+    return countNotificationsFromUser
+  }
+
+  return 0
+}
 
 export default async function Notifications() {
-  const { data } = await api.get('/notifications/count')
-  const { count } = data
+  const count = await verifyIfHasAvailableNotifications()
 
   const hasNotifications = count > 0
 

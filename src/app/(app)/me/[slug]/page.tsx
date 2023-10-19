@@ -1,8 +1,15 @@
+import { redirect } from 'next/navigation'
+import { prisma } from '@/libs/prisma'
+import Link from 'next/link'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { AvatarGroupAnimated } from './components/avatar-group-animated'
+import { AvatarGroup } from '@/components/avatar-group'
+
 import {
   Github,
   Linkedin,
@@ -11,11 +18,29 @@ import {
   MoreHorizontal,
   Star,
 } from 'lucide-react'
-import Link from 'next/link'
-import { AvatarGroupAnimated } from './components/avatar-group-animated'
-import { AvatarGroup } from '@/components/avatar-group'
 
-export default function Me() {
+interface MeProps {
+  params: {
+    slug: string
+  }
+}
+async function getUser({ slug }: { slug: string }) {
+  const user = await prisma.user.findUnique({
+    where: {
+      slugProfile: slug,
+    },
+  })
+
+  if (!user) {
+    return redirect('/')
+  }
+
+  return { user }
+}
+
+export default async function Me({ params }: MeProps) {
+  const { user } = await getUser({ slug: params.slug })
+
   return (
     <div className="grid grid-cols-[1fr_minmax(18.75rem,25rem)] gap-6 page-container">
       <div>
@@ -28,7 +53,7 @@ export default function Me() {
 
             <div className="absolute -bottom-[44px] left-6">
               <Avatar size="xl" className="ring-2 ring-black">
-                <AvatarImage src="https://www.github.com/brunosllz.png" />
+                <AvatarImage src={user.avatarUrl} />
                 <AvatarFallback />
               </Avatar>
             </div>
@@ -66,27 +91,31 @@ export default function Me() {
               </div>
 
               <div className="space-x-3">
-                <Button
-                  variant="outline"
-                  className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
-                  size="sm"
-                  asChild
-                >
-                  <a href="https://github.com" target="_blank">
-                    <Linkedin size={18} />
-                  </a>
-                </Button>
+                {user.linkedinLink && (
+                  <Button
+                    variant="outline"
+                    className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
+                    size="sm"
+                    asChild
+                  >
+                    <a href={user.linkedinLink} target="_blank">
+                      <Linkedin size={18} />
+                    </a>
+                  </Button>
+                )}
 
-                <Button
-                  variant="outline"
-                  className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
-                  size="sm"
-                  asChild
-                >
-                  <a href="https://github.com" target="_blank">
-                    <Github size={18} />
-                  </a>
-                </Button>
+                {user.githubLink && (
+                  <Button
+                    variant="outline"
+                    className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
+                    size="sm"
+                    asChild
+                  >
+                    <a href={user.githubLink} target="_blank">
+                      <Github size={18} />
+                    </a>
+                  </Button>
+                )}
               </div>
             </div>
 

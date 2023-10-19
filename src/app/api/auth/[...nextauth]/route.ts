@@ -7,7 +7,7 @@ import { Adapter } from 'next-auth/adapters'
 import { CustomPrismaAdapter } from '@/libs/next-auth/prisma-adapter'
 import { env } from '@/env'
 
-export const handler: NextAuthOptions = NextAuth({
+export const authOptions: NextAuthOptions = {
   adapter: CustomPrismaAdapter(prisma) as Adapter,
   providers: [
     GitHubProvider({
@@ -64,6 +64,7 @@ export const handler: NextAuthOptions = NextAuth({
     signIn: '/auth/sign-in',
     error: '/auth/error',
   },
-})
+}
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }
