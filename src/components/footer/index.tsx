@@ -1,9 +1,30 @@
 /* eslint-disable jsx-a11y/alt-text */
 
-import Link from 'next/link'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
+import { env } from '@/env'
+
+import { NavLink } from '../nav-link'
+import { BackToTopButton } from './back-to-top-button'
 
 import { Github, Instagram, Linkedin } from 'lucide-react'
+
+const navLinkItems = [
+  {
+    title: 'Home',
+    href: '/',
+    disabled: env.FEATURE_HOME_PAGE === 0,
+  },
+  {
+    title: 'Projetos',
+    href: '/projects',
+    disabled: false,
+  },
+  {
+    title: 'Discussões',
+    href: '/discussions',
+    disabled: env.FEATURE_DISCUSSIONS_PAGE === 0,
+  },
+]
 
 export function Footer() {
   return (
@@ -62,24 +83,15 @@ export function Footer() {
               </span>
 
               <div className="mt-4 flex flex-col gap-3">
-                <Link
-                  href="/"
-                  className="leading-none text-muted-foreground hover:text-foreground"
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/projects"
-                  className="leading-none text-muted-foreground hover:text-foreground"
-                >
-                  Projetos
-                </Link>
-                <Link
-                  href="/me"
-                  className="leading-none text-muted-foreground hover:text-foreground"
-                >
-                  Profile
-                </Link>
+                {navLinkItems.map((navItem) => (
+                  <NavLink
+                    key={navItem.title}
+                    href={navItem.href}
+                    disabled={navItem.disabled}
+                  >
+                    {navItem.title}
+                  </NavLink>
+                ))}
               </div>
             </div>
 
@@ -131,11 +143,13 @@ export function Footer() {
       </div>
 
       <div className="wrapper">
-        <div className="flex py-4">
+        <div className="flex items-center justify-between py-4">
           <span className="text-sm text-zinc-500">
             © {new Date().getFullYear()} DevXperience. Todos os direitos
             reservados.
           </span>
+
+          <BackToTopButton />
         </div>
       </div>
     </footer>

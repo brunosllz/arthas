@@ -15,7 +15,8 @@ import {
   Linkedin,
   MapPin,
   MessageCircle,
-  MoreHorizontal,
+  Pen,
+  Plus,
   Star,
 } from 'lucide-react'
 
@@ -137,10 +138,10 @@ export default async function Me({ params }: MeProps) {
         <Card className="mt-[1.375rem]">
           <CardHeader className="flex-row items-center justify-between pb-4">
             <h3 className="text-xl font-medium">Sobre</h3>
-            <MoreHorizontal size={20} className="text-muted-foreground" />
+            <Pen size={16} className="text-muted-foreground" />
           </CardHeader>
 
-          <CardContent className="space-y-12">
+          <CardContent className="space-y-6">
             <p className="leading-relaxed text-muted-foreground">
               Desenvolvedor de Software apaixonado por criar soluções inovadoras
               e eficientes. Com experiência em desenvolvimento web, mobile,
@@ -149,11 +150,17 @@ export default async function Me({ params }: MeProps) {
               sucesso.
             </p>
 
-            <div className="space-x-3">
-              <Badge variant="static">JavaScript</Badge>
-              <Badge variant="static">React</Badge>
-              <Badge variant="static">Node.js</Badge>
-              <Badge variant="static">Php</Badge>
+            <Separator />
+
+            <div className="space-y-4">
+              <strong className="text-lg font-medium">Habilidades</strong>
+
+              <div className="space-x-3">
+                <Badge variant="static">JavaScript</Badge>
+                <Badge variant="static">React</Badge>
+                <Badge variant="static">Node.js</Badge>
+                <Badge variant="static">Php</Badge>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -161,7 +168,7 @@ export default async function Me({ params }: MeProps) {
         <Card className="mt-[1.625rem]">
           <CardHeader className="flex-row items-center justify-between pb-4">
             <h3 className="text-xl font-medium">Projetos realizados</h3>
-            <MoreHorizontal size={20} className="text-muted-foreground" />
+            <Plus size={22} className="text-muted-foreground" />
           </CardHeader>
 
           <CardContent className="space-y-8">
@@ -221,9 +228,8 @@ export default async function Me({ params }: MeProps) {
 
       <aside className="space-y-6">
         <Card>
-          <CardHeader className="flex-row items-center justify-between pb-4">
+          <CardHeader className="pb-4">
             <h3 className="text-sm font-medium">Projetos envolvido</h3>
-            <MoreHorizontal size={20} className="text-muted-foreground" />
           </CardHeader>
 
           <CardContent className="space-y-6">

@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token }) {
       const payload = {
         uid: token.sub,
       }
@@ -36,20 +36,13 @@ export const authOptions: NextAuthOptions = {
       })
 
       token.accessToken = encodedToken
-      if (user) {
-        token.avatarUrl = user.avatarUrl
-        token.profileUrl = user.profileUrl!
-      }
 
       return token
     },
     session({ session, token }) {
       session.user = {
-        ...session.user,
-        avatarUrl: token.avatarUrl,
         uId: token.sub ?? '',
         accessToken: token.accessToken,
-        profileUrl: token.profileUrl,
       }
 
       return session
@@ -63,6 +56,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/auth/sign-in',
     error: '/auth/error',
+    newUser: '/onboarding/step-1',
   },
 }
 const handler = NextAuth(authOptions)

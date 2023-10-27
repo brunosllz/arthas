@@ -6,7 +6,7 @@ export function AvatarGroup() {
       {Array.from({ length: 3 }).map((_, i) => {
         return (
           <Avatar key={i} className="ring-1 ring-black">
-            <AvatarImage src="https://github.com/GuilhermeDunguel.png" />
+            <AvatarImage src="https://github.com/maykbrito.png" />
             <AvatarFallback />
           </Avatar>
         )

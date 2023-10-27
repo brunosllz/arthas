@@ -69,6 +69,13 @@ module.exports = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: '100%',
+          },
+        },
+      },
     },
   },
   plugins: [
@@ -77,7 +84,7 @@ module.exports = {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     require('tailwind-scrollbar')({ nocompatible: true }),
     plugin(function ({ addUtilities }) {
-      addUtilities({
+      const newUtilities = {
         '.wrapper': {
           width: '100%',
           'max-width': '81rem',
@@ -87,7 +94,12 @@ module.exports = {
         '.page-container': {
           padding: '9rem 0 6rem 0',
         },
-      })
+        '.capitalize-first:first-letter': {
+          textTransform: 'uppercase',
+        },
+      }
+
+      addUtilities(newUtilities, { respectPrefix: true })
     }),
   ],
 }

@@ -29,7 +29,7 @@ const navLinkItems = [
 
 export function Header() {
   return (
-    <header className="fixed z-50 flex w-full border-b border-border bg-opacity-30 py-6 saturate-150 backdrop-blur-lg">
+    <header className="fixed z-50 flex w-full border-b border-border py-6 saturate-150 backdrop-blur-lg">
       <div className="wrapper">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-20">

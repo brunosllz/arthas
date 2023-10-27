@@ -14,7 +14,7 @@ export function AvatarGroupAnimated() {
           <Tooltip key={i}>
             <TooltipTrigger>
               <Avatar className="ring-1 ring-black transition-all hover:z-10 hover:-translate-y-2 hover:ring-2">
-                <AvatarImage src="https://github.com/peedrinhoph.png" />
+                <AvatarImage src="https://github.com/rodrigorgtic.png" />
                 <AvatarFallback />
               </Avatar>
             </TooltipTrigger>

@@ -1,4 +1,4 @@
-import { TextAreaEditor } from '@/components/text-area-editor'
+import { TextAreaEditor } from '@/components/editor'
 import { useController, useFormContext } from 'react-hook-form'
 import { CreateNewProjectSchema } from './new-project-form'
 import { InputMessageError } from '@/components/ui/input'

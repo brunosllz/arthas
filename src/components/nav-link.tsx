@@ -19,7 +19,7 @@ export function NavLink({ disabled = false, ...props }: NavLinkProps) {
       data-active={isActive}
       data-disabled={disabled}
       className={twMerge(
-        'font-medium text-muted-foreground transition-colors data-[disabled=true]:pointer-events-none data-[active=true]:text-primary hover:text-primary',
+        'font-medium leading-none text-muted-foreground transition-colors data-[disabled=true]:pointer-events-none data-[active=true]:text-primary hover:text-primary',
         props.className,
       )}
       {...props}

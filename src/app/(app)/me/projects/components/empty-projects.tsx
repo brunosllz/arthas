@@ -20,7 +20,7 @@ export function EmptyProjects() {
         </div>
 
         <Button className="mt-8" asChild>
-          <Link href="/me/projects/new">Add project</Link>
+          <Link href="/me/project/new">Add project</Link>
         </Button>
       </CardContent>
     </Card>
