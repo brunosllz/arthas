@@ -3,11 +3,13 @@ import {
   MultiStepRoot,
   MultiStepContent,
 } from '../components/multi-step'
-import { Browser } from '../components/browser'
 import { SecondStepForm } from './components/second-step-form'
 import { BackButton } from '../components/back-button'
+import { getOnboardingItensFromCms } from '@/actions/get-onboarding-itens-from-cms'
 
-export default function OnboardingSecondStep() {
+export default async function OnboardingSecondStep() {
+  const { roles, seniorities } = await getOnboardingItensFromCms()
+
   return (
     <div>
       <MultiStepRoot currentStep={2} size={3}>
@@ -26,7 +28,7 @@ export default function OnboardingSecondStep() {
         </p>
       </div>
 
-      <SecondStepForm />
+      <SecondStepForm rolesItens={roles} senioritiesItens={seniorities} />
     </div>
   )
 }
