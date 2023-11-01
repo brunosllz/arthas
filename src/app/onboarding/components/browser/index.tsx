@@ -4,16 +4,32 @@ import { Card, CardContent } from '@/components/ui/card'
 import { BrowserHeader } from './header'
 import { BrowserContent } from './content'
 import { BrowserCanva } from './canva'
-import { useRef } from 'react'
-import { HTMLMotionProps } from 'framer-motion'
+import { AvatarEditor } from './avata-editor'
+import { useBoundStore } from '@/store'
 
 export function Browser() {
-  const BrowserCanvaRef = useRef<HTMLDivElement | null>(null)
+  const cropAvatarImageStatus = useBoundStore(
+    (state) => state.cropAvatarImageStatus,
+  )
 
   return (
     <Card className="h-[832px] overflow-hidden">
-      <CardContent className="relative pb-[52px] pt-[52px]">
-        <BrowserCanva ref={BrowserCanvaRef}>
+      <CardContent
+        data-is-cropping={
+          cropAvatarImageStatus === 'cropping' ||
+          cropAvatarImageStatus === 'loading'
+        }
+        className="relative h-full pb-[52px] pt-[52px] data-[is-cropping=true]:flex data-[is-cropping=true]:items-center data-[is-cropping=true]:justify-center"
+      >
+        {(cropAvatarImageStatus === 'cropping' ||
+          cropAvatarImageStatus === 'loading') && <AvatarEditor />}
+
+        <BrowserCanva
+          isHide={
+            cropAvatarImageStatus === 'cropping' ||
+            cropAvatarImageStatus === 'loading'
+          }
+        >
           <BrowserHeader />
           <BrowserContent />
         </BrowserCanva>

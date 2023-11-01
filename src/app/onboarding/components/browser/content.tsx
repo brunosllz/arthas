@@ -12,8 +12,6 @@ import { MarkdownWrapper } from '@/components/markdown'
 export function BrowserContent() {
   const user = useBoundStore((state) => state.user)
 
-  console.log(user)
-
   return (
     <div className="space-y-6 rounded-lg border border-zinc-900 p-8">
       <div className="overflow-hidden rounded-lg border border-zinc-900">
