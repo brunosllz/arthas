@@ -28,6 +28,11 @@ interface SkillsInputProps {
 
 export function SkillsInput({ disabled }: SkillsInputProps) {
   const { control } = useFormContext<ThirdStepInput>()
+  const { user } = useBoundStore(({ user }) => {
+    return {
+      user,
+    }
+  })
 
   const {
     field,
@@ -36,20 +41,16 @@ export function SkillsInput({ disabled }: SkillsInputProps) {
     name: 'skills',
     control,
     disabled,
-    defaultValue: [],
+    defaultValue: user.skills ?? [],
   })
 
-  const {
-    value: selectedItems,
-    onChange: setSelectedItems,
-    name: inputName,
-  } = field
+  const { value: selectedItems, onChange: setSelectedItems } = field
 
   const inputRef = useRef<HTMLInputElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
-  const addUserInfos = useBoundStore((state) => state.addUserInfos)
+  const setUser = useBoundStore((state) => state.setUser)
 
   const searchTerm = useDebounceValue(search, 400)
 
@@ -63,7 +64,9 @@ export function SkillsInput({ disabled }: SkillsInputProps) {
         },
       })
 
-      return response.data.technologies
+      console.log(response.data.skills)
+
+      return response.data.skills
     },
     enabled: open,
   })
@@ -135,8 +138,8 @@ export function SkillsInput({ disabled }: SkillsInputProps) {
   const hasSearchValue = !!search
 
   useEffect(() => {
-    addUserInfos({
-      [inputName]: selectedItems,
+    setUser({
+      skills: selectedItems,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItems])
@@ -159,6 +162,7 @@ export function SkillsInput({ disabled }: SkillsInputProps) {
                     event.preventDefault()
                     event.stopPropagation()
                   }}
+                  disabled={disabled}
                   onClick={() => handleUnselect(skill)}
                 >
                   <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
@@ -170,7 +174,7 @@ export function SkillsInput({ disabled }: SkillsInputProps) {
           <CommandPrimitive.Input
             id="skills"
             ref={inputRef}
-            value={search}
+            value={search.toLowerCase()}
             onValueChange={setSearch}
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}

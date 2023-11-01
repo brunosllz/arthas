@@ -1,9 +1,9 @@
 import { Card, CardContent } from '@/components/ui/card'
-import {
-  MultiStepLabel,
-  MultiStepRoot,
-  MultiStepContent,
-} from '../components/multi-step'
+import { MultiStepRoot, MultiStepContent } from '../components/multi-step'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { Confetti } from '@/components/confetti'
+
 import {
   ArrowRight,
   ClipboardEdit,
@@ -11,9 +11,6 @@ import {
   Network,
   Users,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { Confetti } from '@/components/confetti'
 
 type CardItems = {
   icon: LucideIcon

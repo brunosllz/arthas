@@ -3,6 +3,7 @@ import { setCookie, destroyCookie } from 'nookies'
 import { api } from '@/libs/axios'
 import axios from 'axios'
 import Compressor from 'compressorjs'
+import { toast } from '@/components/ui/use-toast'
 
 export type UserOnboardingInfos = {
   id: string
@@ -35,6 +36,7 @@ export type OnboardingSlice = {
   croppedAvatarImagePreviewURL: string | null
   croppedAvatarImagePreviewFile: File | null
   cropAvatarImageStatus: 'cropping' | 'cropped' | 'waiting' | 'loading'
+  saveUserSubmitIsLoading: boolean
   getPreviewUrlFromBucket: ({
     imageFile,
     imageUrl,
@@ -57,6 +59,7 @@ const createOnboardingSlice: StateCreator<OnboardingSlice> = (set, get) => ({
   croppedAvatarImagePreviewURL: null,
   croppedAvatarImagePreviewFile: null,
   cropAvatarImageStatus: 'waiting',
+  saveUserSubmitIsLoading: false,
   setUser: (userInfos) => {
     set((state) => ({ user: { ...state.user, ...userInfos } }))
 
@@ -73,78 +76,105 @@ const createOnboardingSlice: StateCreator<OnboardingSlice> = (set, get) => ({
     )
   },
   saveUser: async ({ leaveForLate = false }) => {
-    const user = get().user
+    try {
+      set({
+        saveUserSubmitIsLoading: true,
+      })
 
-    await api.post(`/api/account/user/${user.id}/onboarding/save`, {
-      name: user.name,
-      avatarUrl: user.publicAvatarUrl ?? user.avatarUrl,
-      city: user.city,
-      state: user.state,
-      country: user.country,
-      linkedinLink: user.linkedinLink,
-      githubLink: user.githubLink,
-      aboutMe: leaveForLate ? '' : user.aboutMe,
-      role: user.role,
-      skills: leaveForLate ? [] : user.skills,
-      seniority: user.seniority,
-      slugProfile: user.slugProfile,
-      title: user.title,
-      onboard: new Date(),
-    })
+      const user = get().user
 
-    if (user.signedAvatarUrl) {
-      const file = get().croppedAvatarImagePreviewFile
+      await api.post(`/api/account/user/${user.id}/onboarding/save`, {
+        name: user.name,
+        avatarUrl: user.publicAvatarUrl ?? user.avatarUrl,
+        city: user.city,
+        state: user.state,
+        country: user.country,
+        linkedinLink: user.linkedinLink,
+        githubLink: user.githubLink,
+        aboutMe: leaveForLate ? '' : user.aboutMe,
+        role: user.role,
+        skills: leaveForLate ? [] : user.skills,
+        seniority: user.seniority,
+        slugProfile: user.slugProfile,
+        title: user.title,
+        onboard: new Date(),
+      })
 
-      if (file) {
-        console.log('file', file)
-        console.log('file type', file.type)
+      if (user.signedAvatarUrl) {
+        const file = get().croppedAvatarImagePreviewFile
 
-        await axios.put(user.signedAvatarUrl, file, {
-          headers: {
-            'Content-Type': file.type,
-          },
-        })
+        if (file) {
+          await axios.put(user.signedAvatarUrl, file, {
+            headers: {
+              'Content-Type': file.type,
+            },
+          })
+        }
       }
-    }
 
-    destroyCookie(null, `${onboardingUserCookiesTag}:${user.id}`, { path: '/' })
+      destroyCookie(null, `${onboardingUserCookiesTag}:${user.id}`, {
+        path: '/',
+      })
+    } catch (error) {
+      console.error(error)
+
+      set({
+        saveUserSubmitIsLoading: false,
+      })
+
+      toast({
+        title: 'Ocorreu um error ao salvar suas informações.',
+        description: `Tente novamente mais tarde.`,
+        variant: 'destructive',
+      })
+    }
   },
   async getPreviewUrlFromBucket({ imageFile, imageUrl }) {
-    await new Promise((resolve) => {
-      // eslint-disable-next-line no-new
-      new Compressor(imageFile, {
-        quality: 0.6,
-        convertSize: 70000,
-        success(file) {
-          resolve(
-            set({
-              croppedAvatarImagePreviewFile: file as File,
-            }),
-          )
-        },
+    try {
+      await new Promise((resolve) => {
+        // eslint-disable-next-line no-new
+        new Compressor(imageFile, {
+          quality: 0.6,
+          convertSize: 70000,
+          success(file) {
+            resolve(
+              set({
+                croppedAvatarImagePreviewFile: file as File,
+              }),
+            )
+          },
+        })
       })
-    })
 
-    const fileContentType =
-      get().croppedAvatarImagePreviewFile?.type.split('/')[1]
+      const fileContentType =
+        get().croppedAvatarImagePreviewFile?.type.split('/')[1]
 
-    const { data } = await axios.post('/api/uploads', {
-      fileContentType,
-      uploadPrefix: 'avatar',
-    })
+      const { data } = await axios.post('/api/uploads', {
+        fileContentType,
+        uploadPrefix: 'avatar',
+      })
 
-    const { signedUrl, publicUrl } = data
+      const { signedUrl, publicUrl } = data
 
-    set((state) => ({
-      croppedAvatarImagePreviewURL: imageUrl,
-      cropAvatarImageStatus: 'cropped',
-      user: {
-        ...state.user,
-        avatarUrl: imageUrl,
-        publicAvatarUrl: publicUrl,
-        signedAvatarUrl: signedUrl,
-      },
-    }))
+      set((state) => ({
+        croppedAvatarImagePreviewURL: imageUrl,
+        cropAvatarImageStatus: 'cropped',
+        user: {
+          ...state.user,
+          avatarUrl: imageUrl,
+          publicAvatarUrl: publicUrl,
+          signedAvatarUrl: signedUrl,
+        },
+      }))
+    } catch (error) {
+      console.log(error)
+
+      toast({
+        title: 'Ocorreu um error ao editar a sua da foto de perfil.',
+        description: `Tente novamente mais tarde.`,
+        variant: 'destructive',
+      })
+    }
   },
 })
 

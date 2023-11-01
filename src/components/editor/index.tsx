@@ -64,8 +64,11 @@ import { Content } from 'next/font/google'
 interface EditorProps {
   id?: string
   placeholderValue: string
-  disabled?: boolean
-  className?: string
+  config: {
+    disabled?: boolean
+    className?: string
+    maxLength?: number
+  }
   content?: string
   onUpdateMarkdown?: (value: string) => void
   onBlurMarkdown?: (value: string) => void
@@ -75,8 +78,7 @@ export function Editor({
   id,
   onBlurMarkdown,
   onUpdateMarkdown,
-  disabled = false,
-  className,
+  config: { disabled = false, className, maxLength },
   placeholderValue,
   content,
 }: EditorProps) {
@@ -85,6 +87,7 @@ export function Editor({
       placeholderValue,
     }),
     content,
+    parseOptions: { preserveWhitespace: 'full' },
     editorProps: {
       attributes: {
         class: 'outline-none',
@@ -123,6 +126,7 @@ export function Editor({
         id={id}
         disabled={disabled}
         editor={editor}
+        maxLength={maxLength}
         className={twMerge(
           'prose prose-sm prose-invert h-[9.75rem] overflow-y-auto rounded-md border border-input p-4 text-foreground scrollbar scrollbar-track-transparent scrollbar-thumb-secondary scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-w-1 focus-within:outline-none focus-within:ring-1 focus-within:ring-ring prose-p:m-0 ',
           className,

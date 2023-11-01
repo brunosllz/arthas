@@ -31,7 +31,7 @@ model AnswerComment {
 }
 
 model Notification {
-  id                String            @id
+  id                String            @id @default(uuid())
   authorId          String
   recipientId       String
   createdAt         DateTime          @default(now())
@@ -102,7 +102,6 @@ model Technology {
   id       String    @id @default(uuid())
   slug     String    @unique
   projects Project[] @relation("ProjectToTechnology")
-  users    User[]    @relation("TechnologyToUser")
 }
 
 model User {
@@ -124,6 +123,7 @@ model User {
   seniority                 String?
   slugProfile               String                @unique
   title                     String?
+  onboard                   DateTime?
   account                   Account[]
   Answer                    Answer[]
   AnswerComment             AnswerComment[]
@@ -134,7 +134,7 @@ model User {
   session                   Session[]
   teamMember                TeamMember[]
   projectRole               ProjectRole[]         @relation("ProjectRoleToUser")
-  technologies              Technology[]          @relation("TechnologyToUser")
+  skills                    skill[]
 }
 
 model Account {
@@ -166,12 +166,18 @@ model Session {
 }
 
 model InterestedInProject {
-  id         String   @id
+  id         String   @id @default(uuid())
   userId     String
   projectId  String
   occurredAt DateTime @default(now())
-  Project    Project  @relation(fields: [projectId], references: [id])
-  User       User     @relation(fields: [userId], references: [id])
+  project    Project  @relation(fields: [projectId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model skill {
+  id   String @id @default(uuid())
+  slug String @unique
+  user User[]
 }
 
 enum MEMBER_PERMISSION_TYPE {

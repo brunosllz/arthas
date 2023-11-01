@@ -10,39 +10,53 @@ interface RequirementsTextAreaProps {
 
 export function AboutMeTextArea({ disabled }: RequirementsTextAreaProps) {
   const { control } = useFormContext<ThirdStepInput>()
-  const { addUserInfos, user } = useBoundStore((state) => {
+  const { setUser, user } = useBoundStore((state) => {
     return {
-      addUserInfos: state.addUserInfos,
+      setUser: state.setUser,
       user: state.user,
     }
   })
 
   const {
     formState: { errors },
-    field: { onChange, name },
+    field: { onChange, name, value },
   } = useController({
     name: 'aboutMe',
     control,
   })
 
   function onChangeInputValue(name: string, value: string) {
-    addUserInfos({
+    setUser({
       [name]: value,
     })
   }
 
+  const MAX_LENGTH = 1200
+
   return (
     <div className="space-y-1">
-      <Editor
-        id="aboutMe"
-        onUpdateMarkdown={(value) => {
-          onChange(value)
-          onChangeInputValue(name, value)
-        }}
-        disabled={disabled}
-        placeholderValue="Conte-nos sobre você"
-        content={user.aboutMe ?? undefined}
-      />
+      <div className="relative">
+        <Editor
+          id="aboutMe"
+          onUpdateMarkdown={(value) => {
+            onChange(value)
+            onChangeInputValue(name, value)
+          }}
+          config={{ disabled, maxLength: MAX_LENGTH }}
+          placeholderValue="Conte-nos sobre você"
+          content={user.aboutMe ?? undefined}
+        />
+
+        {value && (
+          <span
+            data-in-limit={value.length >= MAX_LENGTH}
+            className="absolute bottom-3 right-3 text-xs font-light data-[in-limit=true]:text-red-500"
+          >
+            {value.length}/{MAX_LENGTH}
+          </span>
+        )}
+      </div>
+
       {errors.aboutMe && (
         <InputMessageError>{errors.aboutMe.message}</InputMessageError>
       )}

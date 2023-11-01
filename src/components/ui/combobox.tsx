@@ -16,14 +16,13 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { twMerge } from 'tailwind-merge'
-import { ComponentProps, useRef, useState } from 'react'
+import { ComponentProps, useState } from 'react'
 import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form'
 
 interface ComboBoxProps<T extends FieldValues = FieldValues>
   extends ComponentProps<typeof PopoverTrigger> {
   items: Array<{
     value: string
-    label: string
   }>
   name: Path<T>
   placeholder: string
@@ -42,7 +41,6 @@ export function Combobox<T extends FieldValues = FieldValues>({
   ...props
 }: ComboBoxProps<T>) {
   const [open, setOpen] = useState(false)
-  const triggerRef = useRef<HTMLButtonElement | null>(null)
 
   const { control } = useFormContext<T>()
 
@@ -54,7 +52,6 @@ export function Combobox<T extends FieldValues = FieldValues>({
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild {...props}>
             <Button
-              ref={triggerRef}
               variant="outline"
               size="input"
               role="combobox"
@@ -62,7 +59,8 @@ export function Combobox<T extends FieldValues = FieldValues>({
               className="w-full justify-between"
             >
               {value ? (
-                items.find((item) => item.value === value)?.label
+                items.find((item) => item.value.toLocaleLowerCase() === value)
+                  ?.value
               ) : (
                 <span className="text-muted-foreground">{placeholder}</span>
               )}
@@ -70,9 +68,7 @@ export function Combobox<T extends FieldValues = FieldValues>({
             </Button>
           </PopoverTrigger>
 
-          <PopoverContent
-            className={`w-[${triggerRef.current?.offsetWidth}px] p-0`}
-          >
+          <PopoverContent className={`w-[--radix-popper-anchor-width] p-0`}>
             <Command>
               <CommandInput placeholder={searchPlaceholder} />
               <CommandEmpty>{notFoundPlaceholder}</CommandEmpty>
@@ -85,8 +81,10 @@ export function Combobox<T extends FieldValues = FieldValues>({
                     onSelect={(currentValue) => {
                       onChange(currentValue === value ? '' : currentValue)
 
-                      if (onChangeValue) {
-                        onChangeValue(name, currentValue)
+                      if (item.value.toLocaleLowerCase() === currentValue) {
+                        if (onChangeValue) {
+                          onChangeValue(name, item.value)
+                        }
                       }
 
                       setOpen(false)
@@ -95,10 +93,12 @@ export function Combobox<T extends FieldValues = FieldValues>({
                     <Check
                       className={twMerge(
                         'mr-2 h-4 w-4',
-                        value === item.value ? 'opacity-100' : 'opacity-0',
+                        value === item.value.toLocaleLowerCase()
+                          ? 'opacity-100'
+                          : 'opacity-0',
                       )}
                     />
-                    {item.label}
+                    {item.value}
                   </CommandItem>
                 ))}
               </CommandGroup>

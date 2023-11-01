@@ -12,7 +12,6 @@ export const BrowserCanva = forwardRef<HTMLDivElement, BrowserCanvaProps>(
   (props, ref) => {
     const { x, y, scale } = useBoundStore((state) => state.animatedBrowser)
 
-    console.log(props.isHide)
     return (
       <motion.div
         ref={ref}

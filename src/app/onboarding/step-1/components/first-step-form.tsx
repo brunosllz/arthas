@@ -3,6 +3,9 @@
 import { ChangeEvent, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useBoundStore } from '@/store'
+import { useRouter } from 'next/navigation'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,26 +15,32 @@ import {
   InputRoot,
 } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
+
+import { Loader2, Upload } from 'lucide-react'
 
 const nextStepInput = z.object({
-  slugProfile: z.string().min(1),
-  name: z.string().min(1),
-  title: z.string().min(1),
+  slugProfile: z.string().min(1, { message: 'Informe a url do seu perfil.' }),
+  name: z.string().min(1, { message: 'Informe o seu nome completo.' }),
+  title: z.string().min(1, { message: 'Informe o título do seu perfil.' }),
 })
 
 type NextStepInput = z.infer<typeof nextStepInput>
 
 export function FirstStepForm() {
-  const { addUserInfos, user } = useBoundStore()
+  const { setUser, user, cropAvatarImageStatus } = useBoundStore((state) => {
+    return {
+      setUser: state.setUser,
+      user: state.user,
+      cropAvatarImageStatus: state.cropAvatarImageStatus,
+    }
+  })
   const router = useRouter()
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setValue,
+    formState: { errors, isSubmitting: nextStepFormIsSubmitting },
   } = useForm<NextStepInput>({
     resolver: zodResolver(nextStepInput),
   })
@@ -44,9 +53,33 @@ export function FirstStepForm() {
     const name = event.target.name
     const value = event.target.value
 
-    addUserInfos({
+    if (name === 'slugProfile') {
+      const valueChanged = value.replace(/[^a-zA-Z0-9-]+/g, '-')
+
+      setValue('slugProfile', valueChanged)
+
+      return setUser({
+        [name]: valueChanged,
+      })
+    }
+
+    setUser({
       [name]: value,
     })
+  }
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const image = e.target.files[0]
+      if (image) {
+        const imagePreviewURL = URL.createObjectURL(image)
+
+        useBoundStore.setState({
+          croppedAvatarImagePreviewURL: imagePreviewURL,
+          cropAvatarImageStatus: 'cropping',
+        })
+      }
+    }
   }
 
   useEffect(() => {
@@ -58,6 +91,9 @@ export function FirstStepForm() {
       },
     })
   }, [])
+
+  const isCroppingAvatarImage =
+    cropAvatarImageStatus === 'cropping' || cropAvatarImageStatus === 'loading'
 
   return (
     <form
@@ -72,6 +108,7 @@ export function FirstStepForm() {
           <InputControl
             id="slugProfile"
             defaultValue={user.slugProfile}
+            disabled={nextStepFormIsSubmitting || isCroppingAvatarImage}
             placeholder="john-doe"
             className="pl-2"
             {...register('slugProfile', {
@@ -87,11 +124,22 @@ export function FirstStepForm() {
       </div>
 
       <div className="space-y-3">
-        <Label htmlFor="avatarUrl">Selecione sua foto de perfil</Label>
+        <Label htmlFor="avatarUrl">
+          Selecione sua foto de perfil
+          <div className="mt-3 flex h-[3.25rem] cursor-pointer items-center justify-between rounded-md border border-input px-4 text-muted-foreground shadow-sm focus-within:ring-1 focus-within:ring-ring">
+            <span>Carregar do computador</span>
+            <Upload size={16} />
 
-        <InputRoot>
-          <InputControl id="avatarUrl" placeholder="Carregar foto" />
-        </InputRoot>
+            <input
+              id="avatarUrl"
+              type="file"
+              disabled={nextStepFormIsSubmitting || isCroppingAvatarImage}
+              className="sr-only"
+              onChange={handleFileChange}
+              multiple={false}
+            />
+          </div>
+        </Label>
       </div>
 
       <div className="space-y-3">
@@ -101,6 +149,7 @@ export function FirstStepForm() {
           <InputControl
             id="name"
             defaultValue={user.name}
+            disabled={nextStepFormIsSubmitting || isCroppingAvatarImage}
             placeholder="John doe"
             {...register('name', {
               required: true,
@@ -121,6 +170,7 @@ export function FirstStepForm() {
           <InputControl
             id="title"
             defaultValue={user.title}
+            disabled={nextStepFormIsSubmitting || isCroppingAvatarImage}
             placeholder="CEO at Dev Xperience"
             {...register('title', {
               required: true,
@@ -134,8 +184,16 @@ export function FirstStepForm() {
         )}
       </div>
 
-      <Button size="xl" className="w-full font-semibold">
-        Avançar
+      <Button
+        size="xl"
+        className="w-full font-semibold"
+        disabled={nextStepFormIsSubmitting || isCroppingAvatarImage}
+      >
+        {nextStepFormIsSubmitting ? (
+          <Loader2 className="animate-spin" size={16} />
+        ) : (
+          'Avançar'
+        )}
       </Button>
     </form>
   )

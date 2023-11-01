@@ -19,6 +19,9 @@ export async function getCurrentUser() {
     where: {
       id: sessionUser.uId,
     },
+    include: {
+      skills: true,
+    },
   })
 
   return user

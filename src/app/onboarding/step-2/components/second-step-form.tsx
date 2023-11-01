@@ -2,30 +2,56 @@
 
 import { ChangeEvent, useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 import { useBoundStore } from '@/store'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Role, Seniority } from '@/actions/get-onboarding-itens-from-cms'
+import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
-import { InputControl, InputPrefix, InputRoot } from '@/components/ui/input'
+import {
+  InputControl,
+  InputMessageError,
+  InputPrefix,
+  InputRoot,
+} from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
 import { Combobox } from '@/components/ui/combobox'
 
+import { Loader2 } from 'lucide-react'
+
 const secondStepInput = z.object({
-  role: z.string().min(1),
-  seniority: z.string().min(1),
-  city: z.string().min(1),
-  state: z.string().min(1),
-  country: z.string().min(1),
+  role: z
+    .string({ required_error: 'Selecione a sua função.' })
+    .min(1, { message: 'Informe a sua função.' }),
+  seniority: z
+    .string({ required_error: 'Selecione a sua função.' })
+    .min(1, { message: 'Informe a sua senioridade.' }),
+  city: z
+    .string({ required_error: 'Informe a sua cidade.' })
+    .min(1, { message: 'Informe a sua cidade.' }),
+  state: z
+    .string({ required_error: 'Informe o seu estado.' })
+    .min(1, { message: 'Informe o seu estado.' }),
+  country: z
+    .string({ required_error: 'Informe o seu país.' })
+    .min(1, { message: 'Informe o seu país.' }),
   githubLink: z.string().optional(),
   linkedinLink: z.string().optional(),
 })
 
 export type SecondStepInput = z.infer<typeof secondStepInput>
 
-export function SecondStepForm() {
-  const { addUserInfos, user, animatedBrowser } = useBoundStore()
+type SecondStepFormProps = {
+  rolesItens: Role[]
+  senioritiesItens: Seniority[]
+}
+
+export function SecondStepForm({
+  rolesItens,
+  senioritiesItens,
+}: SecondStepFormProps) {
+  const { setUser, user, animatedBrowser } = useBoundStore()
   const router = useRouter()
 
   const form = useForm<SecondStepInput>({
@@ -33,13 +59,19 @@ export function SecondStepForm() {
     defaultValues: {
       role: user.role,
       seniority: user.seniority,
+      city: user.city,
+      state: user.state,
+      country: user.country,
+      githubLink: user.githubLink?.split('/').pop(),
+      linkedinLink: user.linkedinLink?.split('/').pop(),
     },
   })
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setValue,
+    formState: { errors, isSubmitting: nextStepFormIsSubmitting },
   } = form
 
   function nextStepSubmit() {
@@ -50,13 +82,33 @@ export function SecondStepForm() {
     const name = event.target.name
     const value = event.target.value
 
-    addUserInfos({
+    if (name === 'linkedinLink') {
+      const valueChanged = value.replace(/[^a-zA-Z0-9-]+/g, '-')
+
+      setValue('linkedinLink', valueChanged)
+
+      return setUser({
+        [name]: `https://linkedin.com/in/${valueChanged}`,
+      })
+    }
+
+    if (name === 'githubLink') {
+      const valueChanged = value.replace(/[^a-zA-Z0-9-]+/g, '-')
+
+      setValue('githubLink', valueChanged)
+
+      return setUser({
+        [name]: `https://github.com/${value}`,
+      })
+    }
+
+    setUser({
       [name]: value,
     })
   }
 
   function onChangeComboboxValue(name: string, value: string) {
-    addUserInfos({
+    setUser({
       [name]: value,
     })
   }
@@ -77,34 +129,13 @@ export function SecondStepForm() {
         className="mt-[2.625rem] space-y-6"
         onSubmit={handleSubmit(nextStepSubmit)}
       >
-        <div className="flex items-end gap-4">
+        <div className="flex items-start gap-4">
           <div className="w-full space-y-3">
             <Label>Função *</Label>
 
             <Combobox<SecondStepInput>
               name="role"
-              items={[
-                {
-                  value: 'next.js',
-                  label: 'Next.js',
-                },
-                {
-                  value: 'sveltekit',
-                  label: 'SvelteKit',
-                },
-                {
-                  value: 'nuxt.js',
-                  label: 'Nuxt.js',
-                },
-                {
-                  value: 'remix',
-                  label: 'Remix',
-                },
-                {
-                  value: 'astro',
-                  label: 'Astro',
-                },
-              ]}
+              items={rolesItens}
               notFoundPlaceholder="Não foi possível encontrar está função."
               placeholder="Selecione uma função"
               searchPlaceholder="Pesquisar função"
@@ -123,6 +154,10 @@ export function SecondStepForm() {
                 })
               }}
             />
+
+            {errors.role && (
+              <InputMessageError>{errors.role?.message}</InputMessageError>
+            )}
           </div>
 
           <div className="w-full space-y-3">
@@ -130,28 +165,7 @@ export function SecondStepForm() {
 
             <Combobox<SecondStepInput>
               name="seniority"
-              items={[
-                {
-                  value: 'next.js',
-                  label: 'Next.js',
-                },
-                {
-                  value: 'sveltekit',
-                  label: 'SvelteKit',
-                },
-                {
-                  value: 'nuxt.js',
-                  label: 'Nuxt.js',
-                },
-                {
-                  value: 'remix',
-                  label: 'Remix',
-                },
-                {
-                  value: 'astro',
-                  label: 'Astro',
-                },
-              ]}
+              items={senioritiesItens}
               notFoundPlaceholder="Não foi possível encontrar está senioridade."
               placeholder="Selecione sua senioridade"
               searchPlaceholder="Pesquisar senioridade"
@@ -170,6 +184,10 @@ export function SecondStepForm() {
                 })
               }}
             />
+
+            {errors.seniority && (
+              <InputMessageError>{errors.seniority?.message}</InputMessageError>
+            )}
           </div>
         </div>
 
@@ -179,8 +197,8 @@ export function SecondStepForm() {
           <InputRoot>
             <InputControl
               id="city"
-              defaultValue={user.city}
               placeholder="Bento Gonçalves"
+              disabled={nextStepFormIsSubmitting}
               onFocus={() => {
                 if (animatedBrowser.x === 0) {
                   return
@@ -200,7 +218,11 @@ export function SecondStepForm() {
               })}
             />
           </InputRoot>
+          {errors.city && (
+            <InputMessageError>{errors.city.message}</InputMessageError>
+          )}
         </div>
+
         <div className="flex gap-4">
           <div className="w-16 space-y-3">
             <Label htmlFor="state">Estado *</Label>
@@ -208,7 +230,8 @@ export function SecondStepForm() {
             <InputRoot>
               <InputControl
                 id="state"
-                defaultValue={user.state}
+                maxLength={2}
+                disabled={nextStepFormIsSubmitting}
                 placeholder="RS"
                 onFocus={() => {
                   if (animatedBrowser.x === 0) {
@@ -229,6 +252,10 @@ export function SecondStepForm() {
                 })}
               />
             </InputRoot>
+
+            {errors.state && (
+              <InputMessageError>{errors.state.message}</InputMessageError>
+            )}
           </div>
 
           <div className="flex-1 space-y-3">
@@ -237,8 +264,8 @@ export function SecondStepForm() {
             <InputRoot>
               <InputControl
                 id="country"
-                defaultValue={user.country}
                 placeholder="Brasil"
+                disabled={nextStepFormIsSubmitting}
                 onFocus={() => {
                   if (animatedBrowser.x === 0) {
                     return
@@ -258,6 +285,10 @@ export function SecondStepForm() {
                 })}
               />
             </InputRoot>
+
+            {errors.country && (
+              <InputMessageError>{errors.country.message}</InputMessageError>
+            )}
           </div>
         </div>
 
@@ -268,8 +299,8 @@ export function SecondStepForm() {
             <InputPrefix>linkedin.com/in/</InputPrefix>
             <InputControl
               id="linkedin"
-              defaultValue={user.linkedinLink}
               placeholder="dev-xperience"
+              disabled={nextStepFormIsSubmitting}
               onFocus={() => {
                 if (animatedBrowser.x === -480) {
                   return
@@ -298,8 +329,8 @@ export function SecondStepForm() {
             <InputPrefix>github.com/</InputPrefix>
             <InputControl
               id="github"
-              defaultValue={user.githubLink?.split('/').pop()}
               placeholder="devxperience"
+              disabled={nextStepFormIsSubmitting}
               onFocus={() => {
                 if (animatedBrowser.x === -480) {
                   return
@@ -322,7 +353,11 @@ export function SecondStepForm() {
         </div>
 
         <Button size="xl" className="w-full font-semibold">
-          Avançar
+          {nextStepFormIsSubmitting ? (
+            <Loader2 className="animate-spin" size={16} />
+          ) : (
+            'Avançar'
+          )}
         </Button>
       </form>
     </FormProvider>

@@ -1,6 +1,6 @@
 'use client'
 
-import { ChangeEvent, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useBoundStore } from '@/store'
 import { z } from 'zod'
@@ -11,16 +11,29 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { AboutMeTextArea } from './about-me-text-area'
 import { SkillsInput } from './skills-input'
+import { Loader2 } from 'lucide-react'
 
 const thirdStepInput = z.object({
-  aboutMe: z.string().optional(),
+  aboutMe: z
+    .string()
+    .max(1200, { message: 'Limite máximo de 1200 caracteres.' })
+    .optional(),
   skills: z.array(z.string(), { required_error: 'Select a technology' }),
 })
 
 export type ThirdStepInput = z.infer<typeof thirdStepInput>
 
 export function ThirdStepForm() {
-  const { addUserInfos, user } = useBoundStore()
+  const { saveUser, saveUserSubmitIsLoading } = useBoundStore(
+    ({ saveUser, saveUserSubmitIsLoading }) => {
+      return {
+        saveUser,
+        saveUserSubmitIsLoading,
+      }
+    },
+  )
+  const [submitLeaveForLateIsLoading, setSubmitLeaveForLateIsLoading] =
+    useState(false)
   const router = useRouter()
 
   const form = useForm<ThirdStepInput>({
@@ -29,23 +42,16 @@ export function ThirdStepForm() {
 
   const { handleSubmit } = form
 
-  function nextStepSubmit() {
-    router.push('/onboarding/step-3')
+  async function nextStepSubmit() {
+    await saveUser({})
+    router.push('/onboarding/welcome')
   }
 
-  function onChangeInputValue(event: ChangeEvent<HTMLInputElement>) {
-    const name = event.target.name
-    const value = event.target.value
+  async function leaveForLater() {
+    setSubmitLeaveForLateIsLoading(true)
 
-    addUserInfos({
-      [name]: value,
-    })
-  }
-
-  function onChangeComboboxValue(name: string, value: string) {
-    addUserInfos({
-      [name]: value,
-    })
+    await saveUser({ leaveForLate: true })
+    router.push('/onboarding/welcome')
   }
 
   useEffect(() => {
@@ -67,22 +73,45 @@ export function ThirdStepForm() {
         <div className="space-y-3.5">
           <Label htmlFor="aboutMe">Sobre</Label>
 
-          <AboutMeTextArea />
+          <AboutMeTextArea
+            disabled={saveUserSubmitIsLoading || submitLeaveForLateIsLoading}
+          />
         </div>
 
         <div className="space-y-3.5">
           <Label htmlFor="technologies">Habilidades</Label>
 
-          <SkillsInput />
+          <SkillsInput
+            disabled={saveUserSubmitIsLoading || submitLeaveForLateIsLoading}
+          />
         </div>
 
         <div className="space-y-5">
-          <Button size="xl" className="w-full font-semibold">
-            Avançar
+          <Button
+            size="xl"
+            className="w-full font-semibold"
+            disabled={saveUserSubmitIsLoading || submitLeaveForLateIsLoading}
+          >
+            {saveUserSubmitIsLoading || submitLeaveForLateIsLoading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              'Avançar'
+            )}
           </Button>
 
-          <Button size="xl" className="w-full font-semibold" variant="outline">
-            Deixar para depois
+          <Button
+            size="xl"
+            className="w-full font-semibold"
+            variant="outline"
+            disabled={saveUserSubmitIsLoading || submitLeaveForLateIsLoading}
+            type="button"
+            onClick={leaveForLater}
+          >
+            {saveUserSubmitIsLoading || submitLeaveForLateIsLoading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              'Deixar para depois'
+            )}
           </Button>
         </div>
       </form>
