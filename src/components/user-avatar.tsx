@@ -1,22 +1,21 @@
-'use client'
-
-import { useSession } from 'next-auth/react'
-import { Avatar, AvatarImage } from './ui/avatar'
+import { Avatar } from './ui/avatar'
 import { AvatarProps } from '@radix-ui/react-avatar'
 import { twMerge } from 'tailwind-merge'
 import { Skeleton } from './ui/skeleton'
+import { getCurrentUser } from '@/actions/get-current-user'
+import Image from 'next/image'
 
 type UserAvatarProps = AvatarProps
 
-export function UserAvatar(props: UserAvatarProps) {
-  const { data } = useSession()
+export async function UserAvatar(props: UserAvatarProps) {
+  const user = await getCurrentUser()
 
-  const user = data?.user
+  console.log(user)
 
   return (
     <Avatar className={twMerge('h-12 w-12')} {...props}>
       {user?.avatarUrl ? (
-        <AvatarImage src={user.avatarUrl} alt="" />
+        <Image src={user.avatarUrl} alt={user.name} width={48} height={48} />
       ) : (
         <Skeleton className="h-full w-full" />
       )}

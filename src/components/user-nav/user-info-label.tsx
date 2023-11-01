@@ -1,11 +1,7 @@
-'use client'
+import { getCurrentUser } from '@/actions/get-current-user'
 
-import { useSession } from 'next-auth/react'
-
-export function UserInfoLabel() {
-  const { data } = useSession()
-
-  const user = data?.user
+export async function UserInfoLabel() {
+  const user = await getCurrentUser()
 
   return (
     <div className="flex flex-col space-y-2">

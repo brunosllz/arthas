@@ -1,13 +1,9 @@
-'use client'
-
-import { useSession } from 'next-auth/react'
 import { DropdownMenuItem } from '../ui/dropdown-menu'
 import Link from 'next/link'
+import { getCurrentUser } from '@/actions/get-current-user'
 
-export function ProfileLink() {
-  const { data } = useSession()
-
-  const user = data?.user
+export async function ProfileLink() {
+  const user = await getCurrentUser()
 
   return (
     <DropdownMenuItem asChild>
