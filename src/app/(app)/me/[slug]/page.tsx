@@ -19,6 +19,7 @@ import {
   Plus,
   Star,
 } from 'lucide-react'
+import { MarkdownWrapper } from '@/components/markdown'
 
 interface MeProps {
   params: {
@@ -29,6 +30,9 @@ async function getUser({ slug }: { slug: string }) {
   const user = await prisma.user.findUnique({
     where: {
       slugProfile: slug,
+    },
+    include: {
+      skills: true,
     },
   })
 
@@ -65,29 +69,26 @@ export default async function Me({ params }: MeProps) {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <strong className="text-3xl font-semibold">
-                    Bruno Silveira Luiz
+                    {user.name}
                   </strong>
 
                   <span className="block text-lg text-muted-foreground">
-                    Ceo e Founder da{' '}
-                    <span className="font-medium text-zinc-50">
-                      Dev Xperience
-                    </span>
+                    {user.title}
                   </span>
 
                   <div className="space-x-3 pt-2">
                     <Badge variant="static" size="lg">
-                      Dev Front-end
+                      {user.role}
                     </Badge>
                     <Badge variant="static" size="lg">
-                      Pleno
+                      {user.seniority}
                     </Badge>
                   </div>
                 </div>
 
                 <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-light text-zinc-500">
                   <MapPin size={14} />
-                  Bento Gonçalves, RS, Brasil
+                  {user.city}, {user.state}, {user.country}
                 </span>
               </div>
 
@@ -142,13 +143,7 @@ export default async function Me({ params }: MeProps) {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            <p className="leading-relaxed text-muted-foreground">
-              Desenvolvedor de Software apaixonado por criar soluções inovadoras
-              e eficientes. Com experiência em desenvolvimento web, mobile,
-              linguagens de programação, busco desafios que me permitam
-              aprimorar minhas habilidades e contribuir para projetos de
-              sucesso.
-            </p>
+            {user.aboutMe && <MarkdownWrapper>{user.aboutMe}</MarkdownWrapper>}
 
             <Separator />
 
@@ -156,10 +151,11 @@ export default async function Me({ params }: MeProps) {
               <strong className="text-lg font-medium">Habilidades</strong>
 
               <div className="space-x-3">
-                <Badge variant="static">JavaScript</Badge>
-                <Badge variant="static">React</Badge>
-                <Badge variant="static">Node.js</Badge>
-                <Badge variant="static">Php</Badge>
+                {user.skills.map((skill) => (
+                  <Badge key={skill.id} variant="static">
+                    {skill.slug}
+                  </Badge>
+                ))}
               </div>
             </div>
           </CardContent>
