@@ -1,3 +1,5 @@
+import { getRolesAndSenioritiesItensFromCms } from '@/actions/get-roles-and-seniorities-itens-from-cms'
+
 import {
   MultiStepLabel,
   MultiStepRoot,
@@ -5,10 +7,9 @@ import {
 } from '../components/multi-step'
 import { SecondStepForm } from './components/second-step-form'
 import { BackButton } from '../components/back-button'
-import { getOnboardingItensFromCms } from '@/actions/get-onboarding-itens-from-cms'
 
 export default async function OnboardingSecondStep() {
-  const { roles, seniorities } = await getOnboardingItensFromCms()
+  const { roles, seniorities } = await getRolesAndSenioritiesItensFromCms()
 
   return (
     <div>

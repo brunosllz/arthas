@@ -5,7 +5,10 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useBoundStore } from '@/store'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Role, Seniority } from '@/actions/get-onboarding-itens-from-cms'
+import {
+  Role,
+  Seniority,
+} from '@/actions/get-roles-and-seniorities-itens-from-cms'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
@@ -71,6 +74,7 @@ export function SecondStepForm({
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors, isSubmitting: nextStepFormIsSubmitting },
   } = form
 
@@ -136,6 +140,7 @@ export function SecondStepForm({
             <Combobox<SecondStepInput>
               name="role"
               items={rolesItens}
+              control={control}
               notFoundPlaceholder="Não foi possível encontrar está função."
               placeholder="Selecione uma função"
               searchPlaceholder="Pesquisar função"
@@ -166,6 +171,7 @@ export function SecondStepForm({
             <Combobox<SecondStepInput>
               name="seniority"
               items={senioritiesItens}
+              control={control}
               notFoundPlaceholder="Não foi possível encontrar está senioridade."
               placeholder="Selecione sua senioridade"
               searchPlaceholder="Pesquisar senioridade"

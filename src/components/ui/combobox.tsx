@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/popover'
 import { twMerge } from 'tailwind-merge'
 import { ComponentProps, useState } from 'react'
-import { Controller, FieldValues, Path, useFormContext } from 'react-hook-form'
+import { Control, Controller, FieldValues, Path } from 'react-hook-form'
 
 interface ComboBoxProps<T extends FieldValues = FieldValues>
   extends ComponentProps<typeof PopoverTrigger> {
@@ -25,6 +25,7 @@ interface ComboBoxProps<T extends FieldValues = FieldValues>
     value: string
   }>
   name: Path<T>
+  control: Control<T>
   placeholder: string
   searchPlaceholder: string
   notFoundPlaceholder: string
@@ -35,14 +36,13 @@ export function Combobox<T extends FieldValues = FieldValues>({
   name,
   items,
   notFoundPlaceholder,
+  control,
   placeholder,
   searchPlaceholder,
   onChangeValue,
   ...props
 }: ComboBoxProps<T>) {
   const [open, setOpen] = useState(false)
-
-  const { control } = useFormContext<T>()
 
   return (
     <Controller
