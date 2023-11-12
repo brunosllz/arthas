@@ -27,13 +27,15 @@ const nextStepInput = z.object({
 type NextStepInput = z.infer<typeof nextStepInput>
 
 export function FirstStepForm() {
-  const { setUser, user, cropAvatarImageStatus } = useBoundStore((state) => {
-    return {
-      setUser: state.setUser,
-      user: state.user,
-      cropAvatarImageStatus: state.cropAvatarImageStatus,
-    }
-  })
+  const { setUser, user, cropAvatarImageStatus } = useBoundStore(
+    ({ user, setUser, cropAvatarImageStatus }) => {
+      return {
+        user,
+        setUser,
+        cropAvatarImageStatus,
+      }
+    },
+  )
   const router = useRouter()
 
   const {
@@ -43,6 +45,11 @@ export function FirstStepForm() {
     formState: { errors, isSubmitting: nextStepFormIsSubmitting },
   } = useForm<NextStepInput>({
     resolver: zodResolver(nextStepInput),
+    defaultValues: {
+      name: user.name,
+      slugProfile: user.slugProfile,
+      title: user.title,
+    },
   })
 
   function nextStepSubmit() {
@@ -107,7 +114,6 @@ export function FirstStepForm() {
           <InputPrefix>devxperience.app/</InputPrefix>
           <InputControl
             id="slugProfile"
-            defaultValue={user.slugProfile}
             disabled={nextStepFormIsSubmitting || isCroppingAvatarImage}
             placeholder="john-doe"
             className="pl-2"
@@ -148,7 +154,6 @@ export function FirstStepForm() {
         <InputRoot hasError={!!errors.name}>
           <InputControl
             id="name"
-            defaultValue={user.name}
             disabled={nextStepFormIsSubmitting || isCroppingAvatarImage}
             placeholder="John doe"
             {...register('name', {
@@ -169,7 +174,6 @@ export function FirstStepForm() {
         <InputRoot hasError={!!errors.title}>
           <InputControl
             id="title"
-            defaultValue={user.title}
             disabled={nextStepFormIsSubmitting || isCroppingAvatarImage}
             placeholder="CEO at Dev Xperience"
             {...register('title', {

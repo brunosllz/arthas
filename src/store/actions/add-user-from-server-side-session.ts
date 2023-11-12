@@ -7,7 +7,7 @@ import { useBoundStore } from '..'
 import {
   UserOnboardingInfos,
   onboardingUserCookiesTag,
-} from './onboarding-slice'
+} from '../slices/onboarding-slice'
 
 export const addUserFromServerSideSession = async () => {
   const currentUser = await getCurrentUser()
@@ -48,16 +48,16 @@ export const addUserFromServerSideSession = async () => {
   useBoundStore.setState({
     user: {
       id: currentUser.id,
-      aboutMe: currentUser.aboutMe ?? undefined,
-      avatarUrl: currentUser.avatarUrl,
+      aboutMe: currentUser.about_me ?? undefined,
+      avatarUrl: currentUser.avatar_url,
       city: currentUser.city ?? undefined,
       country: currentUser.country ?? undefined,
-      githubLink: currentUser.githubLink ?? undefined,
-      linkedinLink: currentUser.linkedinLink ?? undefined,
+      githubLink: currentUser.github_link ?? undefined,
+      linkedinLink: currentUser.linkedin_link ?? undefined,
       name: currentUser.name,
       role: currentUser.role ?? undefined,
       seniority: currentUser.seniority ?? undefined,
-      slugProfile: currentUser.slugProfile,
+      slugProfile: currentUser.slug_profile,
       state: currentUser.state ?? undefined,
       title: currentUser.title ?? undefined,
       skills: currentUser.skills.map((skill) => skill.slug),

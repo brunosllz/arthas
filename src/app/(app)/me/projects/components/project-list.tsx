@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { ProjectCard } from './project-card'
-import { externalApi } from '@/libs/axios'
+import { clientExternalApi } from '@/libs/axios'
 import { ProjectListCardSkeleton } from './project-card-skeleton'
 import { EmptyProjects } from './empty-projects'
 
@@ -28,10 +28,9 @@ export function ProjectList() {
   const { data: projects, isLoading: projectsIsLoading } = useQuery<Project[]>({
     queryKey: ['projects'],
     queryFn: async () => {
-      const { data: response } = await externalApi.get('projects/me')
+      const { data: response } = await clientExternalApi.get('projects/me')
       return response.projects
     },
-    refetchOnWindowFocus: false,
     retry: false,
   })
 

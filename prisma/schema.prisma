@@ -7,177 +7,175 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Answer {
-  id            String          @id @default(uuid())
-  content       String
-  authorId      String
-  projectId     String
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime?       @updatedAt
-  User          User            @relation(fields: [authorId], references: [id])
-  project       Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  answerComment AnswerComment[]
+model accounts {
+  id                  String  @id @default(uuid())
+  user_id             String
+  type                String
+  provider            String
+  provider_account_id String
+  refresh_token       String?
+  access_token        String?
+  expires_at          Int?
+  token_type          String?
+  scope               String?
+  id_token            String?
+  session_state       String?
+  users               users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([provider, provider_account_id])
+  @@index([user_id])
 }
 
-model AnswerComment {
-  id        String    @id @default(uuid())
-  content   String
-  authorId  String
-  answerId  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  answer    Answer    @relation(fields: [answerId], references: [id], onDelete: Cascade)
-  user      User      @relation(fields: [authorId], references: [id])
+model answer_comments {
+  id         String    @id @default(uuid())
+  content    String
+  author_id  String
+  answer_id  String
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+  answers    answers   @relation(fields: [answer_id], references: [id], onDelete: Cascade)
+  users      users     @relation(fields: [author_id], references: [id])
 }
 
-model Notification {
-  id                String            @id @default(uuid())
-  authorId          String
-  recipientId       String
-  createdAt         DateTime          @default(now())
-  readAt            DateTime?
-  title             String
-  type              NOTIFICATION_TYPE
-  ctaTitle          String[]
-  linkTo            String
-  authorIdToUser    User              @relation("NotificationAuthorIdToUser", fields: [authorId], references: [id])
-  recipientIdToUser User              @relation("NotificationRecipientIdToUser", fields: [recipientId], references: [id])
+model answers {
+  id              String            @id @default(uuid())
+  content         String
+  author_id       String
+  project_id      String
+  created_at      DateTime          @default(now())
+  updated_at      DateTime?
+  answer_comments answer_comments[]
+  users           users             @relation(fields: [author_id], references: [id])
+  projects        projects          @relation(fields: [project_id], references: [id], onDelete: Cascade)
 }
 
-model Project {
-  id                  String                @id @default(uuid())
-  authorId            String
-  slug                String
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime?             @updatedAt
-  imageUrl            String
-  name                String
-  status              PROJECT_STATUS
-  meetingDate         String?
-  meetingType         MEETING_TYPE
-  requirements        String
-  description         String
-  meetingOccurredTime String
-  answers             Answer[]
-  InterestedInProject InterestedInProject[]
-  users               User                  @relation(fields: [authorId], references: [id])
-  projectRoles        ProjectRole[]
-  teamMembers         TeamMember[]
-  technologies        Technology[]          @relation("ProjectToTechnology")
-
-  @@unique([authorId, slug])
+model interested_in_projects {
+  id          String            @id @default(uuid())
+  user_id     String
+  project_id  String
+  status      INTERESTED_STATUS @default(pending)
+  occurred_at DateTime          @default(now())
+  projects    projects          @relation(fields: [project_id], references: [id])
+  users       users             @relation(fields: [user_id], references: [id])
 }
 
-model ProjectRole {
-  id            String  @id @default(uuid())
-  projectId     String
-  roleId        String
-  membersAmount Int
-  project       Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  role          Role    @relation(fields: [roleId], references: [id])
-  users         User[]  @relation("ProjectRoleToUser")
-
-  @@unique([projectId, roleId])
+model notifications {
+  id                                      String            @id @default(uuid())
+  cta_title                               String[]
+  type                                    NOTIFICATION_TYPE
+  link_to                                 String
+  author_id                               String
+  recipient_id                            String
+  created_at                              DateTime          @default(now())
+  read_at                                 DateTime?
+  title                                   String
+  users_notifications_author_idTousers    users             @relation("notifications_author_idTousers", fields: [author_id], references: [id])
+  users_notifications_recipient_idTousers users             @relation("notifications_recipient_idTousers", fields: [recipient_id], references: [id])
 }
 
-model Role {
-  id           String        @id @default(uuid())
-  name         String        @unique
-  projectRoles ProjectRole[]
+model project_roles {
+  id             String   @id @default(uuid())
+  description    String
+  members_amount Int
+  project_id     String
+  role_id        String
+  projects       projects @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  roles          roles    @relation(fields: [role_id], references: [id])
+  users          users[]  @relation("ProjectRoleToUser")
+
+  @@unique([project_id, role_id])
 }
 
-model TeamMember {
-  id             String                 @id @default(uuid())
-  recipientId    String
-  permissionType MEMBER_PERMISSION_TYPE
-  status         MEMBER_STATUS
-  projectId      String
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime?              @updatedAt
-  project        Project                @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user           User                   @relation(fields: [recipientId], references: [id])
+model projects {
+  id                     String                      @id @default(uuid())
+  author_id              String
+  name                   String
+  description            String
+  status                 PROJECT_STATUS              @default(recruiting)
+  image_url              String
+  banner_url             String?
+  slug                   String
+  available_time_value   Int
+  available_time_unit    PROJECT_AVAILABLE_TIME_UNIT
+  created_at             DateTime                    @default(now())
+  updated_at             DateTime?
+  available_days         Int[]
+  answers                answers[]
+  interested_in_projects interested_in_projects[]
+  project_roles          project_roles[]
+  users                  users                       @relation(fields: [author_id], references: [id])
+  team_members           team_members[]
+  skills                 skills[]                    @relation("ProjectToSkill")
+
+  @@unique([author_id, slug])
 }
 
-model Technology {
-  id       String    @id @default(uuid())
-  slug     String    @unique
-  projects Project[] @relation("ProjectToTechnology")
+model roles {
+  id            String          @id
+  name          String          @unique
+  project_roles project_roles[]
 }
 
-model User {
-  id                        String                @id @default(uuid())
-  name                      String
-  email                     String                @unique
-  avatarUrl                 String
-  city                      String?
-  state                     String?
-  country                   String?
-  linkedinLink              String?
-  githubLink                String?
-  createdAt                 DateTime              @default(now())
-  updatedAt                 DateTime?             @updatedAt
-  aboutMe                   String?
-  overallRate               Decimal               @default(0.0) @db.Decimal(5, 2)
-  profileUrl                String?               @unique
-  role                      String?
-  seniority                 String?
-  slugProfile               String                @unique
-  title                     String?
-  onboard                   DateTime?
-  account                   Account[]
-  Answer                    Answer[]
-  AnswerComment             AnswerComment[]
-  InterestedInProject       InterestedInProject[]
-  authorIdToNotifcation     Notification[]        @relation("NotificationAuthorIdToUser")
-  recipientIdToNotification Notification[]        @relation("NotificationRecipientIdToUser")
-  projects                  Project[]
-  session                   Session[]
-  teamMember                TeamMember[]
-  projectRole               ProjectRole[]         @relation("ProjectRoleToUser")
-  skills                    skill[]
+model sessions {
+  id            String   @id @default(uuid())
+  session_token String   @unique
+  user_id       String
+  expires       DateTime
+  users         users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
 }
 
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refreshToken      String?
-  accessToken       String?
-  expiresAt         Int?
-  tokenType         String?
-  scope             String?
-  idToken           String?
-  sessionState      String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+model skills {
+  id       String     @id @default(uuid())
+  slug     String     @unique
+  projects projects[] @relation("ProjectToSkill")
+  users    users[]    @relation("SkillToUser")
 }
 
-model Session {
-  id           String   @id @default(uuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
+model team_members {
+  id              String                 @id @default(uuid())
+  recipient_id    String
+  permission_type MEMBER_PERMISSION_TYPE @default(member)
+  status          MEMBER_STATUS          @default(pending)
+  project_id      String
+  created_at      DateTime               @default(now())
+  updated_at      DateTime?
+  projects        projects               @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  users           users                  @relation(fields: [recipient_id], references: [id])
 }
 
-model InterestedInProject {
-  id         String   @id @default(uuid())
-  userId     String
-  projectId  String
-  occurredAt DateTime @default(now())
-  project    Project  @relation(fields: [projectId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
-}
-
-model skill {
-  id   String @id @default(uuid())
-  slug String @unique
-  user User[]
+model users {
+  id                                              String                   @id @default(uuid())
+  name                                            String
+  email                                           String                   @unique
+  about_me                                        String?
+  title                                           String?
+  avatar_url                                      String
+  city                                            String?
+  state                                           String?
+  country                                         String?
+  linkedin_link                                   String?
+  github_link                                     String?
+  onboard                                         DateTime?
+  created_at                                      DateTime                 @default(now())
+  updated_at                                      DateTime?
+  profile_url                                     String?                  @unique
+  slug_profile                                    String                   @unique
+  role                                            String?
+  seniority                                       String?
+  overall_rate                                    Decimal                  @default(0.0) @db.Decimal(5, 2)
+  accounts                                        accounts[]
+  answer_comments                                 answer_comments[]
+  answers                                         answers[]
+  interested_in_projects                          interested_in_projects[]
+  notifications_notifications_author_idTousers    notifications[]          @relation("notifications_author_idTousers")
+  notifications_notifications_recipient_idTousers notifications[]          @relation("notifications_recipient_idTousers")
+  projects                                        projects[]
+  sessions                                        sessions[]
+  team_members                                    team_members[]
+  projectRole                                     project_roles[]          @relation("ProjectRoleToUser")
+  skills                                          skills[]                 @relation("SkillToUser")
 }
 
 enum MEMBER_PERMISSION_TYPE {
@@ -192,15 +190,9 @@ enum MEMBER_STATUS {
 }
 
 enum PROJECT_STATUS {
-  draft
   recruiting
+  inProgress
   closed
-}
-
-enum MEETING_TYPE {
-  daily
-  weekly
-  monthly
 }
 
 enum NOTIFICATION_TYPE {
@@ -208,4 +200,15 @@ enum NOTIFICATION_TYPE {
   action
   interaction
   info
+}
+
+enum INTERESTED_STATUS {
+  pending
+  rejected
+  approved
+}
+
+enum PROJECT_AVAILABLE_TIME_UNIT {
+  hour
+  minute
 }

@@ -32,7 +32,7 @@ import {
   MeetingSelectInput,
   WEEK_DAYS,
 } from './meeting-select-input'
-import { externalApi } from '@/libs/axios'
+import { clientExternalApi } from '@/libs/axios'
 import { useSession } from 'next-auth/react'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from '@/components/ui/use-toast'
@@ -157,9 +157,9 @@ export function NewProjectForm() {
 
   const {
     mutateAsync: createNewProject,
-    isLoading: isLoadingCreateNewProject,
-  } = useMutation(
-    async ({
+    isPending: isPendingCreateNewProject,
+  } = useMutation({
+    mutationFn: async ({
       meetingType,
       roles,
       technologies,
@@ -168,7 +168,7 @@ export function NewProjectForm() {
       meetingWeekDay,
       ...props
     }: CreateNewProjectSchema) => {
-      await externalApi.post(
+      await clientExternalApi.post(
         '/projects',
         {
           ...props,
@@ -194,16 +194,14 @@ export function NewProjectForm() {
         },
       )
     },
-    {
-      onSuccess() {
-        toast({
-          title: 'Project created successfully.',
-          description: `You can see it in your projects page.`,
-          variant: 'default',
-        })
-      },
+    onSuccess() {
+      toast({
+        title: 'Project created successfully.',
+        description: `You can see it in your projects page.`,
+        variant: 'default',
+      })
     },
-  )
+  })
 
   const { getInputProps, getRootProps, fileRejections, isDragActive } =
     useDropzone({
@@ -236,7 +234,7 @@ export function NewProjectForm() {
         })
         setInputFileMessageError('')
       },
-      disabled: isLoadingCreateNewProject,
+      disabled: isPendingCreateNewProject,
       maxSize: 51_200, // 50kb
     })
 
@@ -291,7 +289,7 @@ export function NewProjectForm() {
                 id="name"
                 type="text"
                 placeholder="Dev Xperience"
-                disabled={isLoadingCreateNewProject}
+                disabled={isPendingCreateNewProject}
                 {...register('name')}
               />
               {errors.name && (
@@ -335,7 +333,7 @@ export function NewProjectForm() {
               <LabelDescription>Write a short introduction.</LabelDescription>
             </Label>
 
-            <DescriptionTextArea disabled={isLoadingCreateNewProject} />
+            <DescriptionTextArea disabled={isPendingCreateNewProject} />
           </div>
 
           <div className="grid grid-cols-[minmax(16rem,17rem)_minmax(17rem,32.5rem)]  pt-5">
@@ -346,7 +344,7 @@ export function NewProjectForm() {
               </LabelDescription>
             </Label>
 
-            <RolesInput disabled={isLoadingCreateNewProject} />
+            <RolesInput disabled={isPendingCreateNewProject} />
           </div>
 
           <div className="grid grid-cols-[minmax(16rem,17rem)_minmax(17rem,32.5rem)] pt-5">
@@ -354,7 +352,7 @@ export function NewProjectForm() {
               Technologies
             </Label>
 
-            <TechnologiesInput disabled={isLoadingCreateNewProject} />
+            <TechnologiesInput disabled={isPendingCreateNewProject} />
           </div>
 
           <div className="grid grid-cols-[minmax(16rem,17rem)_minmax(17rem,32.5rem)] pt-5">
@@ -365,7 +363,7 @@ export function NewProjectForm() {
               </LabelDescription>
             </Label>
 
-            <MeetingSelectInput disabled={isLoadingCreateNewProject} />
+            <MeetingSelectInput disabled={isPendingCreateNewProject} />
           </div>
 
           <div className="grid grid-cols-[minmax(16rem,17rem)_minmax(17rem,32.5rem)] pt-5">
@@ -376,7 +374,7 @@ export function NewProjectForm() {
               </LabelDescription>
             </Label>
 
-            <RequirementsTextArea disabled={isLoadingCreateNewProject} />
+            <RequirementsTextArea disabled={isPendingCreateNewProject} />
           </div>
         </div>
 
@@ -394,7 +392,7 @@ export function NewProjectForm() {
                   <Select
                     value={value}
                     onValueChange={onChange}
-                    disabled={isLoadingCreateNewProject}
+                    disabled={isPendingCreateNewProject}
                   >
                     <SelectTrigger id="status">
                       <SelectValue

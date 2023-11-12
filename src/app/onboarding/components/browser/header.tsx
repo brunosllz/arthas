@@ -1,5 +1,3 @@
-'use client'
-
 import { useBoundStore } from '@/store'
 import {
   ArrowLeft,
@@ -12,7 +10,7 @@ import {
 } from 'lucide-react'
 
 export function BrowserHeader() {
-  const user = useBoundStore((state) => state.user)
+  const user = useBoundStore.getState().user
 
   return (
     <header className="w-full bg-[#18181B] pt-[0.5625rem]">

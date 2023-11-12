@@ -167,7 +167,7 @@ const createOnboardingSlice: StateCreator<OnboardingSlice> = (set, get) => ({
         },
       }))
     } catch (error) {
-      console.log(error)
+      console.error(error)
 
       toast({
         title: 'Ocorreu um error ao editar a sua da foto de perfil.',

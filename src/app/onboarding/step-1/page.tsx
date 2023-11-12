@@ -1,9 +1,14 @@
+import { Metadata } from 'next'
 import {
   MultiStepLabel,
   MultiStepRoot,
   MultiStepContent,
 } from '../components/multi-step'
 import { FirstStepForm } from './components/first-step-form'
+
+export const metadata: Metadata = {
+  title: 'Onboarding',
+}
 
 export default function OnboardingFistStep() {
   return (

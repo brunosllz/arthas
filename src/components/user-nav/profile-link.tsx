@@ -7,7 +7,7 @@ export async function ProfileLink() {
 
   return (
     <DropdownMenuItem asChild>
-      <Link href={`${user?.profileUrl}`}>Meu perfil</Link>
+      <Link href={`${user?.profile_url}`}>Meu perfil</Link>
     </DropdownMenuItem>
   )
 }

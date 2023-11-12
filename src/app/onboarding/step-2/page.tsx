@@ -1,4 +1,5 @@
 import { getRolesAndSenioritiesItensFromCms } from '@/actions/get-roles-and-seniorities-itens-from-cms'
+import { Metadata } from 'next'
 
 import {
   MultiStepLabel,
@@ -7,6 +8,10 @@ import {
 } from '../components/multi-step'
 import { SecondStepForm } from './components/second-step-form'
 import { BackButton } from '../components/back-button'
+
+export const metadata: Metadata = {
+  title: 'Onboarding',
+}
 
 export default async function OnboardingSecondStep() {
   const { roles, seniorities } = await getRolesAndSenioritiesItensFromCms()

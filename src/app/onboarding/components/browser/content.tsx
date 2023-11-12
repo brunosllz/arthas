@@ -1,5 +1,3 @@
-'use client'
-
 import { useBoundStore } from '@/store'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -10,8 +8,7 @@ import { GithubIcon, Linkedin, MapPin } from 'lucide-react'
 import { MarkdownWrapper } from '@/components/markdown'
 
 export function BrowserContent() {
-  const user = useBoundStore((state) => state.user)
-
+  const user = useBoundStore.getState().user
   return (
     <div className="space-y-6 rounded-lg border border-zinc-900 p-8">
       <div className="overflow-hidden rounded-lg border border-zinc-900">

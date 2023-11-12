@@ -1,5 +1,3 @@
-'use client'
-
 import { Card, CardContent } from '@/components/ui/card'
 import { BrowserHeader } from './header'
 import { BrowserContent } from './content'
@@ -8,9 +6,7 @@ import { AvatarEditor } from './avata-editor'
 import { useBoundStore } from '@/store'
 
 export function Browser() {
-  const cropAvatarImageStatus = useBoundStore(
-    (state) => state.cropAvatarImageStatus,
-  )
+  const cropAvatarImageStatus = useBoundStore.getState().cropAvatarImageStatus
 
   return (
     <Card className="h-[832px] overflow-hidden">

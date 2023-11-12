@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     .default(20)
     .parse(searchParams.get('pageSize'))
 
-  const searchWhere: Prisma.skillWhereInput = {}
+  const searchWhere: Prisma.skillsWhereInput = {}
 
   if (search?.length) {
     searchWhere.slug = {
@@ -27,7 +27,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const foundSkills = await prisma.skill.findMany({
+    const foundSkills = await prisma.skills.findMany({
       where: searchWhere,
       skip: pageIndex * pageSize,
       take: pageSize,
@@ -37,6 +37,6 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ skills })
   } catch (err) {
-    console.log(err)
+    console.error(err)
   }
 }

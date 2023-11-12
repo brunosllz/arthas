@@ -2,12 +2,11 @@
 
 import { useEffect } from 'react'
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
-import { externalApi } from '@/libs/axios'
+import { clientExternalApi } from '@/libs/axios'
 import { useRouter } from 'next/navigation'
 import { useInView } from 'react-intersection-observer'
 import Markdown from 'react-markdown'
 import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 
 import { Notification } from '@/components/notification-panel/list'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -17,17 +16,15 @@ import { NotificationCardSkeleton } from './notification-card-skeleton'
 
 import { Loader2 } from 'lucide-react'
 
-dayjs.extend(relativeTime)
-
 export function NotificationList() {
   const router = useRouter()
   const { ref, inView } = useInView()
 
-  const { mutateAsync: readNotification } = useMutation(
-    async (notificationId: string) => {
-      await externalApi.patch(`/notifications/${notificationId}/read`)
+  const { mutateAsync: readNotification } = useMutation({
+    mutationFn: async (notificationId: string) => {
+      await clientExternalApi.patch(`/notifications/${notificationId}/read`)
     },
-  )
+  })
 
   const {
     data: notificationPages,
@@ -44,7 +41,7 @@ export function NotificationList() {
   }>({
     queryKey: ['notifications'],
     queryFn: async ({ pageParam = 1 }) => {
-      const { data: response } = await externalApi.get(
+      const { data: response } = await clientExternalApi.get(
         `/notifications/from/me?pageIndex=${pageParam}&pageSize=10`,
       )
 
@@ -53,8 +50,7 @@ export function NotificationList() {
     getNextPageParam: (pages) => {
       return pages.page >= pages.lastPage ? false : pages.page + 1
     },
-    refetchOnWindowFocus: false,
-    retry: false,
+    initialPageParam: 1,
   })
 
   let UnreadNotificationsPages: Notification[][] = []

@@ -27,9 +27,9 @@ interface MeProps {
   }
 }
 async function getUser({ slug }: { slug: string }) {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.users.findUnique({
     where: {
-      slugProfile: slug,
+      slug_profile: slug,
     },
     include: {
       skills: true,
@@ -58,7 +58,7 @@ export default async function Me({ params }: MeProps) {
 
             <div className="absolute -bottom-[44px] left-6">
               <Avatar size="xl" className="ring-2 ring-black">
-                <AvatarImage src={user.avatarUrl} />
+                <AvatarImage src={user.avatar_url} />
                 <AvatarFallback />
               </Avatar>
             </div>
@@ -93,27 +93,27 @@ export default async function Me({ params }: MeProps) {
               </div>
 
               <div className="space-x-3">
-                {user.linkedinLink && (
+                {user.linkedin_link && (
                   <Button
                     variant="outline"
                     className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
                     size="sm"
                     asChild
                   >
-                    <a href={user.linkedinLink} target="_blank">
+                    <a href={user.linkedin_link} target="_blank">
                       <Linkedin size={18} />
                     </a>
                   </Button>
                 )}
 
-                {user.githubLink && (
+                {user.github_link && (
                   <Button
                     variant="outline"
                     className="relative h-[42px] w-[42px] rounded-full px-3 text-secondary-foreground"
                     size="sm"
                     asChild
                   >
-                    <a href={user.githubLink} target="_blank">
+                    <a href={user.github_link} target="_blank">
                       <Github size={18} />
                     </a>
                   </Button>
@@ -143,7 +143,9 @@ export default async function Me({ params }: MeProps) {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {user.aboutMe && <MarkdownWrapper>{user.aboutMe}</MarkdownWrapper>}
+            {user.about_me && (
+              <MarkdownWrapper>{user.about_me}</MarkdownWrapper>
+            )}
 
             <Separator />
 

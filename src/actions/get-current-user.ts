@@ -2,12 +2,12 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { prisma } from '@/libs/prisma'
 import { getServerSession } from 'next-auth'
 
-async function getSession() {
+async function getCurrentServerSession() {
   return await getServerSession(authOptions)
 }
 
-export async function getCurrentUser() {
-  const session = await getSession()
+async function getCurrentUser() {
+  const session = await getCurrentServerSession()
 
   if (!session?.user) {
     return null
@@ -15,7 +15,7 @@ export async function getCurrentUser() {
 
   const sessionUser = session.user
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.users.findUnique({
     where: {
       id: sessionUser.uId,
     },
@@ -26,3 +26,5 @@ export async function getCurrentUser() {
 
   return user
 }
+
+export { getCurrentUser, getCurrentServerSession }

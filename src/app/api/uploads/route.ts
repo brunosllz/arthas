@@ -40,6 +40,6 @@ export async function POST(request: NextRequest) {
       publicUrl,
     })
   } catch (err) {
-    console.log('error')
+    console.error('error')
   }
 }

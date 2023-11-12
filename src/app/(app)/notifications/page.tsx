@@ -9,9 +9,9 @@ async function verifyIfHasAvailableNotifications() {
   const session = await getServerSession(authOptions)
 
   if (session) {
-    const countNotificationsFromUser = await prisma.notification.count({
+    const countNotificationsFromUser = await prisma.notifications.count({
       where: {
-        authorId: session.user.uId,
+        author_id: session.user.uId,
       },
     })
 

@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
+  // DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import Link from 'next/link'
@@ -42,7 +42,7 @@ export function UserNav() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuGroup>
+        {/* <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link href="/me">
               Command menu
@@ -52,14 +52,16 @@ export function UserNav() {
           <DropdownMenuItem asChild>
             <Link href="/me">Theme</Link>
           </DropdownMenuItem>
-        </DropdownMenuGroup>
+        </DropdownMenuGroup> */}
 
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator /> */}
 
         <DropdownMenuItem>
           <SignOutButton>
             Log out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            {/* <DropdownMenuShortcut>
+              ⇧<span className="text-[0.625rem]">⌘</span>Q
+            </DropdownMenuShortcut> */}
           </SignOutButton>
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -1,11 +1,16 @@
+import { Metadata } from 'next'
+
 import {
   MultiStepLabel,
   MultiStepRoot,
   MultiStepContent,
 } from '../components/multi-step'
-import { Browser } from '../components/browser'
 import { BackButton } from '../components/back-button'
 import { ThirdStepForm } from './components/third-step-form'
+
+export const metadata: Metadata = {
+  title: 'Onboarding',
+}
 
 export default function OnboardingThirdStep() {
   return (

@@ -43,7 +43,7 @@ export async function getCroppedImage(sourceImage: string, crop: Area) {
       }, 'image/png')
     })
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return null
   }
 }

@@ -33,24 +33,24 @@ export async function POST(request: NextRequest, { params }: SavedUserParams) {
   const user = savedUserBodySchema.parse(requestBody)
 
   try {
-    await prisma.user.update({
+    await prisma.users.update({
       where: {
         id: userId,
       },
       data: {
-        aboutMe: user.aboutMe,
+        about_me: user.aboutMe,
         city: user.city,
         country: user.country,
-        githubLink: user.githubLink,
-        linkedinLink: user.linkedinLink,
+        github_link: user.githubLink,
+        linkedin_link: user.linkedinLink,
         name: user.name,
         role: user.role,
         seniority: user.seniority,
-        slugProfile: user.slugProfile,
+        slug_profile: user.slugProfile,
         state: user.state,
         title: user.title,
-        avatarUrl: user.avatarUrl,
-        profileUrl: `${env.NEXT_PUBLIC_VERCEL_URL}/me/${user.slugProfile}`,
+        avatar_url: user.avatarUrl,
+        profile_url: `${env.NEXT_PUBLIC_VERCEL_URL}/me/${user.slugProfile}`,
         onboard: user.onboard,
       },
     })
@@ -58,19 +58,19 @@ export async function POST(request: NextRequest, { params }: SavedUserParams) {
     if (user.skills) {
       await Promise.all(
         user.skills.map(async (skill) => {
-          await prisma.skill.upsert({
+          await prisma.skills.upsert({
             where: {
               slug: skill,
             },
             update: {
-              user: {
+              users: {
                 connect: {
                   id: userId,
                 },
               },
             },
             create: {
-              user: {
+              users: {
                 connect: {
                   id: userId,
                 },

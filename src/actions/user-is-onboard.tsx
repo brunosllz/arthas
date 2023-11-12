@@ -8,7 +8,7 @@ export async function userIsBoard() {
     return false
   }
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.users.findUnique({
     where: {
       id: currentUser.id,
     },

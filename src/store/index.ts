@@ -4,7 +4,10 @@ import {
   OnboardingSlice,
   createOnboardingSlice,
 } from './slices/onboarding-slice'
-import { getCurrentUser } from '@/actions/get-current-user'
+import {
+  ProjectsSearchSlice,
+  createProjectsSearchSlice,
+} from './slices/projects-search-slice'
 
 // type UploadStatus = 'waiting' | 'loaded' | 'submitting' | 'success' | 'error'
 
@@ -111,6 +114,9 @@ import { getCurrentUser } from '@/actions/get-current-user'
 //   }
 // })
 
-export const useBoundStore = create<OnboardingSlice>()((...slices) => ({
-  ...createOnboardingSlice(...slices),
-}))
+export const useBoundStore = create<OnboardingSlice & ProjectsSearchSlice>()(
+  (...slices) => ({
+    ...createOnboardingSlice(...slices),
+    ...createProjectsSearchSlice(...slices),
+  }),
+)

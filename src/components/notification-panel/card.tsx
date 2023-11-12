@@ -1,9 +1,9 @@
 'use client'
 
 import { useMutation } from '@tanstack/react-query'
-import { externalApi } from '@/libs/axios'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { clientExternalApi } from '@/libs/axios'
 
 import { Notification } from './list'
 import { Avatar, AvatarImage } from '../ui/avatar'
@@ -17,8 +17,10 @@ dayjs.extend(relativeTime)
 export function Card({ notification }: CardProps) {
   const router = useRouter()
 
-  const { mutateAsync: readNotification } = useMutation(async () => {
-    await externalApi.patch(`/notifications/${notification.id}/read`, {})
+  const { mutateAsync: readNotification } = useMutation({
+    mutationFn: async (notificationId: string) => {
+      await clientExternalApi.patch(`/notifications/${notificationId}/read`)
+    },
   })
 
   async function handleReadNotification() {
@@ -28,7 +30,7 @@ export function Card({ notification }: CardProps) {
       return router.push(`${notification.linkTo}`)
     }
 
-    await readNotification()
+    await readNotification(notification.id)
     router.push(`${notification.linkTo}`)
   }
 

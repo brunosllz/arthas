@@ -5,10 +5,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useBoundStore } from '@/store'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Role,
-  Seniority,
-} from '@/actions/get-roles-and-seniorities-itens-from-cms'
+import { Seniority } from '@/actions/get-roles-and-seniorities-itens-from-cms'
+import { Role } from '@/actions/get-roles-itens-from-cms'
 import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'

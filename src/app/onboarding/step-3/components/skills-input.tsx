@@ -64,8 +64,6 @@ export function SkillsInput({ disabled }: SkillsInputProps) {
         },
       })
 
-      console.log(response.data.skills)
-
       return response.data.skills
     },
     enabled: open,
