@@ -4,9 +4,9 @@
 
 import { useCallback, useEffect, useRef } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { clientExternalApi } from '@/libs/axios'
 import { useQuery } from '@tanstack/react-query'
 import { PaginationResponseData } from '@/@types/pagination-response-data'
+import { externalApi } from '@/libs/fetch-api'
 
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ProjectCardSkeleton } from './project-card-skeleton'
@@ -70,11 +70,14 @@ export function ProjectsList({
 
       const mergedParams = mergeSearchParams(selectedProjectsSearchParams)
 
-      const { data } = await clientExternalApi.get(
+      const response = await externalApi(
         `/projects/short/details?page=${useBoundStore.getState().currentPage}&${
           selectedProjectsSearchParams.length && mergedParams
         }`,
+        { cache: 'no-store' },
       )
+
+      const data = await response.json()
 
       return data
     },
@@ -292,11 +295,11 @@ export function ProjectsList({
 
   if (!projectsResponse) {
     return (
-      <>
+      <div className="pr-6">
         {Array.from({ length: 3 }).map((_, index) => (
           <ProjectCardSkeleton key={index} />
         ))}
-      </>
+      </div>
     )
   }
 
@@ -305,11 +308,11 @@ export function ProjectsList({
   return (
     <>
       {isLoading ? (
-        <>
+        <div className="pr-6">
           {Array.from({ length: 3 }).map((_, index) => (
             <ProjectCardSkeleton key={index} />
           ))}
-        </>
+        </div>
       ) : projects.length ? (
         <ScrollArea
           viewport={{

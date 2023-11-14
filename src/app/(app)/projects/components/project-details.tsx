@@ -1,6 +1,5 @@
 import dayjs from 'dayjs'
 import { getCurrentServerSession } from '@/actions/get-current-user'
-import { serverExternalApi } from '@/libs/axios'
 import { toast } from '@/components/ui/use-toast'
 
 import Image from 'next/image'
@@ -13,6 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { ProjectDetailsSkeleton } from './project-details-skeleton'
 import { ProjectRoleTabs } from './project-role-tabs'
 import { ManifestInterestButton } from './manifest-interest-button'
+import { externalApi } from '@/libs/fetch-api'
 
 type ProjectDetailsResponse = {
   id: string
@@ -44,15 +44,19 @@ async function getProjectDetails(currentProjectId: string) {
   const session = await getCurrentServerSession()
 
   try {
-    const { data: projectDetails } =
-      await serverExternalApi.get<ProjectDetailsResponse>(
-        `/projects/from/${currentProjectId}/details`,
-        {
-          headers: {
-            Authorization: `Bearer ${session?.user.accessToken}`,
-          },
+    const response = await externalApi(
+      `/projects/from/${currentProjectId}/details`,
+      {
+        headers: {
+          Authorization: `Bearer ${session?.user.accessToken}`,
         },
-      )
+        next: {
+          tags: ['projects', `${currentProjectId}`],
+        },
+      },
+    )
+
+    const projectDetails: ProjectDetailsResponse = await response.json()
 
     return { projectDetails }
   } catch (error) {

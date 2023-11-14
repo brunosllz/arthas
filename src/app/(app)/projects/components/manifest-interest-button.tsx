@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { clientExternalApi } from '@/libs/axios'
 
 import { Button } from '@/components/ui/button'
 import { toast } from '@/components/ui/use-toast'
+import { externalApi } from '@/libs/fetch-api'
 
 type ManifestInterestButtonProps = {
   projectId: string
@@ -19,7 +19,9 @@ export function ManifestInterestButton({
 
   async function handleManifestInterest() {
     try {
-      await clientExternalApi.post(`/projects/interest/in/${projectId}`)
+      await externalApi(`/projects/interest/in/${projectId}`, {
+        method: 'POST',
+      })
 
       setHasInterest(true)
     } catch (error) {
@@ -35,7 +37,6 @@ export function ManifestInterestButton({
 
   return (
     <Button
-      size="lg"
       onClick={handleManifestInterest}
       disabled={hasInterest || isInterestedInParticipate}
     >

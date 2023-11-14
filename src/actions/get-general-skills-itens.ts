@@ -1,5 +1,5 @@
-import { serverExternalApi } from '@/libs/axios'
 import { getCurrentServerSession } from './get-current-user'
+import { externalApi } from '@/libs/fetch-api'
 
 export type GeneralSkills = {
   id: string
@@ -20,14 +20,19 @@ export async function getGeneralSkillsItens({
 }> {
   const session = await getCurrentServerSession()
 
-  const { data } = await serverExternalApi.get<ResponseItens>(
+  const response = await externalApi(
     `/projects/general-skills?search=${search ?? ''}`,
     {
       headers: {
         Authorization: `Bearer ${session?.user.accessToken}`,
       },
+      next: {
+        revalidate: 60 * 60 * 6, // 6 hours
+      },
     },
   )
+
+  const data: ResponseItens = await response.json()
 
   return { generalSkills: data }
 }
