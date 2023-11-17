@@ -104,6 +104,7 @@ model projects {
   interested_in_projects interested_in_projects[]
   project_roles          project_roles[]
   users                  users                       @relation(fields: [author_id], references: [id])
+  projects_realized      projects_realized[]
   team_members           team_members[]
   skills                 skills[]                    @relation("ProjectToSkill")
 
@@ -172,10 +173,21 @@ model users {
   notifications_notifications_author_idTousers    notifications[]          @relation("notifications_author_idTousers")
   notifications_notifications_recipient_idTousers notifications[]          @relation("notifications_recipient_idTousers")
   projects                                        projects[]
+  projects_realized                               projects_realized[]
   sessions                                        sessions[]
   team_members                                    team_members[]
   projectRole                                     project_roles[]          @relation("ProjectRoleToUser")
   skills                                          skills[]                 @relation("SkillToUser")
+}
+
+model projects_realized {
+  id                String   @id @default(uuid())
+  user_id           String
+  project_id        String
+  short_description String
+  occurred_at       DateTime @default(now())
+  project           projects @relation(fields: [project_id], references: [id])
+  user              users    @relation(fields: [user_id], references: [id])
 }
 
 enum MEMBER_PERMISSION_TYPE {

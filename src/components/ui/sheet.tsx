@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import * as SheetPrimitive from '@radix-ui/react-dialog'
-import { X } from 'lucide-react'
 
 import { tv, type VariantProps } from 'tailwind-variants'
 import { twMerge } from 'tailwind-merge'

@@ -1,7 +1,7 @@
 'use client'
 
 import { Loader2, X } from 'lucide-react'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Command as CommandPrimitive } from 'cmdk'
 import { Badge } from '@/components/ui/badge'
@@ -13,29 +13,29 @@ import {
   CommandList,
 } from '@/components/ui/command'
 import { useController, useFormContext } from 'react-hook-form'
-import { CreateNewProjectSchema } from './new-project-form'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useDebounceValue } from '@/hooks/use-debounce-value'
 import { InputMessageError } from '@/components/ui/input'
+import { useBoundStore } from '@/store'
+import { EditAboutInput } from '.'
 
 type DataItem = string
 
-interface TechnologiesInputProps {
+interface SkillsInputProps {
   disabled?: boolean
 }
 
-export function TechnologiesInput({ disabled }: TechnologiesInputProps) {
-  const { control } = useFormContext<CreateNewProjectSchema>()
+export function SkillsInput({ disabled }: SkillsInputProps) {
+  const { control } = useFormContext<EditAboutInput>()
 
   const {
     field,
     formState: { errors },
   } = useController({
-    name: 'technologies',
+    name: 'skills',
     control,
     disabled,
-    defaultValue: [],
   })
 
   const { value: selectedItems, onChange: setSelectedItems } = field
@@ -44,36 +44,36 @@ export function TechnologiesInput({ disabled }: TechnologiesInputProps) {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
+  const setUser = useBoundStore((state) => state.setUser)
 
   const searchTerm = useDebounceValue(search, 400)
 
-  const { data: technologyOptions, isLoading: isLoadingTechnologyOptions } =
-    useQuery({
-      queryKey: ['tags', searchTerm],
-      queryFn: async () => {
-        const response = await axios.get('/api/technologies/search', {
-          params: {
-            q: searchTerm,
-            pageSize: 8,
-          },
-        })
+  const { data: skillOptions, isLoading: isLoadingSkillOptions } = useQuery({
+    queryKey: ['skills', searchTerm],
+    queryFn: async () => {
+      const response = await axios.get('/api/skills/search', {
+        params: {
+          q: searchTerm,
+          pageSize: 8,
+        },
+      })
 
-        return response.data.technologies
-      },
-      enabled: open,
-    })
+      return response.data.skills
+    },
+    enabled: open,
+  })
 
   const handleUnselect = useCallback(
     (item: DataItem) => {
-      const newValue = selectedItems.filter((technology) => technology !== item)
+      const newValue = selectedItems.filter((skill) => skill !== item)
 
       setSelectedItems(newValue)
     },
     [selectedItems, setSelectedItems],
   )
 
-  const handleAddNewTechnology = useCallback(
-    (technology: string) => {
+  const handleAddNewSkill = useCallback(
+    (skill: string) => {
       if (search.length <= 1) {
         return
       }
@@ -85,7 +85,7 @@ export function TechnologiesInput({ disabled }: TechnologiesInputProps) {
         return
       }
 
-      setSelectedItems([...selectedItems, technology])
+      setSelectedItems([...selectedItems, skill])
     },
     [search, setSelectedItems, selectedItems],
   )
@@ -120,8 +120,8 @@ export function TechnologiesInput({ disabled }: TechnologiesInputProps) {
 
   let unselectedItems = []
 
-  if (technologyOptions) {
-    unselectedItems = technologyOptions.filter(
+  if (skillOptions) {
+    unselectedItems = skillOptions.filter(
       (item: string) => !selectedItems.includes(item),
     )
   }
@@ -129,17 +129,24 @@ export function TechnologiesInput({ disabled }: TechnologiesInputProps) {
   const hasSelectedItems = selectedItems.length > 0
   const hasSearchValue = !!search
 
+  useEffect(() => {
+    setUser({
+      skills: selectedItems,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedItems])
+
   return (
     <Command
       onKeyDown={handleKeyDownOnCommandContainer}
       className="overflow-visible"
     >
-      <div className="group rounded-md border border-input px-3 py-2 text-sm focus-within:outline-none focus-within:ring-1 focus-within:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+      <div className="group flex min-h-[3.125rem] items-center rounded-md border border-input px-3 py-2 text-sm focus-within:outline-none focus-within:ring-1 focus-within:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
         <div className="flex flex-wrap gap-1">
-          {selectedItems.map((technology) => {
+          {selectedItems.map((skill) => {
             return (
-              <Badge key={technology} variant="secondary">
-                {technology}
+              <Badge key={skill} variant="secondary">
+                {skill}
                 <button
                   type="button"
                   className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -147,7 +154,8 @@ export function TechnologiesInput({ disabled }: TechnologiesInputProps) {
                     event.preventDefault()
                     event.stopPropagation()
                   }}
-                  onClick={() => handleUnselect(technology)}
+                  disabled={disabled}
+                  onClick={() => handleUnselect(skill)}
                 >
                   <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
                 </button>
@@ -156,62 +164,72 @@ export function TechnologiesInput({ disabled }: TechnologiesInputProps) {
           })}
 
           <CommandPrimitive.Input
-            id="technologies"
+            id="skills"
             ref={inputRef}
-            value={search}
+            value={search.toLowerCase()}
             onValueChange={setSearch}
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
-            placeholder={hasSelectedItems ? 'Select more' : 'Select one'}
-            className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+            placeholder={
+              hasSelectedItems ? 'Selecionar mais' : 'Selecione uma habilidade'
+            }
+            className="ml-2 flex-1 bg-transparent py-1 outline-none placeholder:text-muted-foreground"
           />
         </div>
       </div>
 
       <div className="relative">
-        {errors.technologies && (
-          <InputMessageError>{errors.technologies.message}</InputMessageError>
+        {errors.skills && (
+          <InputMessageError>{errors.skills.message}</InputMessageError>
         )}
 
         {open && hasSearchValue ? (
           <CommandList className="absolute top-0 z-10 mt-2 w-full rounded-md border bg-popover text-popover-foreground shadow-xl shadow-black/30 outline-none animate-in">
             <CommandEmpty className="px-2 py-3 text-sm">
-              <button
-                type="button"
-                ref={buttonRef}
-                onMouseDown={(event) => {
-                  event.preventDefault()
-                  event.stopPropagation()
-                }}
-                onClick={() => handleAddNewTechnology(search)}
-                className="w-full rounded-md px-2 py-1.5 text-left hover:bg-accent hover:text-accent-foreground"
-              >
-                Add new technology:{' '}
-                <span className="font-semibold">{`"${search}"`}</span>
-              </button>
+              {selectedItems.includes(search) ? (
+                <div className="px-2 py-1.5">
+                  <span className="text-sm">
+                    Você já possui está habilidade
+                  </span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  ref={buttonRef}
+                  onMouseDown={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                  }}
+                  onClick={() => handleAddNewSkill(search)}
+                  className="w-full rounded-md px-2 py-1.5 text-left hover:bg-accent hover:text-accent-foreground"
+                >
+                  Adicionar nova habilidade:{' '}
+                  <span className="font-semibold">{`"${search}"`}</span>
+                </button>
+              )}
             </CommandEmpty>
 
-            {isLoadingTechnologyOptions ? (
+            {isLoadingSkillOptions ? (
               <div className="absolute right-2 top-2 cursor-default select-none text-muted-foreground">
                 <Loader2 className="h-3 w-3 animate-spin" />
               </div>
             ) : (
               unselectedItems.length > 0 && (
                 <CommandGroup className="h-full">
-                  {unselectedItems.map((technology: string) => {
+                  {unselectedItems.map((skill: string) => {
                     return (
                       <CommandItem
-                        key={technology}
+                        key={skill}
                         onMouseDown={(event) => {
                           event.preventDefault()
                           event.stopPropagation()
                         }}
                         onSelect={() => {
                           setSearch('')
-                          setSelectedItems([...selectedItems, technology])
+                          setSelectedItems([...selectedItems, skill])
                         }}
                       >
-                        {technology}
+                        {skill}
                       </CommandItem>
                     )
                   })}

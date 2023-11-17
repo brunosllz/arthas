@@ -14,8 +14,18 @@ export function editorExtensions({
 }: editorExtensions): Extensions {
   return [
     CustomStrikethrough,
-    Markdown,
-    HardBreak,
+    Markdown.configure({
+      breaks: true,
+    }),
+    HardBreak.extend({
+      addKeyboardShortcuts() {
+        return {
+          Enter: () => {
+            return this.editor.commands.setHardBreak()
+          },
+        }
+      },
+    }),
     StarterKit.configure({
       code: false,
       codeBlock: false,

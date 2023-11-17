@@ -20,7 +20,12 @@ async function api(path: string, init?: RequestInit) {
     baseUrl: env.NEXT_PUBLIC_VERCEL_URL,
     apiPrefix: '/api',
     path,
-    init,
+    init: {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      ...init,
+    },
   })
 }
 

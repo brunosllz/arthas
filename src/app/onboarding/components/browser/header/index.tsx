@@ -1,4 +1,5 @@
-import { useBoundStore } from '@/store'
+import { UserProfileUrl } from './user-profile-url'
+
 import {
   ArrowLeft,
   ArrowRight,
@@ -10,8 +11,6 @@ import {
 } from 'lucide-react'
 
 export function BrowserHeader() {
-  const user = useBoundStore.getState().user
-
   return (
     <header className="w-full bg-[#18181B] pt-[0.5625rem]">
       <div className="flex h-[2.390625rem] items-center ">
@@ -54,13 +53,7 @@ export function BrowserHeader() {
               https://www.devxperience.app/me/
             </span>
 
-            {user.slugProfile ? (
-              <span className="text-[0.84375rem] leading-none">
-                {user.slugProfile}
-              </span>
-            ) : (
-              <div className="ml-0.5 h-4 w-[9.375rem] rounded-full bg-zinc-800" />
-            )}
+            <UserProfileUrl />
           </div>
         </div>
 

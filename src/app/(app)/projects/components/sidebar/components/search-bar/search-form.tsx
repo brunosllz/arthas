@@ -152,7 +152,6 @@ export function SearchForm({
       />
 
       <Button
-        size="xl"
         disabled={submitSelectedProjectIsLoading}
         className="w-full max-w-[9.6875rem] font-semibold"
       >

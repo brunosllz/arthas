@@ -64,7 +64,7 @@ export default function OnboardingWelcome() {
         ))}
       </div>
 
-      <Button asChild size="xl" className="mt-8 w-full">
+      <Button asChild className="mt-8 w-full">
         <Link href="/">
           Continuar para plataforma <ArrowRight size={16} className="ml-1.5" />
         </Link>

@@ -10,7 +10,7 @@ export function MarkdownWrapper({ className, ...props }: MarkdownWrapperProps) {
     <Markdown
       remarkPlugins={[remarkGfm, remarkBreaks]}
       className={twMerge(
-        'prose prose-sm prose-invert break-all leading-relaxed text-muted-foreground prose-p:m-0',
+        'prose prose-invert break-all leading-relaxed text-muted-foreground prose-p:m-0',
         className,
       )}
       {...props}

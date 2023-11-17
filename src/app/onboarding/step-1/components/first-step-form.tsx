@@ -189,7 +189,6 @@ export function FirstStepForm() {
       </div>
 
       <Button
-        size="xl"
         className="w-full font-semibold"
         disabled={nextStepFormIsSubmitting || isCroppingAvatarImage}
       >

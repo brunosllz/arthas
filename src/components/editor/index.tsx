@@ -5,7 +5,6 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import { EditorBubbleMenu } from './editor-bubble-menu'
 import { editorExtensions } from './extensions'
 import { twMerge } from 'tailwind-merge'
-import { Content } from 'next/font/google'
 
 // JSON SCHEMA FOR VALIDATE IN ZOD RESOLVER - NOT IMPLEMENTED
 // export const textAreaEditorSchema = z.object(
@@ -65,7 +64,7 @@ interface EditorProps {
   id?: string
   placeholderValue: string
   config: {
-    disabled?: boolean
+    editable?: boolean
     className?: string
     maxLength?: number
   }
@@ -78,27 +77,32 @@ export function Editor({
   id,
   onBlurMarkdown,
   onUpdateMarkdown,
-  config: { disabled = false, className, maxLength },
+  config: { editable = true, className, maxLength },
   placeholderValue,
   content,
 }: EditorProps) {
   const editor = useEditor({
+    editable,
     extensions: editorExtensions({
       placeholderValue,
     }),
     content,
-    parseOptions: { preserveWhitespace: 'full' },
+    parseOptions: { preserveWhitespace: true },
     editorProps: {
       attributes: {
         class: 'outline-none',
       },
     },
+
     onBlur(props) {
       if (onBlurMarkdown) {
         onBlurMarkdown(props.editor.storage.markdown.getMarkdown())
       }
     },
     onUpdate(props) {
+      console.log(props.editor.getHTML())
+      console.log(props.editor.storage.markdown.getMarkdown())
+
       if (onUpdateMarkdown) {
         onUpdateMarkdown(props.editor.storage.markdown.getMarkdown())
       }
@@ -124,7 +128,6 @@ export function Editor({
 
       <EditorContent
         id={id}
-        disabled={disabled}
         editor={editor}
         maxLength={maxLength}
         className={twMerge(

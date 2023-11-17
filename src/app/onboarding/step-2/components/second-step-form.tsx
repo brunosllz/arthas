@@ -319,7 +319,6 @@ export function SecondStepForm({
                 })
               }}
               {...register('linkedinLink', {
-                required: true,
                 onChange: (event) => onChangeInputValue(event),
               })}
             />
@@ -349,14 +348,13 @@ export function SecondStepForm({
                 })
               }}
               {...register('githubLink', {
-                required: true,
                 onChange: (event) => onChangeInputValue(event),
               })}
             />
           </InputRoot>
         </div>
 
-        <Button size="xl" className="w-full font-semibold">
+        <Button className="w-full font-semibold">
           {nextStepFormIsSubmitting ? (
             <Loader2 className="animate-spin" size={16} />
           ) : (

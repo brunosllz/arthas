@@ -63,11 +63,7 @@ export async function SearchBar({ roles, generalSkills }: SearchBarProps) {
         <SheetContent side="top">
           <div className="space-y-5 wrapper">
             <div className="flex items-center gap-6">
-              <Button
-                variant="outline"
-                size="xl"
-                className="w-full max-w-[463px]"
-              >
+              <Button variant="outline" className="w-full max-w-[463px]">
                 <div className="flex gap-3">
                   <Search size={20} className="text-muted-foreground" />
                   <span className="text-muted">Realizar busca</span>

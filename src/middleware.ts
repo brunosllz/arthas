@@ -7,6 +7,7 @@ export default async function middleware(
   event: NextFetchEvent,
 ) {
   const token = await getToken({ req })
+
   const isAuthenticated = !!token
 
   if (req.nextUrl.pathname.startsWith('/auth') && isAuthenticated) {

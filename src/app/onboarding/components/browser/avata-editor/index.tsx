@@ -73,7 +73,6 @@ export function AvatarEditor() {
         variant="outline"
         disabled={cropAvatarImageStatus === 'loading'}
         className="w-full"
-        size="xl"
         onClick={handleCroppedAvatarImage}
       >
         {cropAvatarImageStatus === 'loading' ? (

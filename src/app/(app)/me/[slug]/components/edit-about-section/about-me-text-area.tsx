@@ -1,50 +1,43 @@
 import { Editor } from '@/components/editor'
-import { useController, useFormContext } from 'react-hook-form'
 import { InputMessageError } from '@/components/ui/input'
-import { ThirdStepInput } from './third-step-form'
-import { useBoundStore } from '@/store'
+import { useController, useFormContext } from 'react-hook-form'
 
 interface RequirementsTextAreaProps {
   editable?: boolean
+  content?: string
 }
 
-export function AboutMeTextArea({ editable }: RequirementsTextAreaProps) {
-  const { control } = useFormContext<ThirdStepInput>()
-  const { setUser, user } = useBoundStore((state) => {
-    return {
-      setUser: state.setUser,
-      user: state.user,
-    }
-  })
+export function AboutMeTextArea({
+  editable,
+  content,
+}: RequirementsTextAreaProps) {
+  const { control } = useFormContext()
 
   const {
     formState: { errors },
-    field: { onChange, name, value },
+    field: { onChange, value },
   } = useController({
     name: 'aboutMe',
     control,
   })
 
-  function onChangeInputValue(name: string, value: string) {
-    setUser({
-      [name]: value,
-    })
-  }
-
   const MAX_LENGTH = 1200
 
   return (
     <div className="space-y-1">
-      <div className="relative">
+      <div className="relative max-w-[704px]">
         <Editor
           id="aboutMe"
           onUpdateMarkdown={(value) => {
             onChange(value)
-            onChangeInputValue(name, value)
           }}
-          config={{ editable, maxLength: MAX_LENGTH }}
+          config={{
+            editable,
+            maxLength: MAX_LENGTH,
+            className: '',
+          }}
           placeholderValue="Conte-nos sobre você"
-          content={user.aboutMe ?? undefined}
+          content={content}
         />
 
         {value && (
@@ -58,7 +51,9 @@ export function AboutMeTextArea({ editable }: RequirementsTextAreaProps) {
       </div>
 
       {errors.aboutMe && (
-        <InputMessageError>{errors.aboutMe.message}</InputMessageError>
+        <InputMessageError>
+          {errors.aboutMe.message?.toString()}
+        </InputMessageError>
       )}
     </div>
   )

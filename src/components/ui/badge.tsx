@@ -19,6 +19,9 @@ const badgeVariants = tv({
         'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
       outline: 'text-foreground',
       static: 'bg-zinc-900 text-zinc-50 border-none',
+      recruiting: 'text-green-900 bg-green-50 border-green-900',
+      inProgress: 'text-blue-900 bg-blue-50 border-blue-900',
+      closed: 'text-orange-900 bg-orange-50 border-orange-900',
     },
   },
   defaultVariants: {

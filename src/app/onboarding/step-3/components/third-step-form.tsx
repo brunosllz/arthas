@@ -74,7 +74,7 @@ export function ThirdStepForm() {
           <Label htmlFor="aboutMe">Sobre</Label>
 
           <AboutMeTextArea
-            disabled={saveUserSubmitIsLoading || submitLeaveForLateIsLoading}
+            editable={!saveUserSubmitIsLoading || !submitLeaveForLateIsLoading}
           />
         </div>
 
@@ -88,8 +88,7 @@ export function ThirdStepForm() {
 
         <div className="space-y-5">
           <Button
-            size="xl"
-            className="w-full font-semibold"
+            className="w-full"
             disabled={saveUserSubmitIsLoading || submitLeaveForLateIsLoading}
           >
             {saveUserSubmitIsLoading || submitLeaveForLateIsLoading ? (
@@ -100,8 +99,7 @@ export function ThirdStepForm() {
           </Button>
 
           <Button
-            size="xl"
-            className="w-full font-semibold"
+            className="w-full"
             variant="outline"
             disabled={saveUserSubmitIsLoading || submitLeaveForLateIsLoading}
             type="button"

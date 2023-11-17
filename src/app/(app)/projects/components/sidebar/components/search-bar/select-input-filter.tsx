@@ -48,11 +48,7 @@ export function SelectInputFilter({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="xl"
-          className="flex w-full justify-between px-3"
-        >
+        <Button variant="outline" className="flex w-full justify-between px-3">
           {placeholder}
           <ChevronDown size={16} strokeWidth={2.5} />
         </Button>

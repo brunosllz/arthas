@@ -22,6 +22,7 @@ import { Control, Controller, FieldValues, Path } from 'react-hook-form'
 interface ComboBoxProps<T extends FieldValues = FieldValues>
   extends ComponentProps<typeof PopoverTrigger> {
   items: Array<{
+    label: string
     value: string
   }>
   name: Path<T>
@@ -60,7 +61,7 @@ export function Combobox<T extends FieldValues = FieldValues>({
             >
               {value ? (
                 items.find((item) => item.value.toLocaleLowerCase() === value)
-                  ?.value
+                  ?.label
               ) : (
                 <span className="text-muted-foreground">{placeholder}</span>
               )}
@@ -98,7 +99,7 @@ export function Combobox<T extends FieldValues = FieldValues>({
                           : 'opacity-0',
                       )}
                     />
-                    {item.value}
+                    {item.label}
                   </CommandItem>
                 ))}
               </CommandGroup>
