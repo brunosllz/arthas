@@ -12,7 +12,7 @@ const Label = React.forwardRef<
   <LabelPrimitive.Root
     ref={ref}
     className={twMerge(
-      'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+      'flex flex-col text-sm leading-relaxed peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
       className,
     )}
     {...props}
@@ -21,4 +21,20 @@ const Label = React.forwardRef<
 
 Label.displayName = LabelPrimitive.Root.displayName
 
-export { Label }
+const LabelDescription = React.forwardRef<
+  HTMLSpanElement,
+  React.HTMLAttributes<HTMLSpanElement>
+>(({ className, ...props }, ref) => (
+  <span
+    ref={ref}
+    className={twMerge(
+      'text-sm font-normal leading-tight text-muted-foreground',
+      className,
+    )}
+    {...props}
+  />
+))
+
+LabelDescription.displayName = 'LabelDescription'
+
+export { Label, LabelDescription }

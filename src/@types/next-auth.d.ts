@@ -5,17 +5,15 @@ declare module 'next-auth' {
     id: string
     name: string
     email: string
-    userName: string
     avatarUrl: string
-    githubLink: string
+    githubLink?: string
+    profileUrl?: string
   }
 
   interface Session {
-    accessToken: string
     user: {
-      name: string
-      email: string
-      avatarUrl: string
+      uId: string
+      accessToken: string
     }
   }
 }
@@ -23,7 +21,6 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    accessToken: string   
-    avatarUrl: string
+    accessToken: string
   }
 }

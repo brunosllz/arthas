@@ -3,11 +3,12 @@ import * as React from 'react'
 import { VariantProps, tv } from 'tailwind-variants'
 
 const badgeVariants = tv({
-  base: 'inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+  base: 'inline-flex items-center font-medium rounded-md border text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
   variants: {
     size: {
-      sm: 'px-1.5 py-px rounded-sm',
-      default: '',
+      sm: 'py-1 px-2',
+      lg: 'py-2.5 px-5',
+      default: 'px-4 py-2',
     },
     variant: {
       default:
@@ -17,6 +18,10 @@ const badgeVariants = tv({
       destructive:
         'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
       outline: 'text-foreground',
+      static: 'bg-zinc-900 text-zinc-50 border-none',
+      recruiting: 'text-green-900 bg-green-50 border-green-900',
+      inProgress: 'text-blue-900 bg-blue-50 border-blue-900',
+      closed: 'text-orange-900 bg-orange-50 border-orange-900',
     },
   },
   defaultVariants: {

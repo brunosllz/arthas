@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+import plugin from 'tailwindcss/plugin'
+
 module.exports = {
   darkMode: ['class'],
   content: [
@@ -66,7 +69,37 @@ module.exports = {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: '100%',
+          },
+        },
+      },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require('tailwind-scrollbar')({ nocompatible: true }),
+    plugin(function ({ addUtilities }) {
+      const newUtilities = {
+        '.wrapper': {
+          width: '100%',
+          'max-width': '81rem',
+          padding: '0 1.5rem',
+          margin: '0 auto',
+        },
+        '.page-container': {
+          padding: '9rem 0 6rem 0',
+        },
+        '.capitalize-first:first-letter': {
+          textTransform: 'uppercase',
+        },
+      }
+
+      addUtilities(newUtilities, { respectPrefix: true })
+    }),
+  ],
 }

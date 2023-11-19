@@ -1,5 +1,10 @@
-'use client'
+import { env } from '@/env'
+import { redirect } from 'next/navigation'
 
 export default function Home() {
-  return <main className="flex items-center justify-center">Home</main>
+  if (env.FEATURE_HOME_PAGE === 0) {
+    return redirect(env.ROOT_PAGE_HREF)
+  }
+
+  return <div className="flex py-12 page-container">Home</div>
 }
