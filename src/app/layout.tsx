@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Providers } from './providers'
 import { Toaster } from '@/components/ui/toaster'
+import { Analytics } from '@vercel/analytics/react'
 
 const inter = Inter({
   display: 'swap',
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body className="scrollbar scrollbar-track-transparent scrollbar-thumb-secondary scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-w-2">
         <Providers>{children}</Providers>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   )

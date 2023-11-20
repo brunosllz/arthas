@@ -53,6 +53,7 @@
     "@tiptap/pm": "^2.1.8",
     "@tiptap/react": "^2.1.8",
     "@tiptap/starter-kit": "^2.1.8",
+    "@vercel/analytics": "^1.1.1",
     "axios": "^1.4.0",
     "bufferutil": "^4.0.7",
     "cmdk": "^0.2.0",
