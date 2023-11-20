@@ -40,6 +40,14 @@ interface MeProps {
   }
 }
 
+export async function generateMetadata({ params }: MeProps) {
+  const { user } = await getUserProfile({ slug: params.slug })
+
+  return {
+    title: user?.name,
+  }
+}
+
 export default async function Me({ params }: MeProps) {
   const { user } = await getUserProfile({ slug: params.slug })
 
