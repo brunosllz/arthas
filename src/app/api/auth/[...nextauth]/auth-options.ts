@@ -46,6 +46,15 @@ export const authOptions: NextAuthOptions = {
 
       return session
     },
+    signIn({ user }) {
+      const availableEmails = ['brunoslvrzl13@gmail.com']
+
+      if (availableEmails.includes(user.email)) {
+        return true
+      }
+
+      return false
+    },
   },
   session: {
     strategy: 'jwt',
