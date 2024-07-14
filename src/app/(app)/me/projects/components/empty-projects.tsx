@@ -1,28 +1,41 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { GanttChartSquare } from 'lucide-react'
-import Link from 'next/link'
+import { Card } from '@/components/ui/card'
 
-export function EmptyProjects() {
+type EmptyProjectsProps = {
+  callToAction?: React.ReactNode
+}
+
+export function EmptyProjects({ callToAction }: EmptyProjectsProps) {
   return (
-    <Card className="flex flex-col items-center justify-center border-dashed py-14">
-      <CardHeader>
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
-          <GanttChartSquare />
+    <Card className="border-dashed">
+      <div className="m-5 space-y-3.5">
+        <div className=" h-[8.5rem] rounded-md border" />
+        <div className="flex gap-2">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="h-6 w-20 rounded-md border" />
+          ))}
         </div>
-      </CardHeader>
-      <CardContent className="flex flex-col items-center justify-center">
-        <div className="space-y-3 text-center">
-          <h2 className="text-xl font-medium">No projects</h2>
-          <span className="text-sm text-muted-foreground">
-            Create a project to start your journey
-          </span>
+      </div>
+
+      <div className="mb-5 space-y-2 px-5">
+        <span className="block font-semibold">Nenhum projeto encontrado</span>
+        <span className="block text-sm text-muted-foreground">
+          Você ainda não criou nenhum projeto. Crie um novo projeto agora e tire
+          seus projetos do papel.
+        </span>
+      </div>
+
+      <div className="mx-5 flex items-center justify-between border-t py-5">
+        <div className="flex -space-x-3">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-10 w-10 rounded-full border-2 bg-background"
+            />
+          ))}
         </div>
 
-        <Button className="mt-8" asChild>
-          <Link href="/me/project/new">Add project</Link>
-        </Button>
-      </CardContent>
+        {callToAction}
+      </div>
     </Card>
   )
 }

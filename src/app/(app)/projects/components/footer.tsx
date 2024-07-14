@@ -76,6 +76,7 @@ export function Footer() {
               key={navItem.title}
               href={navItem.href}
               disabled={navItem.disabled}
+              selectedHighlight={false}
             >
               {navItem.title}
             </NavLink>

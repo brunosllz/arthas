@@ -295,7 +295,7 @@ export function ProjectsList({
 
   if (!projectsResponse) {
     return (
-      <div className="pr-6">
+      <div className="h-full space-y-6 pr-3">
         {Array.from({ length: 3 }).map((_, index) => (
           <ProjectCardSkeleton key={index} />
         ))}
@@ -308,7 +308,7 @@ export function ProjectsList({
   return (
     <>
       {isLoading ? (
-        <div className="pr-6">
+        <div className="h-full space-y-6 pr-3">
           {Array.from({ length: 3 }).map((_, index) => (
             <ProjectCardSkeleton key={index} />
           ))}
@@ -338,10 +338,12 @@ export function ProjectsList({
           </div>
         </ScrollArea>
       ) : (
-        <span className="block font-light text-muted-foreground">
-          Infelizmente não encontramos nenhum projeto, experiemente fazer uma
-          nova busca com novos filtros.
-        </span>
+        <div className="pr-3">
+          <span className="block font-light text-muted-foreground">
+            Infelizmente não encontramos nenhum projeto, experiemente fazer uma
+            nova busca com novos filtros.
+          </span>
+        </div>
       )}
     </>
   )

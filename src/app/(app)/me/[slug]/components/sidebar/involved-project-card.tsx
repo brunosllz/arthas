@@ -1,19 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { PROJECT_STATUS } from '@/mappers/project-status'
 
 type InvolvedProjectCardProps = {
   project: {
     id: string
-    image_url: string
+    imageUrl: string | null
     name: string
     status: 'inProgress' | 'recruiting' | 'closed'
   }
-}
-
-const projectStatus = {
-  inProgress: 'Em andamento',
-  recruiting: 'Recrutando',
-  closed: 'Encerrado',
 }
 
 export function InvolvedProjectCard({ project }: InvolvedProjectCardProps) {
@@ -21,7 +16,7 @@ export function InvolvedProjectCard({ project }: InvolvedProjectCardProps) {
     <div className="space-y-6">
       <div className="flex gap-3">
         <Avatar size="xs" variant="square">
-          <AvatarImage src={project.image_url} />
+          {project.imageUrl && <AvatarImage src={project.imageUrl} />}
           <AvatarFallback />
         </Avatar>
 
@@ -30,8 +25,8 @@ export function InvolvedProjectCard({ project }: InvolvedProjectCardProps) {
             <strong className="line-clamp-1 font-semibold">
               {project.name}
             </strong>
-            <Badge size="sm" variant={project.status}>
-              {projectStatus[project.status]}
+            <Badge size="sm" variant={PROJECT_STATUS[project.status].color}>
+              {PROJECT_STATUS[project.status].label}
             </Badge>
           </div>
 

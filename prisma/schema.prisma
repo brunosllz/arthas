@@ -74,26 +74,13 @@ model notifications {
   users_notifications_recipient_idTousers users             @relation("notifications_recipient_idTousers", fields: [recipient_id], references: [id])
 }
 
-model project_roles {
-  id             String   @id @default(uuid())
-  description    String
-  members_amount Int
-  project_id     String
-  role_id        String
-  projects       projects @relation(fields: [project_id], references: [id], onDelete: Cascade)
-  roles          roles    @relation(fields: [role_id], references: [id])
-  users          users[]  @relation("ProjectRoleToUser")
-
-  @@unique([project_id, role_id])
-}
-
 model projects {
   id                     String                      @id @default(uuid())
   author_id              String
   name                   String
   description            String
   status                 PROJECT_STATUS              @default(recruiting)
-  image_url              String
+  image_url              String?
   banner_url             String?
   slug                   String
   available_time_value   Int
@@ -103,7 +90,7 @@ model projects {
   available_days         Int[]
   answers                answers[]
   interested_in_projects interested_in_projects[]
-  project_roles          project_roles[]
+  project_jobs           project_jobs[]
   users                  users                       @relation(fields: [author_id], references: [id])
   projects_realized      projects_realized[]
   team_members           team_members[]
@@ -113,9 +100,10 @@ model projects {
 }
 
 model roles {
-  id            String          @id
-  name          String          @unique
-  project_roles project_roles[]
+  id           String         @id
+  name         String         @unique
+  slug         String         @unique
+  project_jobs project_jobs[]
 }
 
 model sessions {
@@ -145,6 +133,7 @@ model team_members {
   updated_at      DateTime?
   projects        projects               @relation(fields: [project_id], references: [id], onDelete: Cascade)
   users           users                  @relation(fields: [recipient_id], references: [id])
+  project_jobs    project_jobs[]         @relation("ProjectJobToTeamMember")
 }
 
 model users {
@@ -177,7 +166,6 @@ model users {
   projects_realized                               projects_realized[]
   sessions                                        sessions[]
   team_members                                    team_members[]
-  projectRole                                     project_roles[]          @relation("ProjectRoleToUser")
   skills                                          skills[]                 @relation("SkillToUser")
 }
 
@@ -189,6 +177,19 @@ model projects_realized {
   occurred_at       DateTime @default(now())
   project           projects @relation(fields: [project_id], references: [id])
   user              users    @relation(fields: [user_id], references: [id])
+}
+
+model project_jobs {
+  id             String         @id
+  description    String
+  members_amount Int
+  project_id     String
+  role_slug      String
+  projects       projects       @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  roles          roles          @relation(fields: [role_slug], references: [slug])
+  team_members   team_members[] @relation("ProjectJobToTeamMember")
+
+  @@unique([project_id, role_slug])
 }
 
 enum MEMBER_PERMISSION_TYPE {

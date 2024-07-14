@@ -15,7 +15,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Header />
-      <main className="min-h-screen wrapper">{children}</main>
+      <main className="wrapper">{children}</main>
 
       <FooterRoot>
         <Footer />

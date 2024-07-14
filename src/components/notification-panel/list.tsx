@@ -97,7 +97,12 @@ export function List() {
   const hasNotifications = notifications?.length > 0
 
   return (
-    <PopoverContent align="end" alignOffset={-16} className="w-80 p-4">
+    <PopoverContent
+      align="end"
+      alignOffset={-16}
+      sideOffset={12}
+      className="w-80 p-4"
+    >
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium">Notifications</span>
         <Link

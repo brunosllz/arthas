@@ -1,64 +1,12 @@
 'use client'
 
 import { EditorContent, useEditor } from '@tiptap/react'
-
-import { EditorBubbleMenu } from './editor-bubble-menu'
+import { Editor as EditorType } from '@tiptap/core'
 import { editorExtensions } from './extensions'
 import { twMerge } from 'tailwind-merge'
 
-// JSON SCHEMA FOR VALIDATE IN ZOD RESOLVER - NOT IMPLEMENTED
-// export const textAreaEditorSchema = z.object(
-//   {
-//     type: z.enum(['doc'], {
-//       errorMap: (issue) => {
-//         switch (issue.code) {
-//           case 'invalid_enum_value':
-//             return {
-//               message: 'Invalid doc type',
-//             }
-//           default:
-//             return {
-//               message: 'Invalid doc type',
-//             }
-//         }
-//       },
-//     }),
-//     content: z.array(
-//       z
-//         .object(
-//           {
-//             type: z.enum(['paragraph']),
-//             content: z.array(
-//               z.object({
-//                 type: z.enum(['text'], {
-//                   errorMap: (issue) => {
-//                     switch (issue.code) {
-//                       case 'invalid_enum_value':
-//                         return {
-//                           message: 'Invalid content type',
-//                         }
-//                       default:
-//                         return {
-//                           message: 'Invalid content type',
-//                         }
-//                     }
-//                   },
-//                 }),
-//                 text: z.string({ required_error: 'Add content' }).min(5, {
-//                   message: 'The content should be grant than 5 characters',
-//                 }),
-//               }),
-//             ),
-//           },
-//           { required_error: 'Add content' },
-//         )
-//         .strict({ message: 'Invalid content' }),
-//     ),
-//   },
-//   { required_error: 'Add content' },
-// )
-
-// type TextAreaEditorSchema = z.infer<typeof textAreaEditorSchema>
+import { EditorBubbleMenu } from './editor-bubble-menu'
+import { useEffect } from 'react'
 
 interface EditorProps {
   id?: string
@@ -71,12 +19,14 @@ interface EditorProps {
   content?: string
   onUpdateMarkdown?: (value: string) => void
   onBlurMarkdown?: (value: string) => void
+  onFocusMarkdown?: (editor: EditorType) => void
 }
 
 export function Editor({
   id,
   onBlurMarkdown,
   onUpdateMarkdown,
+  onFocusMarkdown,
   config: { editable = true, className, maxLength },
   placeholderValue,
   content,
@@ -93,21 +43,30 @@ export function Editor({
         class: 'outline-none',
       },
     },
-
     onBlur(props) {
       if (onBlurMarkdown) {
         onBlurMarkdown(props.editor.storage.markdown.getMarkdown())
       }
     },
     onUpdate(props) {
-      console.log(props.editor.getHTML())
-      console.log(props.editor.storage.markdown.getMarkdown())
-
       if (onUpdateMarkdown) {
         onUpdateMarkdown(props.editor.storage.markdown.getMarkdown())
       }
     },
+    onFocus(props) {
+      if (onFocusMarkdown) {
+        onFocusMarkdown(props.editor)
+      }
+    },
   })
+
+  useEffect(() => {
+    if (editor) {
+      editor.setOptions({ editable })
+      editor.view.update(editor.view.props)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editable])
 
   if (!editor) {
     return (

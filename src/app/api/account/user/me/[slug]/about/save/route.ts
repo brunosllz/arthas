@@ -17,10 +17,8 @@ interface SavedUserParams {
 
 export async function POST(request: NextRequest, { params }: SavedUserParams) {
   const slugProfile = params.slug
-  // console.log(slugProfile)
   const requestBody = await request.json()
 
-  // console.log(requestBody)
   const user = savedUserBodySchema.parse(requestBody)
 
   try {

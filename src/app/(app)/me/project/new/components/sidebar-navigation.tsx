@@ -2,7 +2,7 @@
 
 import { MouseEvent } from 'react'
 import { motion } from 'framer-motion'
-import { useTrackSelectedStep } from '../contexts/track-selected-step-context'
+import { useTrackSelectedStep } from '../../contexts/track-selected-step-context'
 import { usePathname } from 'next/navigation'
 import { parseCookies } from 'nookies'
 
@@ -168,7 +168,7 @@ export function SidebarNavigation() {
 
                         {currentTarget === step.href && (
                           <motion.div
-                            layoutId="activeTab"
+                            layoutId="activeInput"
                             className="absolute -left-3.5 top-0 h-6 w-0.5  bg-primary"
                           />
                         )}

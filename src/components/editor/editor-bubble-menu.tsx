@@ -74,24 +74,21 @@ export function EditorBubbleMenu(props: EditorBubbleMenuProps) {
                 className="pointer-events-none flex select-none gap-1.5 rounded-md border border-zinc-700 bg-background p-1.5 shadow-xl shadow-black/30 "
               >
                 {commandLabel.map((label, index) => (
-                  <>
+                  <div key={index}>
                     {label.type === 'symbol' ? (
                       <div className="rounded-sm bg-zinc-800 px-1.5 py-0 text-center shadow-md ring-1 ring-zinc-700">
-                        <kbd key={index} className="text-[10px] font-light">
+                        <kbd className="text-[10px] font-light">
                           {label.value}
                         </kbd>
                       </div>
                     ) : (
                       <div className="rounded-sm bg-secondary px-1.5 py-0 text-center shadow-md ring-1 ring-zinc-700">
-                        <kbd
-                          key={index}
-                          className="text-xs font-light leading-none"
-                        >
+                        <kbd className="text-xs font-light leading-none">
                           {label.value}
                         </kbd>
                       </div>
                     )}
-                  </>
+                  </div>
                 ))}
               </TooltipContent>
             </Tooltip>

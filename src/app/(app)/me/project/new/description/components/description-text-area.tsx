@@ -2,7 +2,7 @@ import { Editor } from '@/components/editor'
 import { InputMessageError } from '@/components/ui/input'
 import { useController, useFormContext } from 'react-hook-form'
 import { DescriptionFormInput } from './description-form'
-import { useTrackSelectedStep } from '../../contexts/track-selected-step-context'
+import { useTrackSelectedStep } from '../../../contexts/track-selected-step-context'
 
 interface RequirementsTextAreaProps {
   editable?: boolean

@@ -14,10 +14,10 @@ import { useRouter } from 'next/navigation'
 
 export function JobTabs() {
   const router = useRouter()
-  const { newProjectFormSteps, deleteRoleFromJob } = useBoundStore(
-    ({ newProjectFormSteps, deleteRoleFromJob }) => ({
+  const { newProjectFormSteps, deleteNewProjectRoleFromJob } = useBoundStore(
+    ({ newProjectFormSteps, deleteNewProjectRoleFromJob }) => ({
       newProjectFormSteps,
-      deleteRoleFromJob,
+      deleteNewProjectRoleFromJob,
     }),
   )
 
@@ -104,7 +104,7 @@ export function JobTabs() {
                       className="group flex items-center gap-2 border px-6 py-3 data-[state=active]:bg-primary hover:bg-accent data-[state=active]:hover:bg-primary disabled:pointer-events-none disabled:opacity-50"
                     >
                       <span className="text-xs font-semibold text-primary group-hover:text-accent-foreground group-data-[state=active]:text-primary-foreground group-data-[state=active]:hover:text-primary-foreground">
-                        {role.membersAmount} -{' '}
+                        {String(role.membersAmount).padStart(2, '0')} -{' '}
                         {
                           newProjectFormSteps.job.roleItens.find(
                             (item) => item.value === role.name,
@@ -115,7 +115,7 @@ export function JobTabs() {
                       <button
                         type="button"
                         className="text-primary group-hover:text-accent-foreground group-data-[state=active]:text-primary-foreground group-data-[state=active]:hover:text-primary-foreground"
-                        onClick={() => deleteRoleFromJob(role.roleId)}
+                        onClick={() => deleteNewProjectRoleFromJob(role.roleId)}
                       >
                         <X size={14} />
                       </button>

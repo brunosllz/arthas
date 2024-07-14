@@ -3,13 +3,13 @@
 import { useBoundStore } from '@/store'
 import { useRef } from 'react'
 
-type InitializerOnboardingStore = {
+type InitializerNewProjectStore = {
   roleItens: Array<{ label: string; value: string }>
 }
 
 export function InitializerNewProjectStore({
   roleItens,
-}: InitializerOnboardingStore) {
+}: InitializerNewProjectStore) {
   const initializer = useRef(false)
 
   if (!initializer.current) {

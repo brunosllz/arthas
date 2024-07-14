@@ -7,8 +7,8 @@ const peopleItens = [
   },
 
   {
-    name: 'Rodrigo Gonçalves',
-    avatar: 'https://github.com/rodrigorgtic.png',
+    name: 'Filipe de Schamps',
+    avatar: 'https://github.com/filipedeschamps.png',
   },
   {
     name: 'Diego Fernandes',

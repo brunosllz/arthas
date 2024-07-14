@@ -168,7 +168,7 @@ export function EditProfileSection({
       console.error(error)
 
       return toast({
-        title: 'Ocorreu um error ao salvar suas informações.',
+        title: 'Ocorreu um error ao salvar suas informações',
         description: `Tente novamente mais tarde.`,
         variant: 'destructive',
       })

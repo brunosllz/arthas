@@ -15,7 +15,7 @@ function userProfileMapper(user: any) {
     aboutMe: user.about_me,
     seniority: user.seniority,
     role: user.role,
-    avatar_url: user.avatar_url,
+    avatarUrl: user.avatar_url,
     state: user.state,
     city: user.city,
     country: user.country,
@@ -26,7 +26,29 @@ function userProfileMapper(user: any) {
     title: user.title,
     skills: user.skills.map((skill: { slug: string }) => skill.slug),
     projectRealized: user.projects_realized,
-    involvedProjects: user.projects,
+    involvedProjects: user.projects.map(
+      (project: {
+        id: number
+        image_url: string
+        name: string
+        status: 'recruting' | 'in_progress' | 'closed'
+        team_members: Array<{
+          id: number
+          users: {
+            name: string
+          }
+        }>
+      }) => ({
+        id: project.id,
+        imageUrl: project.image_url,
+        name: project.name,
+        status: project.status,
+        members: project.team_members.map((member) => ({
+          id: member.id,
+          name: member.users.name,
+        })),
+      }),
+    ),
     updatedAt: user.updated_at,
   }
 }
@@ -65,16 +87,20 @@ export async function GET(_: NextRequest, { params }: SavedUserParams) {
           where: {
             team_members: {
               some: {
-                AND: [
-                  {
-                    status: 'approved',
-                  },
-                  {
-                    users: {
-                      slug_profile: slugProfile,
-                    },
-                  },
-                ],
+                // status: 'approved',
+                users: {
+                  slug_profile: slugProfile,
+                },
+                // AND: [
+                //   {
+                //     status: 'approved',
+                //   },
+                //   {
+                //     users: {
+                //       slug_profile: slugProfile,
+                //     },
+                //   },
+                // ],
               },
             },
           },
@@ -97,7 +123,7 @@ export async function GET(_: NextRequest, { params }: SavedUserParams) {
           orderBy: {
             created_at: 'desc',
           },
-          take: 3,
+          // take: 3,
         },
         projects_realized: {
           where: {

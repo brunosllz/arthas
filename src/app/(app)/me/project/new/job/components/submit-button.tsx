@@ -7,7 +7,6 @@ import { toast } from '@/components/ui/use-toast'
 import { externalApi } from '@/libs/fetch-api'
 import { useBoundStore } from '@/store'
 import axios from 'axios'
-import Compressor from 'compressorjs'
 import { destroyCookie } from 'nookies'
 import { ButtonHTMLAttributes } from 'react'
 import { NEW_PROJECT_COOKIES_ID } from '../../layout'
@@ -36,79 +35,6 @@ export function SubmitButton(props: SubmitButtonProps) {
           },
         },
       }))
-
-      await Promise.all([
-        new Promise((resolve) => {
-          if (newProjectFormSteps.cover.avatarUrl) {
-            new Compressor(newProjectFormSteps.cover.avatarUrl.file, {
-              quality: 0.6,
-              convertSize: 10000,
-              success(file) {
-                resolve(
-                  useBoundStore.setState(({ newProjectFormSteps }) => ({
-                    newProjectFormSteps: {
-                      ...newProjectFormSteps,
-                      cover: {
-                        ...newProjectFormSteps.cover,
-                        avatarUrl: {
-                          ...newProjectFormSteps.cover.avatarUrl,
-                          previewUrl:
-                            newProjectFormSteps.cover.avatarUrl?.previewUrl ??
-                            '',
-                          publicUrl:
-                            newProjectFormSteps.cover.avatarUrl?.publicUrl ??
-                            '',
-                          signedUrl:
-                            newProjectFormSteps.cover.avatarUrl?.signedUrl ??
-                            '',
-                          file: file as File,
-                        },
-                      },
-                    },
-                  })),
-                )
-              },
-            })
-          }
-
-          return resolve(true)
-        }),
-        new Promise((resolve) => {
-          if (newProjectFormSteps.cover.bannerUrl) {
-            new Compressor(newProjectFormSteps.cover.bannerUrl.file, {
-              quality: 0.6,
-              convertSize: 10000,
-              success(file) {
-                resolve(
-                  useBoundStore.setState(({ newProjectFormSteps }) => ({
-                    newProjectFormSteps: {
-                      ...newProjectFormSteps,
-                      cover: {
-                        ...newProjectFormSteps.cover,
-                        bannerUrl: {
-                          ...newProjectFormSteps.cover.bannerUrl,
-                          previewUrl:
-                            newProjectFormSteps.cover.bannerUrl?.previewUrl ??
-                            '',
-                          publicUrl:
-                            newProjectFormSteps.cover.bannerUrl?.publicUrl ??
-                            '',
-                          signedUrl:
-                            newProjectFormSteps.cover.bannerUrl?.signedUrl ??
-                            '',
-                          file: file as File,
-                        },
-                      },
-                    },
-                  })),
-                )
-              },
-            })
-          }
-
-          resolve(true)
-        }),
-      ])
 
       const response = await externalApi('/projects', {
         method: 'POST',
@@ -161,14 +87,17 @@ export function SubmitButton(props: SubmitButtonProps) {
         }))
 
         return toast({
-          title: 'Ocorreu um error ao cria o seu projeto.',
+          title: 'Ocorreu um error ao cria o seu projeto',
           description: `Tente novamente mais tarde.`,
           variant: 'destructive',
         })
       }
 
-      await Promise.all([
-        axios.put(
+      const hasAvatarImageToUpload =
+        newProjectFormSteps.cover.avatarUrl?.signedUrl
+
+      if (hasAvatarImageToUpload) {
+        await axios.put(
           useBoundStore.getState().newProjectFormSteps.cover.avatarUrl
             ?.signedUrl!,
           useBoundStore.getState().newProjectFormSteps.cover.avatarUrl?.file!,
@@ -179,8 +108,14 @@ export function SubmitButton(props: SubmitButtonProps) {
                   ?.file.type,
             },
           },
-        ),
-        axios.put(
+        )
+      }
+
+      const hasBannerImageToUpload =
+        newProjectFormSteps.cover.bannerUrl?.signedUrl
+
+      if (hasBannerImageToUpload) {
+        await axios.put(
           useBoundStore.getState().newProjectFormSteps.cover.bannerUrl
             ?.signedUrl!,
           useBoundStore.getState().newProjectFormSteps.cover.bannerUrl?.file!,
@@ -191,17 +126,17 @@ export function SubmitButton(props: SubmitButtonProps) {
                   ?.file.type,
             },
           },
-        ),
-      ])
+        )
+      }
 
-      router.push('/me/projects')
       destroyCookie(null, NEW_PROJECT_COOKIES_ID)
       resetNewProjectForm()
+      router.push('/me/projects')
     } catch (error) {
       console.error(error)
 
       return toast({
-        title: 'Ocorreu um error ao cria o seu projeto.',
+        title: 'Ocorreu um error ao cria o seu projeto',
         description: `Tente novamente mais tarde.`,
         variant: 'destructive',
       })

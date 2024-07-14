@@ -8,6 +8,14 @@ import {
   ProjectsSearchSlice,
   createProjectsSearchSlice,
 } from './slices/projects-search-slice'
+import {
+  createNewProjectSlice,
+  NewProjectSlice,
+} from './slices/new-project-slice'
+import {
+  EditProjectTabSlice,
+  createEditProjectTabSlice,
+} from './slices/edit-project-tab-slice'
 
 // type UploadStatus = 'waiting' | 'loaded' | 'submitting' | 'success' | 'error'
 
@@ -114,9 +122,11 @@ import {
 //   }
 // })
 
-export const useBoundStore = create<OnboardingSlice & ProjectsSearchSlice>()(
-  (...slices) => ({
-    ...createOnboardingSlice(...slices),
-    ...createProjectsSearchSlice(...slices),
-  }),
-)
+export const useBoundStore = create<
+  OnboardingSlice & ProjectsSearchSlice & NewProjectSlice & EditProjectTabSlice
+>()((...slices) => ({
+  ...createOnboardingSlice(...slices),
+  ...createProjectsSearchSlice(...slices),
+  ...createNewProjectSlice(...slices),
+  ...createEditProjectTabSlice(...slices),
+}))

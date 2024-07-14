@@ -54,7 +54,7 @@ export function MultiSelectInputFilter({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="max-w-max">
+      <PopoverContent className="max-w-max" align="start" sideOffset={12}>
         <Command loop>
           <CommandInput />
 

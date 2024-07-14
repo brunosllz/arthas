@@ -17,6 +17,7 @@ function requiredOnEnv(env: z.infer<typeof nodeEnv>) {
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().min(1).url(),
+    DIRECT_URL: z.string().url(),
     CLOUDFLARE_ACCOUNT_ID: z.string().min(1),
     CLOUDFLARE_ACCESS_KEY: z.string().min(1),
     CLOUDFLARE_SECRET_KEY: z.string().min(1),

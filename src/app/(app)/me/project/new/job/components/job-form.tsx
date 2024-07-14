@@ -11,7 +11,7 @@ import {
   InputMessageError,
   InputRoot,
 } from '@/components/ui/input'
-import { InputTracker } from '../../components/input-tracker'
+import { InputTracker } from '@/app/(app)/me/components/input-tracker'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { DescriptionRoleTextArea } from './description-role-text-area'

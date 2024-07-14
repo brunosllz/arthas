@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 'use client'
 
 import { useEffect, useId } from 'react'
@@ -14,7 +15,7 @@ import {
   InputMessageError,
   InputRoot,
 } from '@/components/ui/input'
-import { InputTracker } from '../../components/input-tracker'
+import { InputTracker } from '@/app/(app)/me/components/input-tracker'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
@@ -49,7 +50,7 @@ const coverFormInput = z.object({
         })
         .min(1, 'Você deve informar no mínimo 1 hora')
         .max(9, 'Você deve informar no máximo 8 horas por dia'),
-      unit: z.enum(['hours']).default('hours'),
+      unit: z.enum(['hour', 'minute']).default('hour'),
     }),
   }),
 })
@@ -94,12 +95,13 @@ const WEEKDAYS = [
 export function CoverForm() {
   const router = useRouter()
   const formId = useId()
-  const { deleteWeekDatFromCover, newProjectFormSteps } = useBoundStore(
-    ({ deleteWeekDatFromCover, newProjectFormSteps }) => ({
-      deleteWeekDatFromCover,
-      newProjectFormSteps,
-    }),
-  )
+  const { deleteNewProjectWeekDaysFromCover, newProjectFormSteps } =
+    useBoundStore(
+      ({ deleteNewProjectWeekDaysFromCover, newProjectFormSteps }) => ({
+        deleteNewProjectWeekDaysFromCover,
+        newProjectFormSteps,
+      }),
+    )
 
   const form = useForm<CoverFormInput>({
     resolver: zodResolver(coverFormInput),
@@ -119,7 +121,8 @@ export function CoverForm() {
           value:
             useBoundStore.getState().newProjectFormSteps.cover
               .availableToParticipate.availableTime.value,
-          unit: 'hours',
+          unit: useBoundStore.getState().newProjectFormSteps.cover
+            .availableToParticipate.availableTime.unit,
         },
       },
     },
@@ -187,7 +190,7 @@ export function CoverForm() {
 
       const { signedUrl, publicUrl } = await response.json()
 
-      setValue('bannerUrl', previewUrl)
+      setValue('bannerUrl', publicUrl)
 
       useBoundStore.setState(({ newProjectFormSteps }) => ({
         newProjectFormSteps: {
@@ -200,10 +203,43 @@ export function CoverForm() {
               publicUrl,
               signedUrl,
             },
-            bannerUrlIsLoading: false,
           },
         },
       }))
+
+      new Promise((resolve) => {
+        if (newProjectFormSteps.cover.bannerUrl) {
+          new Compressor(newProjectFormSteps.cover.bannerUrl.file, {
+            quality: 0.6,
+            convertSize: 10000,
+            success(file) {
+              resolve(
+                useBoundStore.setState(({ newProjectFormSteps }) => ({
+                  newProjectFormSteps: {
+                    ...newProjectFormSteps,
+                    cover: {
+                      ...newProjectFormSteps.cover,
+                      bannerUrl: {
+                        ...newProjectFormSteps.cover.bannerUrl,
+                        previewUrl:
+                          newProjectFormSteps.cover.bannerUrl?.previewUrl ?? '',
+                        publicUrl:
+                          newProjectFormSteps.cover.bannerUrl?.publicUrl ?? '',
+                        signedUrl:
+                          newProjectFormSteps.cover.bannerUrl?.signedUrl ?? '',
+                        file: file as File,
+                      },
+                      bannerUrlIsLoading: false,
+                    },
+                  },
+                })),
+              )
+            },
+          })
+        }
+
+        return resolve(true)
+      })
     },
   })
 
@@ -261,7 +297,7 @@ export function CoverForm() {
 
       const { signedUrl, publicUrl } = await response.json()
 
-      setValue('avatarUrl', previewUrl)
+      setValue('avatarUrl', publicUrl)
 
       useBoundStore.setState(({ newProjectFormSteps }) => ({
         newProjectFormSteps: {
@@ -274,10 +310,43 @@ export function CoverForm() {
               publicUrl,
               signedUrl,
             },
-            avatarUrlIsLoading: false,
           },
         },
       }))
+
+      new Promise((resolve) => {
+        if (newProjectFormSteps.cover.avatarUrl) {
+          new Compressor(newProjectFormSteps.cover.avatarUrl.file, {
+            quality: 0.6,
+            convertSize: 10000,
+            success(file) {
+              resolve(
+                useBoundStore.setState(({ newProjectFormSteps }) => ({
+                  newProjectFormSteps: {
+                    ...newProjectFormSteps,
+                    cover: {
+                      ...newProjectFormSteps.cover,
+                      avatarUrl: {
+                        ...newProjectFormSteps.cover.avatarUrl,
+                        previewUrl:
+                          newProjectFormSteps.cover.avatarUrl?.previewUrl ?? '',
+                        publicUrl:
+                          newProjectFormSteps.cover.avatarUrl?.publicUrl ?? '',
+                        signedUrl:
+                          newProjectFormSteps.cover.avatarUrl?.signedUrl ?? '',
+                        file: file as File,
+                      },
+                      avatarUrlIsLoading: false,
+                    },
+                  },
+                })),
+              )
+            },
+          })
+        }
+
+        return resolve(true)
+      })
     },
   })
 
@@ -302,7 +371,7 @@ export function CoverForm() {
 
     setCookie(null, NEW_PROJECT_COOKIES_ID, JSON.stringify({ cover: formId }), {
       maxAge: 60 * 30, // 30 minutes
-      path: '/me/project/new',
+      path: '/',
     })
 
     router.push('/me/project/new/description')
@@ -421,7 +490,7 @@ export function CoverForm() {
               type="button"
               size="sm"
               disabled={
-                newProjectFormSteps.cover.avatarUrlIsLoading ||
+                newProjectFormSteps.cover.bannerUrlIsLoading ||
                 newProjectFormSteps.cover.submitIsLoading
               }
               variant="outline"
@@ -592,7 +661,7 @@ export function CoverForm() {
                       type="button"
                       disabled={newProjectFormSteps.cover.submitIsLoading}
                       onClick={() => {
-                        deleteWeekDatFromCover(param.value)
+                        deleteNewProjectWeekDaysFromCover(param.value)
                         setValue(
                           'availableToParticipate.availableDays',
                           useBoundStore.getState().newProjectFormSteps.cover

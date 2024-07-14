@@ -54,7 +54,7 @@ export function SelectInputFilter({
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="max-w-max">
+      <PopoverContent className="max-w-max" align="start" sideOffset={12}>
         <Command loop>
           <CommandInput />
           <CommandList className="pt-4">

@@ -6,7 +6,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useBoundStore } from '@/store'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { InputTracker } from '../../components/input-tracker'
+import { InputTracker } from '@/app/(app)/me/components/input-tracker'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { DescriptionTextArea } from './description-text-area'
@@ -66,6 +66,7 @@ export function DescriptionForm() {
     }))
 
     const cookiesStore = parseCookies()
+
     const newProjectFormId = cookiesStore[NEW_PROJECT_COOKIES_ID]
 
     const newProjectFormIdParsed = JSON.parse(newProjectFormId)
@@ -76,7 +77,7 @@ export function DescriptionForm() {
       JSON.stringify({ ...newProjectFormIdParsed, description: formId }),
       {
         maxAge: 60 * 30, // 30 minutes
-        path: '/me/project/new',
+        path: '/',
       },
     )
 

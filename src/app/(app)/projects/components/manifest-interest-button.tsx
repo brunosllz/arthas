@@ -28,7 +28,7 @@ export function ManifestInterestButton({
       console.error(error)
 
       return toast({
-        title: 'Ocorreu um erro ao enviar a sua solicitação de interesse.',
+        title: 'Ocorreu um erro ao enviar a sua solicitação de interesse',
         description: `Tente novamente mais tarde.`,
         variant: 'destructive',
       })

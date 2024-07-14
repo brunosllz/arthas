@@ -16,7 +16,8 @@ import { externalApi } from '@/libs/fetch-api'
 
 type ProjectDetailsResponse = {
   id: string
-  imageUrl: string
+  imageUrl?: string
+  bannerUrl?: string
   name: string
   description: string
   author: {
@@ -63,7 +64,7 @@ async function getProjectDetails(currentProjectId: string) {
     console.error(error)
 
     toast({
-      title: 'Ocorreu um erro ao carregar os detalhes do projeto.',
+      title: 'Ocorreu um erro ao carregar os detalhes do projeto',
       description: `Tente novamente mais tarde.`,
       variant: 'destructive',
     })
@@ -95,11 +96,19 @@ export async function ProjectDetails({
     <div className="space-y-6 page-container">
       <Card className="overflow-hidden">
         <div className="relative h-36 w-full bg-zinc-900">
-          <Avatar className="h-full w-full rounded-none"></Avatar>
-
+          {projectDetails.bannerUrl && (
+            <Image
+              src={projectDetails.bannerUrl}
+              width={822}
+              height={144}
+              alt=""
+              quality={100}
+              className="h-full w-full object-cover"
+            />
+          )}
           <div className="absolute -bottom-[44px] left-6">
             <Avatar size="xl" className="bg-zinc-800 ring-2 ring-black">
-              {projectDetails.imageUrl && (
+              {projectDetails.imageUrl ? (
                 <Image
                   src={projectDetails.imageUrl}
                   width={80}
@@ -108,6 +117,8 @@ export async function ProjectDetails({
                   quality={90}
                   className="h-full w-full object-cover"
                 />
+              ) : (
+                <span>{projectDetails.name}</span>
               )}
             </Avatar>
           </div>

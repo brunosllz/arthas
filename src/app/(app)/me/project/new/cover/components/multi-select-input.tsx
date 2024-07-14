@@ -39,12 +39,13 @@ export function MultiSelectInput({
 }: SelectInputFilterProps) {
   const { setValue, clearErrors } = useFormContext<CoverFormInput>()
 
-  const { newProjectFormSteps, toggleWeekDaysFromCover } = useBoundStore(
-    ({ newProjectFormSteps, toggleWeekDaysFromCover }) => ({
-      newProjectFormSteps,
-      toggleWeekDaysFromCover,
-    }),
-  )
+  const { newProjectFormSteps, toggleNewProjectWeekDaysFromCover } =
+    useBoundStore(
+      ({ newProjectFormSteps, toggleNewProjectWeekDaysFromCover }) => ({
+        newProjectFormSteps,
+        toggleNewProjectWeekDaysFromCover,
+      }),
+    )
 
   function toggleParam(value: string, label: string) {
     clearErrors('availableToParticipate.availableDays')
@@ -78,7 +79,7 @@ export function MultiSelectInput({
       }
 
       params.forEach((day) => {
-        toggleWeekDaysFromCover({
+        toggleNewProjectWeekDaysFromCover({
           label: day.label,
           value: day.value,
         })
@@ -109,7 +110,7 @@ export function MultiSelectInput({
       }))
     }
 
-    toggleWeekDaysFromCover({ label, value })
+    toggleNewProjectWeekDaysFromCover({ label, value })
     setValue(
       'availableToParticipate.availableDays',
       useBoundStore.getState().newProjectFormSteps.cover.availableToParticipate
@@ -124,7 +125,7 @@ export function MultiSelectInput({
           id="availability"
           size="input"
           variant="outline"
-          disabled={newProjectFormSteps.cover.submitIsLoading}
+          // disabled={newProjectFormSteps.cover.submitIsLoading}
           className="flex w-full justify-between px-3 text-muted-foreground focus:ring-1 focus:ring-ring"
         >
           {placeholder}

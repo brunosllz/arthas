@@ -80,7 +80,7 @@ export default async function Me({ params }: MeProps) {
 
             <div className="absolute -bottom-[44px] left-6">
               <Avatar size="xl" className="ring-2 ring-black">
-                <AvatarImage src={user.avatar_url} />
+                <AvatarImage src={user.avatarUrl} />
                 <AvatarFallback />
               </Avatar>
             </div>

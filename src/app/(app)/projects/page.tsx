@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: 'Projetos',
 }
 
-export default async function Projects({ searchParams }: ProjectsProps) {
+export default function Projects({ searchParams }: ProjectsProps) {
   return (
     <Suspense
       key={searchParams.currentProjectId}

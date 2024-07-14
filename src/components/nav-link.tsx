@@ -7,16 +7,21 @@ import { twMerge } from 'tailwind-merge'
 
 export type NavLinkProps = ComponentProps<typeof Link> & {
   disabled?: boolean
+  selectedHighlight?: boolean
 }
 
-export function NavLink({ disabled = false, ...props }: NavLinkProps) {
+export function NavLink({
+  disabled = false,
+  selectedHighlight = true,
+  ...props
+}: NavLinkProps) {
   const pathname = usePathname()
 
   const isActive = pathname === props.href
 
   return (
     <Link
-      data-active={isActive}
+      data-active={isActive && selectedHighlight}
       data-disabled={disabled}
       className={twMerge(
         'font-medium leading-none text-muted-foreground transition-colors data-[disabled=true]:pointer-events-none data-[active=true]:text-primary hover:text-primary',

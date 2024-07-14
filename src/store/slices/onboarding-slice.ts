@@ -83,6 +83,10 @@ const createOnboardingSlice: StateCreator<OnboardingSlice> = (set, get) => ({
 
       const user = get().user
 
+      destroyCookie(null, `${onboardingUserCookiesTag}:${user.id}`, {
+        path: '/',
+      })
+
       await api.post(`/api/account/user/${user.id}/onboarding/save`, {
         name: user.name,
         avatarUrl: user.publicAvatarUrl ?? user.avatarUrl,
@@ -111,10 +115,6 @@ const createOnboardingSlice: StateCreator<OnboardingSlice> = (set, get) => ({
           })
         }
       }
-
-      destroyCookie(null, `${onboardingUserCookiesTag}:${user.id}`, {
-        path: '/',
-      })
     } catch (error) {
       console.error(error)
 
